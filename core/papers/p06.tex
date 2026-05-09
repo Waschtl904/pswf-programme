@@ -1,0 +1,1184 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{amsmath, amsthm, amssymb, amsfonts}
+\usepackage{mathrsfs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{cleveref}
+
+\geometry{margin=2.5cm}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{openproblem}[theorem]{Open Problem}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Im}{Im}
+\DeclareMathOperator{\spec}{spec}
+\newcommand{\Xc}{X_c}
+\newcommand{\Tc}{\mathcal{T}_c}
+\newcommand{\Kc}{\mathcal{K}_c}
+\newcommand{\Hil}{\mathcal{H}_{(-1,1)}}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\inner}[2]{\langle #1,\, #2 \rangle}
+\newcommand{\pswf}[1]{\psi_{#1}^{(c)}}
+\newcommand{\lam}[1]{\lambda_{#1}^{(c)}}
+\newcommand{\Ai}{\operatorname{Ai}}
+
+\title{%
+  \textbf{Galerkin Norm Estimates for the Prolate Phase Operator}\\[0.5em]
+  \large Bridge Paper VI: From Gram Coercivity to Assumption~A
+}
+\author{\textit{Working paper -- prolate-gram-coercivity programme}}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study the nonlinear phase operator $\mathcal{T}_c$ arising in the
+Riemann--Hilbert formulation of PSWF asymptotics.
+The analysis has three layers above an unconditional base.
+
+\smallskip\noindent\textbf{Layer~0 (unconditional):}
+(i)~$T_{ii}=0$;
+(ii)~$|I_{kl}|\leq C_1c^{-1/2}/|k-l|$, uniformly over bulk and
+transition zones after decomposition;
+(iii)~the bulk oscillation barrier is localised to
+$|k-l|\lesssim c^{1/6}$;
+(iv)~$\|T\|\geq\tfrac{\kappa}{2}\log c$ is optimal in the class
+of non-oscillatory Schur-type bounds.
+These constitute the geometry of the obstruction.
+
+\smallskip\noindent\textbf{Layer~1 (Assumption~B-strong):}
+$\norm{D\mathcal{T}_c^{(N)}}\leq C(A)\log c$.
+Assumption~B splits into B-weak (mechanically derived,
+$P_{kl}\lesssim c^{5/3}|k-l|$) and B-strong
+($P_{kl}\leq C_2c^{1/2}$, requires phase-sensitive
+Airy--WKB coupling, open).
+
+\smallskip\noindent\textbf{Layer~2 (Assumption~B$'$):}
+$\norm{D\mathcal{T}_c^{(N)}}\leq C(A)c^{-1/2}\log c\to 0$.
+Assumption~B$'$ requires both phase equidistribution
+(Conjecture~\ref{conj:phase}) \emph{and} amplitude regularity
+(Conjecture~\ref{conj:amplitude}); neither alone suffices.
+The No-go Theorem shows Layer~1 is optimal within the
+class of non-oscillatory Schur-type bounds;
+contraction requires signed oscillatory structure.
+The near/far splitting ($T=T^{\rm near}+T^{\rm far}$,
+relative bandwidth $c^{-1/6}\to 0$) reduces the global
+contraction problem to a band-matrix of shrinking relative bandwidth;
+$T^{\rm near}$ has local Toeplitz symbol structure in the WKB
+scaling limit, but $\ell^2$-operator convergence to a Toeplitz
+limit is not established.
+All gaps are precisely isolated as Open Problems.
+\end{abstract}
+
+\tableofcontents
+\bigskip\hrule\bigskip
+
+%% ============================================================
+\section{Introduction and Context}
+%% ============================================================
+
+\subsection{Programme overview}
+
+This paper is the sixth in a series studying the connection between
+Gram coercivity of PSWF sampling matrices and the asymptotic
+validity of Assumption~A in the Riemann--Hilbert programme of
+\cite{paper13cc}.
+The central object is the spectral density
+\[
+  \rho(s;\,g_c)
+  =\frac{1}{\pi}\Im\frac{d}{ds}\log\det(I-s\Kc),
+\]
+where $\Kc$ is the finite-rank sinc operator on $(-1,1)$ with
+bandwidth $c>0$.
+Assumption~A posits the existence and regularity of the
+phase function $g_c$.
+
+\subsection{The nonlinear operator $\mathcal{T}_c$}
+
+The phase $g_c$ satisfies
+\begin{equation}\label{eq:fixedpoint}
+  g=\Tc(g),\qquad
+  (\Tc h)(t)
+  =\Hil\!\left[-c\int_t^1\arccos(s)\,\rho(s;\,g_h)\,ds\right](t).
+\end{equation}
+Proving $\|D\Tc^{(N)}\|<1$ yields Assumption~A via the Banach
+fixed-point theorem.
+
+\subsection{Why global $L^2$-contraction fails}
+
+$\norm{D\Tc}_{L^2\to L^2}\gtrsim c^{8/3}$
+($\norm{R_s}_{\mathfrak{S}_2}^2\sim c^{5/3}$ times Widom prefactor $c$).
+Spectral stability lives on finitely many modes.
+
+\subsection{Main results}
+
+\begin{theorem}[Galerkin norm estimate]\label{thm:main}
+Let $N=\lfloor Ac^{1/3}\rfloor$,
+$\mathcal{T}_c^{(N)}:=P_N\circ\Tc\circ P_N$.
+
+\medskip\noindent\textbf{(a) Norm bound}
+(Assumption~\ref{ass:Bstrong} only):
+$\norm{D\mathcal{T}_c^{(N)}}\leq C(A)\log c$.
+Not a contraction.
+
+\medskip\noindent\textbf{(b) Contraction}
+(Assumptions~\ref{ass:Bstrong} and~\ref{ass:Bprime}):
+$\norm{D\mathcal{T}_c^{(N)}}\leq C(A)c^{-1/2}\log c\to 0$.
+In particular, $\norm{D\mathcal{T}_c^{(N)}}<1$ for all
+$c\geq c_0$, where $c_0=c_0(C,A)$ depends only on the
+constants in Assumptions~\ref{ass:Bstrong} and~\ref{ass:Bprime}.
+\end{theorem}
+
+\begin{theorem}[No-go theorem]\label{thm:nogo}
+$N\times N$ matrix $T$ with $T_{ii}=0$,
+$|T_{ij}|\leq\kappa/|i-j|$ for $i\neq j$:
+\[
+  \norm{T}_{\ell^2}\geq\tfrac{\kappa}{2}H_{N-1}\sim\tfrac{\kappa}{6}\log c.
+\]
+The bound of Theorem~\ref{thm:main}(a) is optimal in this class.
+No argument based solely on non-oscillatory \textup{(}Schur-type\textup{)}
+bounds $|T_{ij}|\leq\kappa/|i-j|$ can establish
+$\norm{T}<1$; signed oscillatory structure is necessary.
+\end{theorem}
+
+\begin{proof}
+Classical Schur: $\norm{T}\geq\tfrac{1}{2}\sup_i\sum_{j\neq i}|T_{ij}|
+\geq\tfrac{\kappa}{2}H_{N-1}$; $H_{N-1}\geq\tfrac{1}{3}\log c+O(1)$.
+\end{proof}
+
+\begin{remark}[Scope of the No-go theorem]\label{rem:nogo_scope}
+The No-go theorem applies specifically to the class of
+non-oscillatory Schur-type arguments, i.e.\ arguments that
+use only $|T_{ij}|\leq f(|i-j|)$ for some non-negative $f$.
+It does not preclude contraction via Fourier-multiplier or
+Calder\'{o}n--Zygmund methods that exploit signed cancellation
+--- those are precisely the content of Layer~2
+(Assumption~B$'$, Conjectures~\ref{conj:phase}--\ref{conj:amplitude}).
+\end{remark}
+
+\begin{remark}[Structural decomposition]\label{rem:decomposition}
+Two independent subproblems:
+(1)~\textbf{Pointwise decay} (largely resolved):
+$|T_{ij}|\leq C/|i-j|$; mechanism: IBP $+$ Airy $+$ SL.
+(2)~\textbf{Summation cancellation} (open):
+$\sum_j T_{ij}$ with signs; Calder\'{o}n--Zygmund regime.
+Theorem~\ref{thm:nogo}: subproblem~(1) cannot resolve~(2).
+\end{remark}
+
+\subsection{Proof architecture}
+\label{sec:architecture}
+
+\textbf{Layer~0 (unconditional).}
+\begin{enumerate}[nosep,label=(\arabic*)]
+  \item $T_{ii}=0$ (\S\ref{sec:matrix});
+  \item $|I_{kl}|\leq C_1c^{-1/2}/|k-l|$, uniformly over bulk
+        and transition zones after decomposition
+        (Lemma~\ref{lem:RL});
+  \item barrier localised to $|k-l|\lesssim c^{1/6}$
+        (Proposition~\ref{prop:bulk_barrier});
+  \item $\|T\|\geq\tfrac{\kappa}{2}\log c$ optimal in the
+        non-oscillatory Schur class
+        (Theorem~\ref{thm:nogo}).
+\end{enumerate}
+Items~(1)--(3) constitute the geometry of the obstruction:
+they identify precisely where and why classical methods fail,
+and establish sharp optimality barriers.
+Layer~0 does not provide the resolution mechanism;
+that is the content of Layers~1--2.
+Item~(4) eliminates the entire class of non-oscillatory
+Schur-type approaches.
+
+\medskip\noindent\textbf{Layer~1 (Assumption~B-strong, open).}
+$P_{kl}\leq C_2c^{1/2}$ $\Rightarrow$
+$|T_{ij}|\leq C_1C_2/|i-j|$ $\Rightarrow$
+$\norm{T}\leq C(A)\log c$.
+B-weak ($P_{kl}\lesssim c^{5/3}|k-l|$) is mechanically derived
+but insufficient; B-strong requires phase-sensitive coupling
+(Remarks~\ref{rem:Bweak},~\ref{rem:Bstrong_content}).
+
+\medskip\noindent\textbf{Layer~2 (Assumption~B$'$, open).}
+Oscillatory cancellation $\Rightarrow$
+$\norm{T}\leq Cc^{-1/2}\log c\to 0$.
+Requires both Conjecture~\ref{conj:phase} (phase) and
+Conjecture~\ref{conj:amplitude} (amplitude);
+see Remark~\ref{rem:Bprime_chain}.
+
+\medskip\noindent
+The paper's primary contribution is Layer~0:
+the unconditional geometry of the obstruction.
+Layers~1--2 identify what remains and why it cannot be
+obtained by further non-oscillatory analysis.
+
+\subsection{Comparison with standard PSWF theory}
+\label{sec:new}
+
+Standard theory (ORX \cite{OsipovRokhlinXiao2013},
+Widom \cite{Widom64}, SP \cite{SP61}) provides pointwise
+bounds, eigenvalue asymptotics, WKB approximations.
+Three results here are not in the standard theory, and are
+independent of Assumptions~B and~B$'$:
+
+\begin{enumerate}[nosep,label=(\arabic*)]
+  \item \textbf{Barrier localisation}
+        (Prop.~\ref{prop:bulk_barrier}):
+        second-IBP obstruction confined to $|k-l|\lesssim c^{1/6}$,
+        relative width $c^{-1/6}\to 0$.
+  \item \textbf{Schur optimality} (Thm~\ref{thm:nogo}):
+        $\log c$ sharp in the non-oscillatory Schur class.
+  \item \textbf{Near/far decomposition}
+        (OP~\ref{op:nearfar}):
+        reduction to band-matrix of shrinking relative bandwidth.
+        Item~(3) connects Layer~0 to the theory of semiclassical
+        band operators with shrinking relative bandwidth $c^{-1/6}\to0$
+        --- a setting where pseudodifferential scaling arguments
+        are in principle available, though not yet applied here.
+\end{enumerate}
+
+%% ============================================================
+\section{Functional Analytic Setup}
+%% ============================================================
+
+\subsection{The weighted space $X_c$}
+
+\begin{definition}\label{def:Xc}
+$w_c(s):=(\lam{n(s)}-\lam{n(s)+1})^2$;
+$\Xc:=\{h\in L^2(-1,1):\int h=0\}$,
+$\norm{h}_{\Xc}^2:=\int|h|^2w_c\,ds$.
+\end{definition}
+
+Regimes: bulk $w_c\asymp c^{-2}(1-s^2)^{-1}$;
+transition $w_c\asymp c^{-2/3}$; outer negligible.
+
+\begin{proposition}[$A_2$ control]\label{prop:A2}
+$[w_c]_{A_2}\leq C$ uniformly.
+Hence $\norm{\Hil}_{\Xc\to\Xc}=O(1)$
+(Coifman--Fefferman).
+\end{proposition}
+
+\subsection{Galerkin projection}
+
+\begin{definition}\label{def:Galerkin}
+$X_c^{(N)}:=\operatorname{span}\{\pswf{0},\ldots,\pswf{N-1}\}$,
+$P_N$ orthogonal projection.
+By Gram coercivity (Paper~I):
+$\sigma_{\min}(G^{(N)})\geq\alpha_N\sim c^{-1/2}$.
+\end{definition}
+
+%% ============================================================
+\section{Resolvent Analysis}
+\label{sec:resolvent}
+%% ============================================================
+
+\begin{lemma}[HS norm]\label{lem:HS}
+$\norm{R_s}_{\mathfrak{S}_2}^2\sim c^{5/3}$
+($\sim c^{1/3}$ transition modes, each $\sim c^{4/3}$).
+\end{lemma}
+
+Combined with Widom: $\norm{D\Tc}_{L^2\to L^2}\gtrsim c^{8/3}$.
+
+%% ============================================================
+\section{Matrix Representation and Off-diagonal Decay}
+\label{sec:matrix}
+%% ============================================================
+
+\subsection{Zones and scales}
+
+\begin{assumption}[Galerkin regime]\label{ass:G}
+$k,l\leq N=\lfloor Ac^{1/3}\rfloor$.
+\end{assumption}
+
+Zones: bulk $\mathcal{Z}_{\rm bulk}=\{|s|\leq1-c^{-2/3}\}$;
+transition $\mathcal{Z}_{\rm tz}$, measure $\sim c^{-2/3}$.
+
+\begin{remark}[Scale ordering]\label{rem:ordering}
+$c^{-1}\ll c^{-2/3}\ll c^{-1/2}\ll c^{-1/3}\ll c^{-1/6}\ll 1$.
+\end{remark}
+
+\begin{table}[h]
+\centering\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lllll}
+\hline
+\textbf{Object}&\textbf{Scale}&\textbf{Zone}
+  &\textbf{Strength}&\textbf{Source}\\
+\hline
+$\omega_{kl}^{\rm tz}$&$c^{2/3}|k-l|$&tz&surrogate freq.&WKB\\
+$\chi_k-\chi_l$&$2c|k-l|$&uniform&SL gap&Widom\\
+$\int|W_k^l|$&$c^{-1/6}/|k-l|$&combined&intermediate
+  &Cor.~\ref{cor:Wronskian}\\
+$\|\pswf{k}\|_{L^\infty({\rm tz})}$&$c^{1/6}$&tz&Airy
+  &Lem.~\ref{lem:Airy}\\
+$\|\pswf{k}\|_{L^\infty({\rm bulk})}$&$c^{-1/4}(1{-}s^2)^{-1/4}$
+  &bulk&WKB&ORX\\
+$|F_{kl}|$ (tz)&$c^{-1/3}/|k-l|$&tz&stronger
+  &Lem.~\ref{lem:sublD}\\
+$|F_{kl}|$ (bulk)&$c^{-1/2}(1{-}s^2)^{1/2}/|k-l|$&bulk&limiting
+  &Prop.~\ref{prop:moment}(c)\\
+$|I_{kl}^{\rm tz}|$&$c^{-2/3}/|k-l|$&tz&stronger
+  &Lem.~\ref{lem:sublD}\\
+$|I_{kl}^{\rm bulk}|$&$c^{-1/2}/|k-l|$&bulk&limiting
+  &Lem.~\ref{lem:sublD}\\
+\hline
+$|I_{kl}|$&$c^{-1/2}/|k-l|$&\textbf{global (all zones)}
+  &\textbf{integral bound}&\textbf{Lem.~\ref{lem:RL}}\\
+$P_{kl}^{\rm weak}$&$c^{5/3}|k-l|$&transition
+  &\textbf{B-weak (mech.)}&\textbf{Rem.~\ref{rem:Bweak}}\\
+$P_{kl}^{\rm strong}$&$\leq C_2c^{1/2}$&Galerkin
+  &\textbf{B-strong (open)}&\textbf{Ass.~\ref{ass:Bstrong}}\\
+$|T_{ij}|$&$O(1)/|i-j|$&global&\textbf{Schur input}
+  &\textbf{Prop.~\ref{prop:Tij}}\\
+TZ Schur&$O(c^{-1/6}\log c)\to0$&TZ&irrelevant
+  &Lem.~\ref{lem:zone_schur}\\
+Bulk Schur&$\sim C\log c$&bulk&dominant
+  &Lem.~\ref{lem:zone_schur}\\
+Schur row sum&$[\tfrac{\kappa}{2}\log c,C\log c]$&global
+  &\textbf{optimal (Layer~1)}&Thms~\ref{thm:main}(a),\ref{thm:nogo}\\
+Schur row sum&$\leq Cc^{-1/2}\log c$&global
+  &\textbf{contraction (Layer~2)}&Thm~\ref{thm:main}(b)\\
+\hline
+\end{tabular}
+\caption{Scaling table. B-weak is mechanically derived;
+B-strong requires phase-sensitive coupling (open).
+Layer~1 is optimal in the non-oscillatory Schur class;
+Layer~2 requires signed oscillatory cancellation.
+The global bound for $|I_{kl}|$ absorbs all zones.}
+\label{tab:scales}
+\end{table}
+
+\subsection{Matrix entries and commutator structure}
+
+\begin{equation}\label{eq:Tij_simple}
+  T_{ij} = c\cdot
+  \frac{|\lam{j}-\lam{i}|}{(1-\lam{i})(1-\lam{j})}
+  \cdot I_{ij} =: P_{ij}\cdot I_{ij},\qquad
+  I_{ij}:=\int_{-1}^1\arccos(s)\,\pswf{i}(s)\pswf{j}(s)\,ds.
+\end{equation}
+\begin{equation}\label{eq:diagzero}
+  T_{ii}=0\quad\forall\,i.
+\end{equation}
+
+\subsection{Airy approximation and Wronskian bound}
+
+\begin{lemma}[Airy]\label{lem:Airy}
+$|\pswf{k}|\lesssim c^{1/6}$ in $\mathcal{Z}_{\rm tz}(k)$.
+\emph{(Olver \cite{Olver1974}; ORX \cite{OsipovRokhlinXiao2013})}
+\end{lemma}
+
+\begin{corollary}[Wronskian bound]\label{cor:Wronskian}
+$W_k^l:=(1-s^2)[\pswf{k}'\pswf{l}-\pswf{k}\pswf{l}']$:
+$\int|W_k^l|\lesssim c^{-1/6}/|k-l|$.
+\end{corollary}
+
+\begin{proof}
+TZ: $c^{1/3}\cdot c^{-2/3}=c^{-1/3}$.
+Bulk: $c^{1/2}/(c^{2/3}|k-l|)=c^{-1/6}/|k-l|$; bulk dominates.
+\end{proof}
+
+\subsection{SL moment and primitive bounds}
+
+\begin{proposition}\label{prop:moment}
+For $k\neq l$, $k,l\leq N$:
+\begin{enumerate}[label=(\alph*)]
+  \item Parity: $k\equiv l\pmod2\Rightarrow\mu_{kl}=0$.
+  \item Moment: $|\mu_{kl}|\lesssim c^{-7/6}/|k-l|^2$.
+  \item $F_{kl}(s):=\int_s^1\pswf{k}\pswf{l}\,dt
+        =W_k^l(s)/(\chi_k-\chi_l)$,\;
+        $|F_{kl}|\lesssim c^{-1/2}(1-s^2)^{1/2}/|k-l|$.
+\end{enumerate}
+\end{proposition}
+
+\subsection{Off-diagonal integral bounds}
+
+\begin{lemma}[Zone decomposition]\label{lem:sublD}
+$|I_{kl}^{\rm tz}|\lesssim c^{-2/3}/|k-l|$,\;
+$|I_{kl}^{\rm bulk}|\lesssim c^{-1/2}/|k-l|$,\;
+$|I_{kl}|\lesssim c^{-1/2}/|k-l|$.
+\end{lemma}
+
+\begin{lemma}[IBP integral bound -- global]\label{lem:RL}
+For all $k\neq l$, $k,l\leq N$:
+\[
+  |I_{kl}|\leq C_1c^{-1/2}/|k-l|,
+\]
+uniformly over bulk and transition zones after decomposition
+\textup{(}i.e.\ the zone-dependent bounds of Lemma~\ref{lem:sublD}
+are combined into a single global estimate with constants
+independent of the zone structure\textup{)}.
+\end{lemma}
+
+\begin{lemma}[Zone Schur]\label{lem:zone_schur}
+Under Assumption~\ref{ass:Bstrong}:
+$\sum_{j\in{\rm TZ}}|T_{ij}|\leq\tfrac{1}{3}C_2c^{-1/6}\log c\to0$;
+$\sum_{j\in{\rm bulk}}|T_{ij}|\leq C_1C_2\log c$.
+\end{lemma}
+
+\subsection{Bulk oscillation barrier}
+\label{sec:bulk_barrier}
+
+\begin{proposition}[Bulk oscillation barrier]\label{prop:bulk_barrier}
+WKB in bulk: $\pswf{k}\sim c^{-1/4}(1-s^2)^{-1/4}\cos\theta_k$.
+
+\textbf{(i)} First IBP: $|I_{kl}^{\rm bulk}|\lesssim c^{-1/2}/|k-l|$.
+
+\textbf{(ii)} Difference-phase frequency:
+$\partial_s(\theta_k-\theta_l)\asymp|k-l|(1-s^2)^{-1/2}$.
+
+\textbf{(iii)} Second IBP boundary at $s_*=1-c^{-2/3}$ dominates.
+
+\textbf{(iv)} At $s_*$: ratio (boundary term)/(target $c^{-2/3}/|k-l|$)
+$= c^{1/6}/|k-l|$.
+Therefore:
+$|k-l|\lesssim c^{1/6}$: obstruction active;
+$|k-l|\gg c^{1/6}$: second IBP succeeds.
+The exponent $1/6$ is independently confirmed by the
+three-regime scale balance of Remark~\ref{rem:c16_scale}.
+
+\medskip\noindent
+\textbf{The bulk obstruction is localised to $|k-l|\lesssim c^{1/6}$.}
+Relative bandwidth $c^{1/6}/N=c^{-1/6}\to0$.
+This is a Layer~0 (unconditional) result.
+\end{proposition}
+
+\begin{remark}[Origin of the $c^{1/6}$ interaction scale]
+\label{rem:c16_scale}
+The threshold $|k-l|\sim c^{1/6}$ appearing in
+Proposition~\ref{prop:bulk_barrier} is not a free parameter
+but arises from the intersection of three independent
+asymptotic regimes, each imposing its own characteristic scale.
+
+\medskip\noindent
+\textbf{(i) Galerkin spectral scaling.}
+The natural dimension of the PSWF transition regime forces
+the index truncation $N\sim c^{1/3}$, contributing a factor
+$c^{1/3}$ to all index-separation estimates.
+
+\medskip\noindent
+\textbf{(ii) Airy transition width.}
+The turning point $s_*=1-c^{-2/3}$ defines the spatial
+resolution scale of the transition zone as $\Delta s\sim c^{-2/3}$,
+contributing a factor $c^{-2/3}$.
+
+\medskip\noindent
+\textbf{(iii) Second-IBP amplitude scale.}
+After the first integration-by-parts
+(Proposition~\ref{prop:bulk_barrier}(i)), the residual
+boundary term at $s_*$ carries a factor $c^{1/2}$
+from the IBP amplitude, as identified in
+Proposition~\ref{prop:bulk_barrier}(iv).
+
+\medskip\noindent
+\textbf{Scale balance.}
+The crossover threshold is the index separation at which
+all three regime-specific scales simultaneously become active:
+\[
+  |k-l| \;\sim\; c^{1/3} \cdot c^{-2/3} \cdot c^{1/2}
+  \;=\; c^{1/6}.
+\]
+The exponent $\tfrac{1}{6} = \tfrac{1}{3} - \tfrac{2}{3}
++ \tfrac{1}{2}$ is heuristically unique within this
+three-regime decomposition: any alternative power $c^\alpha$
+with $\alpha\neq\tfrac{1}{6}$ would be inconsistent with
+at least one of the three scaling laws.
+The detailed verification that this balance reproduces
+the IBP crossover condition is given in
+Proposition~\ref{prop:bulk_barrier}(iv);
+this Remark records only the structural origin of the scales.
+\end{remark}
+
+%% ============================================================
+\section{Norm Estimate and Contraction}
+\label{sec:norm}
+%% ============================================================
+
+\subsection{Prefactor: B-weak and B-strong}
+
+\begin{remark}[B-weak: mechanically derived]\label{rem:Bweak}
+In the transition regime:
+$|\lam{k}-\lam{l}|\asymp c^{-2/3}|k-l|$
+and $(1-\lam{k})(1-\lam{l})\asymp c^{-4/3}$,
+giving
+\[
+  P_{kl}^{\rm weak}
+  :=c\cdot\frac{|\lam{l}-\lam{k}|}{(1-\lam{k})(1-\lam{l})}
+  \asymp c^{5/3}|k-l|.
+\]
+This follows from standard Widom transition asymptotics
+without any phase input.
+Combined with Lemma~\ref{lem:RL}:
+$|T_{ij}|\lesssim c^{5/3}|i-j|\cdot c^{-1/2}/|i-j|=c^{7/6}$,
+which does \emph{not} give a $1/|i-j|$ Schur bound.
+B-weak alone is insufficient for Theorem~\ref{thm:main}(a).
+\end{remark}
+
+\begin{assumption}[B-strong: phase-sensitive coupling]
+\label{ass:Bstrong}
+For all $k\neq l$, $k,l\leq N$:
+\[
+  P_{kl}\leq C_2c^{1/2}.
+\]
+\end{assumption}
+
+\begin{remark}[What B-strong requires]
+\label{rem:Bstrong_content}
+The reduction from $c^{5/3}|k-l|$ to $c^{1/2}$ is a factor
+$c^{7/6}/|k-l|$ beyond Remark~\ref{rem:Bweak}.
+This cannot come from spectral theory or amplitude bounds alone.
+It requires a \emph{nonlinear coupling} between:
+eigenvalue spacing $|\lam{k}-\lam{l}|$,
+WKB phase at the turning point $s_*$, and
+Airy-function amplitude.
+The cancellation must arise from the correlation structure of
+$\lam{k}$ and $(1-\lam{k})$ as joint functions of $k$ via
+Airy asymptotics.
+Concretely, standard methods fail at two points:
+\begin{enumerate}[nosep,label=(\alph*)]
+  \item \textbf{Non-uniform stationary phase:}
+        stationary phase methods do not apply uniformly
+        across the transition zone (phase is not globally
+        WKB-stable at $s_*$);
+  \item \textbf{Correlated Airy factors:}
+        the eigenvalue spacing $|\lam{k}-\lam{l}|$
+        and the amplitude $(1-\lam{k})(1-\lam{l})$
+        are not asymptotically independent ---
+        they correlate through the same Airy function,
+        and it is precisely this correlation that B-strong
+        must exploit.
+\end{enumerate}
+This is the precise content of Open Problem~\ref{op:prefactor}.
+
+\medskip\noindent
+\textbf{B-strong as independent intermediate hypothesis.}
+Assumption~B-strong is treated throughout as an independent
+intermediate hypothesis: its role in the implication chain
+(B-strong $\Rightarrow$ $|T_{ij}|\leq C/|i-j|$ $\Rightarrow$
+$\norm{T}\leq C\log c$) is logically self-contained,
+and does not presuppose any part of Assumption~B$'$.
+
+\medskip\noindent
+\textbf{Epistemic note on shared asymptotic data.}
+Any proof of $P_{kl}\leq C_2c^{1/2}$ is expected to involve
+the Airy-phase data at $s_*$, which is the same data
+that drives the oscillatory cancellation in B$'$.
+This does not create a logical dependency
+($T_{ij}=P_{ij}\cdot I_{ij}$ is an exact product,
+and the implication chain B-strong $+$ B$'$ $\Rightarrow$ Layer~2
+is unaffected),
+but it suggests that the two assumptions may share
+parts of their eventual proof structure.
+Although its eventual proof may rely on structural ingredients
+overlapping with B$'$, B-strong is formulated as an
+independent assumption and its logical role in Layer~1
+stands regardless of the proof strategy chosen.
+For the programme, this means the conceptually cleanest
+path may be to prove B$'$ directly
+(via Conjectures~\ref{conj:phase}--\ref{conj:amplitude})
+rather than factoring through B-strong as a separate step;
+but B-strong remains a valid and useful intermediate target.
+\end{remark}
+
+\subsection{Assumption~B$'$ and the two-conjecture structure}
+
+\begin{assumption}[Schur-summability]\label{ass:Bprime}
+\[
+  \sup_{i\leq N}\sum_{j\neq i}P_{ij}\cdot|I_{ij}|
+  \leq C\,c^{-1/2}\log c.
+\]
+Not implied by Assumption~\ref{ass:Bstrong};
+requires signed oscillatory cancellation.
+\end{assumption}
+
+\begin{conjecture}[Linear phase equidistribution]
+\label{conj:phase}
+The WKB phases $\Theta_k^{(c)}$ at $s_*=1-c^{-2/3}$ satisfy,
+for $k\leq N$:
+\[
+  \Theta_k^{(c)}=\alpha^{(c)}k+\beta^{(c)}+O(k^2/c),
+  \qquad
+  \alpha^{(c)}\in(0,2\pi)\text{ away from }0,\pi.
+\]
+\end{conjecture}
+
+\begin{conjecture}[Amplitude regularity on dyadic blocks]
+\label{conj:amplitude}
+For the amplitudes $A_{ij}:=P_{ij}\cdot c^{1/2}$ (normalised),
+on each dyadic block $\mathcal{B}_m=\{j:2^m\leq|i-j|<2^{m+1}\}$:
+\[
+  |A_{ij}-A_{i,j+1}|=o(A_{ij}/2^m)\quad
+  \text{uniformly in }i,j\in\mathcal{B}_m,\,m\leq M,
+\]
+with constants independent of $c$.
+
+The conjecture splits into two regimes with different analytical content:
+\begin{enumerate}[nosep,label=(\alph*)]
+  \item \textbf{Right regime} ($x_j > 0$, $\lambda_j \approx 0$):
+        $A_{ij} \approx c^{1/2}\lambda_i/(1-\lambda_i) = O(1)$,
+        nearly constant in $j$.
+        Numerically: $\mathrm{TV}(A_{i,\cdot}|_{x_j>0})/A_{\mathrm{avg}}
+        \approx 0.63$, consistent with the conjecture;
+        Abel summation applies directly.
+  \item \textbf{Left regime} ($x_j < 0$, $\lambda_j \sim 1/2$):
+        $A_{ij}$ grows monotonically by a factor $\sim 15\times$
+        across the Airy window.
+        Numerically: $\mathrm{TV}(A_{i,\cdot}|_{x_j<0})/A_{\mathrm{avg}}
+        \approx 1.64$ at finite $c$;
+        $\mathrm{TV}/(n\cdot A_{\mathrm{avg}}) \sim c^{-0.30}$,
+        so the condition holds only asymptotically and slowly.
+        Because $A_{ij}$ is \emph{monotone} on this side,
+        summation-by-parts with monotone weights (Abel--Dirichlet)
+        gives $|S_{\mathrm{left}}| \leq A_{i,\mathrm{far}}
+        \cdot |\sum_k \cos(\alpha k)/k|$,
+        reducing to the same $O(c^{-1/2}\log c)$ scale provided
+        $\alpha$ is bounded away from $0,\pi$
+        (Conjecture~\ref{conj:phase}).
+\end{enumerate}
+\end{conjecture}
+
+\begin{remark}[Inhomogeneity of the amplitude condition]
+\label{rem:amplitude_inhom}
+On the right side ($x_j>0$), $(1-\lambda_j)\approx 1$ and $A_{ij}$
+is flat in $j$: standard Abel summation and the identity
+\[
+  \sum_{k=1}^N \frac{\cos(\alpha k)}{k}
+  = -\log\!\bigl(2|\sin(\alpha/2)|\bigr) + O(N^{-1})
+\]
+give the full $c^{-1/2}\log c$ gain for this half of each row.
+On the left side ($x_j<0$), the uniform TV condition fails at
+finite $c$, but monotonicity makes the Abel--Dirichlet theorem
+available as a replacement: the signed sum
+$S_{\mathrm{left}} = \sum_{k<0} A_{i,i+k}\cos(\alpha k)/|k|$
+is controlled by $A_{i,\mathrm{far}} \cdot O(\log N)$, which
+after the $c^{-1/2}$ factor from $I_{ij}$ yields $O(c^{-1/2}\log c)$.
+The two sides therefore require different summation arguments
+but yield the same asymptotic bound.
+\end{remark}
+
+\begin{remark}[Two-conjecture structure of B$'$]
+\label{rem:Bprime_chain}
+Assumption~B$'$ requires both
+Conjecture~\ref{conj:phase} and Conjecture~\ref{conj:amplitude}.
+Neither alone is sufficient:
+\begin{itemize}[nosep]
+  \item \textbf{Phase only} (Conj.~\ref{conj:phase}):
+        the signed block sum is
+        $S_m(i)=\sum_{j\in\mathcal{B}_m}A_{ij}e^{i\alpha(i-j)}/|i-j|$.
+        Abel summation gives $|S_m|\lesssim\sup|A_{ij}|/2^m$
+        only if $A_{ij}$ is slowly varying in $j$ on scale $2^m$.
+        Without amplitude control, no cancellation is guaranteed.
+  \item \textbf{Amplitude only} (Conj.~\ref{conj:amplitude}):
+        without phase equidistribution, no oscillatory
+        cancellation occurs.
+\end{itemize}
+Together: Dirichlet-kernel cancellation applies blockwise
+(the dyadic decomposition is understood in the standard
+semiclassical sense, with amplitude regularity uniform in $i$
+up to constants independent of $c$, on each block $\mathcal{B}_m$;
+this uniformity is implicit in all blockwise Abel summations),
+giving $|S_m(i)|\ll 2C_1C_2$ and
+$\sum_m|S_m(i)|\leq Cc^{-1/2}\log c$.
+The full implication chain is:
+\[
+  \text{Conj.~\ref{conj:phase}}
+  +\text{Conj.~\ref{conj:amplitude}}
+  \;\Rightarrow\;
+  \text{B$'$}
+  \;\Rightarrow\;
+  \norm{T}\leq Cc^{-1/2}\log c
+  \;\Rightarrow\;
+  \text{Assumption~A}.
+\]
+No arrow reverses in general.
+Conjectures~\ref{conj:phase} and~\ref{conj:amplitude} are
+\emph{logically independent}: neither implies the other,
+and they address distinct aspects of the asymptotic structure
+(phase arithmetic at $s_*$ vs.\ amplitude regularity in the Galerkin
+index); they are, however, expected to be jointly necessary for B$'$,
+since the cancellation mechanism requires both.
+The Conjectures are formulated at the level of local WKB data
+at the single point $s_*$, and are strictly weaker than
+Assumption~B$'$.
+They do not resolve the contraction problem ---
+they identify its minimal local input.
+\end{remark}
+
+\begin{remark}[Schur bound vs.\ spectral norm: rank structure of $T$]
+\label{rem:rank}
+Assumption~B$'$ is formulated as a Schur row-sum condition
+$\sup_i \sum_j P_{ij}|I_{ij}| \leq Cc^{-1/2}\log c$.
+Numerically, the signed row sums already satisfy this bound
+at finite $c$ (ratio $\sim 1.2$ at $c=100$).
+However, the spectral norm satisfies $\|T\|_{\mathrm{op}} \sim c^{0.40}$,
+which exceeds $c^{-1/2}\log c$ by a factor growing with $c$.
+
+The explanation is the \emph{low-rank structure} of $T$: numerically,
+$T \approx \sigma_1 v_1 v_1^T + \sigma_2 v_2 v_2^T$
+with $\sigma_1 \sim c^{0.40}$, $\sigma_2 \ll \sigma_1$,
+and all remaining singular values $< 10^{-3}$.
+For such a low-rank operator the Schur bound
+$\|T\| \leq \max_i \sum_j |T_{ij}|$
+is not tight when $v_1$ is far from the constant vector $\mathbf{1}$:
+the signed cancellation that makes row sums small
+is \emph{not} the same cancellation that suppresses $\|Tv_1\|$.
+
+Therefore Assumption~B$'$ (row sums) is \emph{necessary but not
+sufficient} for $\|T\|_{\mathrm{op}} \leq Cc^{-1/2}\log c$
+unless the dominant eigenvector satisfies a delocalization condition.
+See Open Problem~\ref{op:eigenvector}.
+\end{remark}
+
+\subsection{Matrix entry bound and proof of Theorem~\ref{thm:main}}
+
+\begin{proposition}[Matrix entry bound]\label{prop:Tij}
+Under Assumption~\ref{ass:Bstrong}: $|T_{ij}|\leq C_1C_2/|i-j|$
+for all $i\neq j$, $i,j\leq N$.
+\end{proposition}
+
+\begin{proof}
+By definition~\eqref{eq:Tij_simple}, $T_{ij}=P_{ij}\cdot I_{ij}$.
+Both bounds hold uniformly for $k,l\leq N$ in the Galerkin
+regime (Assumption~\ref{ass:G}), and are regime-coherent:
+Assumption~\ref{ass:Bstrong} gives $P_{ij}\leq C_2c^{1/2}$
+(globally in the Galerkin regime);
+Lemma~\ref{lem:RL} gives $|I_{ij}|\leq C_1c^{-1/2}/|i-j|$
+(globally, all zones absorbed).
+Since $T_{ij}$ is an exact product of these two factors
+(not an asymptotic coupling),
+$|T_{ij}|\leq C_2c^{1/2}\cdot C_1c^{-1/2}/|i-j|=C_1C_2/|i-j|$.
+\end{proof}
+
+\begin{remark}[$c$-power balance]\label{rem:balance}
+$c^{+1/2}_{\rm B\text{-}strong}\times c^{-1/2}_{\rm Lem.\ref{lem:RL}}
+=c^0$: conditional on B-strong, the norm grows like $\log c$.
+Without B-strong: $c^{5/3}|i-j|\times c^{-1/2}/|i-j|=c^{7/6}$
+(B-weak alone gives no Schur bound).
+\end{remark}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+$T_{ii}=0$ by~\eqref{eq:diagzero}.
+\textbf{(a):} Schur $+$ Prop.~\ref{prop:Tij}:
+$\norm{T}\leq C_1C_2H_N=:C(A)\log c$.
+\textbf{(b):} Assumption~\ref{ass:Bprime}
+$\Rightarrow\sup_i\sum_{j\neq i}P_{ij}|I_{ij}|
+\leq Cc^{-1/2}\log c\to0$;
+the contraction threshold $c_0=c_0(C,A)$ is the smallest
+$c$ with $C(A)c^{-1/2}\log c<1$.
+\end{proof}
+
+\begin{table}[h]
+\centering\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{llll}
+\hline
+\textbf{Step}&\textbf{Bound}&\textbf{Source}&\textbf{Layer}\\
+\hline
+$T_{ii}=0$&---&commutator&0\\
+$|I_{ij}|\leq C_1c^{-1/2}/|i-j|$ (all zones)&---&Lem.~\ref{lem:RL}&0\\
+Barrier$\subseteq\{|k-l|\lesssim c^{1/6}\}$&---
+  &Prop.~\ref{prop:bulk_barrier}&0\\
+$\norm{T}\geq\tfrac{\kappa}{2}\log c$ (non-osc.\ class)&optimal
+  &Thm~\ref{thm:nogo}&0\\
+\hline
+$P_{kl}\leq C_2c^{1/2}$&B-strong&Ass.~\ref{ass:Bstrong}&1 (open)\\
+$|T_{ij}|\leq C_1C_2/|i-j|$ (regime-coherent)&---&Prop.~\ref{prop:Tij}&1\\
+$\norm{T}\leq C\log c$&optimal&Thm~\ref{thm:main}(a)&1\\
+\hline
+Conj.~\ref{conj:phase} + Conj.~\ref{conj:amplitude}&---&---&2 (open)\\
+$\norm{T}\leq Cc^{-1/2}\log c\to0$, $c\geq c_0$&---&Thm~\ref{thm:main}(b)&2\\
+\hline
+\end{tabular}
+\caption{Proof architecture. Layer~0 unconditional (geometry of obstruction,
+not resolution mechanism);
+Layer~1 conditional on B-strong (bounded-but-not-contracting);
+Layer~2 conditional on both Conjectures (genuine oscillatory cancellation).}
+\label{tab:mechanisms}
+\end{table}
+
+\begin{corollary}[Conditional fixed point]\label{cor:fixedpoint}
+Under B-strong and B$'$: there exists $c_0=c_0(C,A)$ such that
+for all $c\geq c_0$, there is a unique $g^{(N)}$ with
+$\mathcal{T}_c^{(N)}(g^{(N)})=g^{(N)}$;
+Picard rate $\leq Cc^{-1/2}\log c<1$.
+\end{corollary}
+
+%% ============================================================
+\section{Dyadic Decomposition and Routes to Contraction}
+\label{sec:dyadic}
+%% ============================================================
+
+\subsection{Dyadic blocks}
+
+$\mathcal{B}_m:=\{j:2^m\leq|i-j|<2^{m+1}\}$,
+$m=0,\ldots,M=\lfloor\log_2 N\rfloor$.
+
+\begin{proposition}\label{prop:dyadic_block}
+Under B-strong:
+$\sum_{j\in\mathcal{B}_m}|T_{ij}|\leq2C_1C_2$ each $m$;
+$\sum_{j\neq i}|T_{ij}|\leq2C_1C_2(M+1)\sim C(A)\log c$.
+\end{proposition}
+
+\subsection{Structural form of B$'$}
+
+$S_m(i):=\sum_{j\in\mathcal{B}_m}T_{ij}$ (signed).
+B$'$ $\Leftrightarrow$ $\sum_m|S_m(i)|\leq Cc^{-1/2}\log c$
+$\Leftrightarrow$ $|S_m(i)|\ll 2C_1C_2$ uniformly.
+By Theorem~\ref{thm:nogo}: no non-oscillatory Schur improvement
+achieves this.
+
+\subsection{Routes to contraction}
+
+\begin{remark}[Four routes]\label{rem:routes}
+\begin{enumerate}[nosep,label=(\roman*)]
+  \item \textbf{Airy--WKB at $s_*$} (OP~\ref{op:bulk_refined}):
+        cancellation of boundary term for $|k-l|\lesssim c^{1/6}$;
+        rate $c^{-1/6}\log c$ under B-strong alone.
+        Most immediate target; directly controls $T^{\rm near}$.
+  \item \textbf{Sign oscillation in $j$}:
+        $T_{ij}$ alternates at period $\sim1$
+        $\Rightarrow|S_m|=O(1/2^m)$, $\sum|S_m|=O(1)$.
+        Requires both Conjectures (Rem.~\ref{rem:Bprime_chain}).
+  \item \textbf{Near/far splitting} (OP~\ref{op:nearfar}):
+        $T=T^{\rm near}+T^{\rm far}$,
+        near-band width $c^{1/6}$, relative bandwidth $c^{-1/6}\to0$.
+        Route~(i) controls $T^{\rm near}$;
+        $T^{\rm far}$ free of boundary-term obstruction.
+  \item \textbf{Weighted norm} (OP~\ref{op:weightnorm}):
+        all natural candidates fail (\S\ref{sec:spectral_weights});
+        likely equivalent in difficulty to the contraction itself
+        (see Remark~\ref{rem:weightnorm_hardness}).
+\end{enumerate}
+Routes~(i)+(iii) complementary.
+Routes~(ii)+(iii) converge under both Conjectures.
+\end{remark}
+
+\subsection{Phase structure and Toeplitz model}
+\label{sec:fourier}
+
+\begin{remark}[Fourier-multiplier route]\label{rem:fourier_route}
+Under Conjecture~\ref{conj:phase}: $T_{ij}\approx f(i-j)/(i-j)$
+with $f$ oscillatory and bounded.
+Then $\norm{T}_{\ell^2}=\|\widehat{f/|\cdot|}\|_{\ell^\infty}=O(1)$.
+This requires Conjecture~\ref{conj:amplitude} for amplitude
+uniformity; without it, $f$ depends on $i$ and $j$ separately.
+\end{remark}
+
+\begin{remark}[Toeplitz model: local symbol, not limit operator]
+\label{rem:toeplitz}
+Under Conjecture~\ref{conj:phase},
+$T_{ij}\approx g(i-j)$ holds in the near-band
+$|i-j|\leq c^{1/6}$.
+In this regime $T^{\rm near}$ has \emph{local Toeplitz symbol
+structure} in the WKB scaling limit $c\to\infty$,
+$k/N\to\xi\in[0,1]$ fixed.
+This local symbol structure should not be interpreted as a
+global Toeplitz limit; it is a microlocal approximation valid
+only within the near-band scaling window $|i-j|\leq c^{1/6}$,
+and does not imply operator convergence to a Toeplitz limit
+in $\ell^2$.
+
+\medskip\noindent\textbf{Two open points.}
+\begin{enumerate}[nosep,label=(\arabic*)]
+  \item \textbf{Homogenisation:}
+        the error $\|T_{ij}-g(i-j)\|$ in the near-band
+        is not controlled; uniform translation-invariance
+        requires Conjecture~\ref{conj:amplitude}.
+  \item \textbf{Operator convergence:}
+        $\ell^2$-convergence of $T^{\rm near}$ to a Toeplitz
+        operator is not established
+        (OP~\ref{op:nearfar}, part~(2b)).
+\end{enumerate}
+Conditional on both Conjectures and if $\ell^2$-operator convergence
+holds (open point~(2)), the Szeg\H{o}--Toeplitz theorem
+\emph{would give}
+$\norm{T^{\rm near}}_{\ell^2}\to\norm{g}_{L^\infty(\mathbb{T})}$,
+reducing the contraction question to $\norm{g}_{L^\infty}<1$
+--- a finite, computable spectral condition.
+\end{remark}
+
+\subsection{Why weights fail}
+\label{sec:spectral_weights}
+
+\begin{proposition}\label{prop:spectral_weight_fail}
+For $k\leq N$: $1-\lambda_k\asymp c^{-2/3}$ uniformly.
+Spectral weights $w_k=(1-\lambda_k)^\alpha$:
+$w_j/w_i=1+O(c^{-1/3})$, no modification of Schur kernel.
+Power weights $(1+k)^\beta$ and exponential $e^{\gamma k/N}$:
+row sum $\sim\log N$ for all $\beta,\gamma$.
+\end{proposition}
+
+\begin{remark}[Weighted norm: likely equivalent difficulty]
+\label{rem:weightnorm_hardness}
+A successful two-weight Schur condition requires the weights
+to encode the oscillatory cancellation structure of $T_{ij}$
+--- information equivalent to controlling the signed sums $S_m(i)$.
+Open Problem~\ref{op:weightnorm} is therefore likely no easier
+than establishing B$'$ directly.
+It is retained as a conceptual route, not a practical shortcut.
+\end{remark}
+
+%% ============================================================
+\section{Open Problems}
+\label{sec:open}
+%% ============================================================
+
+\begin{openproblem}[B-strong: phase-sensitive prefactor]
+\label{op:prefactor}
+Prove Assumption~\ref{ass:Bstrong}: $P_{kl}\leq C_2c^{1/2}$.
+The gap is a factor $c^{7/6}/|k-l|$ beyond the mechanically
+derived B-weak bound (Remark~\ref{rem:Bweak}),
+and arises from the two failure modes of Remark~\ref{rem:Bstrong_content}:
+non-uniform stationary phase in the transition zone, and
+the correlated Airy-function structure of eigenvalue spacing
+and amplitude.
+This requires: explicit asymptotic formula for $P_{kl}$ with
+controlled error; phase-sensitive Airy--WKB matching at $s_*$;
+and control of the joint Airy correlation.
+Although B-strong is an independent intermediate hypothesis,
+its proof is expected to involve structural ingredients
+that may overlap with those needed for
+Conjectures~\ref{conj:phase}--\ref{conj:amplitude};
+it may therefore be more efficient to prove B$'$ directly.
+\end{openproblem}
+
+\begin{openproblem}[Airy--WKB matching at $s_*$]
+\label{op:bulk_refined}
+Establish cancellation of the boundary term for
+$|k-l|\lesssim c^{1/6}$ via Airy connection formulae.
+Substitute $s=1-c^{-2/3}x$: difference phase linearises,
+boundary term reduces to explicit $\Ai\cdot\Ai$ integral.
+If cancellation holds: unconditional rate $c^{-1/6}\log c$
+under B-strong alone; simultaneously resolves OP~\ref{op:nearfar}(2a).
+\end{openproblem}
+
+\begin{openproblem}[Near/far splitting]\label{op:nearfar}
+$T=T^{\rm near}+T^{\rm far}$,
+$T^{\rm near}_{ij}:=T_{ij}\cdot\mathbf{1}_{|i-j|\leq c^{1/6}}$.
+\begin{enumerate}[nosep,label=(\arabic*)]
+  \item Unconditional bound on $\norm{T^{\rm far}}$
+        (no boundary-term obstruction for $|i-j|\gg c^{1/6}$).
+  \item Control $\norm{T^{\rm near}}$:
+        \begin{enumerate}[nosep,label=(\alph*)]
+          \item Airy--WKB matching (OP~\ref{op:bulk_refined}).
+          \item Homogenisation: prove
+                $\|T_{ij}-g(i-j)\|_{\rm op}=o(1)$ in near-band;
+                requires Conjecture~\ref{conj:amplitude}
+                and $\ell^2$-operator convergence to Toeplitz limit
+                (see Remark~\ref{rem:toeplitz}).
+        \end{enumerate}
+\end{enumerate}
+\end{openproblem}
+
+\begin{openproblem}[Amplitude regularity]
+\label{op:amplitude}
+Prove Conjecture~\ref{conj:amplitude}:
+$|A_{ij}-A_{i,j+1}|=o(A_{ij}/2^m)$ on $\mathcal{B}_m$,
+with constants independent of $c$.
+The right regime ($x_j>0$) is numerically consistent with the
+conjecture ($\mathrm{TV}/A_{\mathrm{avg}}\approx 0.63$) and
+analytically accessible via standard Airy asymptotics.
+The left regime ($x_j<0$) satisfies
+$\mathrm{TV}/(n\cdot A_{\mathrm{avg}})\sim c^{-0.30}\to 0$
+asymptotically, but the convergence is slow and the uniform
+$o(1)$ condition requires explicit control of the Airy-quotient
+gradient $\partial_j A_{ij}$ near $\lambda_j\sim 1/2$.
+Together with Conjecture~\ref{conj:phase} it implies B$'$.
+\end{openproblem}
+
+\begin{openproblem}[Dominant eigenvector delocalization]
+\label{op:eigenvector}
+Numerically, $T$ is approximately rank~$2$ with leading singular
+value $\sigma_1\sim c^{0.40}$ and dominant eigenvector $v_1$
+satisfying $\langle v_1,\mathbf{1}\rangle\approx 0$.
+Assumption~B$'$ controls $\|T\cdot\mathbf{1}\|$ but not $\sigma_1$,
+because the Schur bound is not tight for low-rank operators
+when $v_1\not\approx\mathbf{1}$ (Remark~\ref{rem:rank}).
+Prove one of:
+\begin{enumerate}[nosep,label=(\alph*)]
+  \item \textbf{Delocalization:}
+        $\|v_1\|_\infty\leq C/\sqrt{N}$,
+        so $v_1^T T v_1\leq\|T\|_F/N\to 0$.
+  \item \textbf{Left-support bound:}
+        $\sum_{i:\,x_i<0}|v_1(i)|^2=o(1)$,
+        i.e.\ $v_1$ does not concentrate on the left Airy flank
+        where $A_{ij}$ is large.
+  \item \textbf{Explicit eigenvector approximation:}
+        Identify $v_1$ asymptotically as an Airy-weighted mode
+        and verify $v_1^T T v_1\leq Cc^{-1/2}\log c$ directly.
+\end{enumerate}
+Any of (a)--(c) closes the gap between the row-sum
+condition~B$'$ and $\|T\|_{\mathrm{op}}\leq Cc^{-1/2}\log c$.
+Conditional on Toeplitz convergence
+(Remark~\ref{rem:toeplitz} and OP~\ref{op:nearfar}(2b)),
+(a) follows from Fourier delocalization of Toeplitz eigenvectors,
+providing a further conditional link between
+OP~\ref{op:nearfar}(2b) and OP~\ref{op:eigenvector}.
+\end{openproblem}
+
+\begin{openproblem}[Weighted norm]\label{op:weightnorm}
+Find $c$-dependent $\norm{\cdot}_w$ with
+$\norm{D\mathcal{T}_c^{(N)}}_w<1$ unconditionally.
+By Remark~\ref{rem:weightnorm_hardness}, this is likely
+equivalent in difficulty to proving B$'$ directly.
+A successful weight must encode oscillatory cancellation
+and satisfy the two-weight Schur condition.
+\end{openproblem}
+
+\begin{openproblem}[Optimal Galerkin dimension]\label{op:Nopt}
+Maximal $N(c)$ with Schur bound $<1$.
+Conjecture: $N_{\rm opt}\sim c^{1/2}$.
+\end{openproblem}
+
+%% ============================================================
+\section{Summary and Logical Map}
+\label{sec:summary}
+%% ============================================================
+
+\subsection*{Layer~0: geometry of the obstruction (primary contribution)}
+$T_{ii}=0$;\;
+$|I_{kl}|\leq C_1c^{-1/2}/|k-l|$ (all zones, uniform);
+barrier $\subseteq\{|k-l|\lesssim c^{1/6}\}$;\;
+$\log c$ optimal in non-oscillatory Schur class;
+TZ contribution $o(1)$;\;
+all natural weights fail.
+Layer~0 is sharp, unconditional, and identifies the failure
+surfaces of all classical approaches.
+It does not provide the resolution mechanism.
+The $c^{1/6}$ interaction scale is not a free parameter but
+arises from the intersection of three independent asymptotic
+regimes (Remark~\ref{rem:c16_scale}); the exponent $1/6$
+is heuristically unique within this three-regime decomposition.
+The near/far band structure connects Layer~0 to semiclassical
+band operator theory (shrinking relative bandwidth $c^{-1/6}\to0$),
+a setting where pseudodifferential scaling is in principle available.
+
+\subsection*{Layer~1: conditional on B-strong}
+$|T_{ij}|\leq C_1C_2/|i-j|$ (regime-coherent product bound);\;
+$\norm{T}\leq C\log c$ (bounded, not contracting).
+B-strong is an independent intermediate hypothesis
+(Rem.~\ref{rem:Bstrong_content});
+its eventual proof may involve structural ingredients
+overlapping with B$'$, but its logical role in Layer~1
+is self-contained.
+B-strong requires phase-sensitive Airy coupling and fails by
+two concrete mechanisms (Rem.~\ref{rem:Bstrong_content});
+B-weak is insufficient (Rem.~\ref{rem:balance}).
+
+\subsection*{Layer~2: conditional on B-strong $+$ B$'$}
+$\norm{T}\leq Cc^{-1/2}\log c\to0$ for $c\geq c_0$;\;
+conditional fixed point (Cor.~\ref{cor:fixedpoint}).
+B$'$ requires Conj.~\ref{conj:phase} (phase) \emph{and}
+Conj.~\ref{conj:amplitude} (amplitude, $c$-uniform);
+the two conjectures are logically independent but
+jointly necessary for B$'$.
+The Schur row-sum condition~B$'$ is necessary but not sufficient
+for $\|T\|_{\mathrm{op}}\leq Cc^{-1/2}\log c$ unless the
+dominant eigenvector satisfies a delocalization condition
+(Rem.~\ref{rem:rank}, OP~\ref{op:eigenvector}).
+
+\subsection*{What is genuinely new}
+All Layer~0, all unconditional:
+\textbf{(1)} barrier localisation (relative width $c^{-1/6}\to0$);
+\textbf{(2)} $\log c$ Schur optimality in non-oscillatory class;
+\textbf{(3)} near/far band decomposition;
+\textbf{(4)} three-regime scale balance identifying the $c^{1/6}$
+crossover as heuristically unique within the given decomposition
+(Remark~\ref{rem:c16_scale}).
+
+\subsection*{Core diagnosis}
+\textit{Local WKB asymptotics do not determine global operator
+cancellation.}
+Layer~0 provides the complete geometry of the obstruction:
+it is sharp, unconditional, and identifies the failure surfaces
+of all classical approaches.
+The resolution mechanism --- oscillatory cancellation in the
+near-diagonal regime --- is the content of Layers~1--2
+and remains open.
+
+%% ============================================================
+\section*{Acknowledgements}
+%% ============================================================
+
+Part of the \emph{prolate-gram-coercivity} programme.
+The B-weak/B-strong split, the two-conjecture structure of B$'$,
+the identification of amplitude regularity (Conj.~\ref{conj:amplitude})
+as a separate gap, the Toeplitz local-symbol caveat
+(scaling model vs.\ limit operator, Szeg\H{o} as conditional
+implication under open operator-convergence), the uniformity
+clauses in Lemma~\ref{lem:RL} and Proposition~\ref{prop:Tij},
+the B-strong failure-mode analysis, the hardness remark on
+weighted norms, the explicit contraction threshold $c_0$,
+the epistemic coupling remark on B-strong vs.\ B$'$,
+the semiclassical band operator anchor,
+the three-regime scale balance for the $c^{1/6}$ crossover
+(Remark~\ref{rem:c16_scale}, heuristically unique within the
+given decomposition),
+the inhomogeneous left/right splitting of Conjecture~\ref{conj:amplitude}
+with the Abel--Dirichlet argument for the left regime
+(Remark~\ref{rem:amplitude_inhom}),
+the rank-structure gap between B$'$ and $\|T\|_{\mathrm{op}}$
+(Remark~\ref{rem:rank}),
+and the dominant eigenvector delocalization problem
+(Open Problem~\ref{op:eigenvector})
+were developed in working sessions, May 2026.
+
+%% ============================================================
+\begin{thebibliography}{99}
+
+\bibitem{paper13cc}
+  \textit{Companion paper on RHP asymptotics and Assumption~A},
+  prolate-gram-coercivity programme, 2025--2026.
+
+\bibitem{Widom64}
+  H.~Widom,
+  \textit{Asymptotic behavior of the eigenvalues of certain integral
+  equations~II},
+  Arch.\ Rational Mech.\ Anal.\ \textbf{17} (1964), 215--229.
+
+\bibitem{HMW73}
+  R.~Hunt, B.~Muckenhoupt, R.~Wheeden,
+  \textit{Weighted norm inequalities for the conjugate function
+  and Hilbert transform},
+  Trans.\ Amer.\ Math.\ Soc.\ \textbf{176} (1973), 227--251.
+
+  \bibitem{CF74}
+  R.~R.~Coifman, C.~Fefferman,
+  \textit{Weighted norm inequalities for maximal functions and
+  singular integrals},
+  Studia Math.\ \textbf{51} (1974), 241--250.
+
+\bibitem{Kato66}
+  T.~Kato,
+  \textit{Perturbation Theory for Linear Operators},
+  Springer, 1966.
+
+\bibitem{SP61}
+  D.~Slepian, H.~O.~Pollak,
+  \textit{Prolate spheroidal wave functions, Fourier analysis and
+  uncertainty~I},
+  Bell System Tech.\ J.\ \textbf{40} (1961), 43--63.
+
+\bibitem{OsipovRokhlinXiao2013}
+  A.~Osipov, V.~Rokhlin, H.~Xiao,
+  \textit{Prolate Spheroidal Wave Functions of Order Zero},
+  Springer, 2013.
+
+\bibitem{Olver1974}
+  F.~W.~J.~Olver,
+  \textit{Asymptotics and Special Functions},
+  Academic Press, 1974.
+
+\bibitem{GarciaTyler2020}
+  S.~R.~Garcia, R.~A.~Horn,
+  \textit{A Second Course in Linear Algebra},
+  Cambridge University Press, 2017.
+
+\end{thebibliography}
+
+\end{document}

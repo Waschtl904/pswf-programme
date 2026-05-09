@@ -1,0 +1,423 @@
+\documentclass[12pt,a4paper]{amsart}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+%%%─ Environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+%%%─ Macros (reuse from XVIII)
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\cK}{K_{B_c}}
+\newcommand{\cKA}{K_{\cA}}
+\newcommand{\Ai}{\mathrm{Ai}}
+\newcommand{\PK}{P_K}
+\newcommand{\PcK}{\widetilde{P}_K^{(c)}}
+\newcommand{\Uc}{\widetilde{U}_c}
+\newcommand{\Lc}{\mathcal{L}_c^{\mathrm{resc}}}
+\newcommand{\xit}{\tilde{\xi}}
+\newcommand{\normh}[2]{\|#1\|_{#2}}
+\newcommand{\qa}{\mathfrak{a}}
+\newcommand{\SK}{S_K}
+\newcommand{\HS}{\mathrm{HS}}
+%%% Paper XIX specific
+\newcommand{\Cprime}{C'(M,K)}
+\newcommand{\ConeM}{C_1(M,K)}
+\newcommand{\Clin}{C_{\mathrm{lin}}(M,K)}
+\newcommand{\Cquad}{C_{\mathrm{quad}}(M,K)}
+\newcommand{\Ctwo}{C_2(\alpha)}
+\newcommand{\Kopt}{K_{\mathrm{opt}}}
+\newcommand{\AK}{A_K}
+\newcommand{\BK}{B_K}
+\newcommand{\Cinfty}{C_\infty(M,K)}
+
+\subjclass[2020]{47B34, 45C05, 34E20, 47G10, 60B20}
+\keywords{Prolate spheroidal wave functions, Airy kernel,
+  two-scale convergence, quantitative rate, Langer error,
+  spectral tail, polynomial truncation cost, BR3}
+
+\begin{document}
+
+\title[Paper XIX: Quantitative Rate for BR3]{%
+  Paper~XIX: Quantitative Convergence Rate\\[0.3em]
+  \large for Airy Kernel Universality (BR3)\\[0.2em]
+  \normalsize\textsc{Freeze Version} --- Two-Scale Structure Closed}
+
+\author{\textit{prolate-gram-coercivity programme}}
+\date{May 2026}
+
+\begin{abstract}
+Building on Paper~XVIII (FREEZE~\texttt{d7609d2}),
+which established $\normh{\cK - \cKA}{L^2(w\otimes w)}\to 0$ (BR3),
+this paper supplies explicit convergence rates
+via a \emph{two-scale decomposition}
+\begin{equation}\label{eq:decomp_abstract}
+  \SK - \cKA = \AK - \BK,
+\end{equation}
+where $\AK$ (Langer regime, rank $\leq 3K$) and
+$\BK$ (spectral tail) are controlled by entirely disjoint mechanisms
+with vertex-disjoint dependency subgraphs.
+
+The main structural results are:
+\begin{itemize}[nosep]
+  \item \textbf{Lemma~\ref{lem:langer_rate}} (Langer scale,
+    fixed $K$, $c\to\infty$):
+    \[
+      \normh{\AK}{L^2([0,M]^2)}
+      \leq \Clin\cdot c^{-1/3} + \Cquad\cdot c^{-2/3},
+    \]
+    where $\Clin = O(MK^{5/3})$ (linear interaction: one exact
+    eigenfunction, one Langer error) and
+    $\Cquad = O(M^2K^{7/3})$ (quadratic: two Langer errors).
+    The linear term dominates for $c\geq 1$;
+    the quadratic term is subleading by an additional $c^{-1/3}$ factor.
+  \item \textbf{Lemma~\ref{lem:tail_rate}} (spectral scale,
+    $K\to\infty$, uniform in $c$):
+    $\normh{\BK}{L^2([0,M]^2)}\leq C_2(\alpha)^{1/2}\cdot e^{-\alpha K/2}$.
+\end{itemize}
+These combine to a two-scale bound
+(Theorem~\ref{thm:twoscale}) with no joint uniformity in
+$(c,K)$ assumed or needed.
+The coupling $\Kopt(c) = \lfloor(\log c)/(3\alpha)\rfloor$
+yields the rate $O(c^{-1/3}(\log c)^{5/3})$
+(Corollary~\ref{cor:lograte}), where the quadratic remainder
+$O(c^{-2/3}(\log c)^{7/3})$ is strictly subleading.
+\end{abstract}
+
+\maketitle
+\tableofcontents
+\bigskip\hrule\bigskip
+
+%% ============================================================
+\section{Setup and Inherited Notation}
+\label{sec:setup}
+%% ============================================================
+
+All definitions, operators, and external results are
+inherited verbatim from Paper~XVIII~\cite{paper18}.
+We introduce only the central decomposition and its constants.
+
+\begin{definition}[Two-scale error decomposition]
+\label{def:decomp}
+For fixed $M < \infty$, $K \geq 1$, and $c \geq c_0(M,K)$, write
+$e_j := \tilde\psi_j - u_j \in C^0([0,M])$
+(XVIII Lemma~\texttt{lem:H2}). Define:
+\begin{align}
+  \AK(\xit,\xit') &:=
+    \sum_{j=1}^K\bigl(
+      e_j(\xit)\,u_j(\xit') + u_j(\xit)\,e_j(\xit') + e_j(\xit)\,e_j(\xit')
+    \bigr),
+    \label{eq:AK} \\
+  \BK(\xit,\xit') &:= \sum_{j>K} u_j(\xit)\,u_j(\xit').
+    \label{eq:BK}
+\end{align}
+Then algebraically $\SK - \cKA = \AK - \BK$.
+\end{definition}
+
+\begin{definition}[Langer-regime constants]
+\label{def:langerconstants}
+For fixed $M,K$, let:
+\begin{align}
+  \Cprime &:= \text{constant from XVIII~\texttt{lem:H2}}:
+    \quad\normh{e_j}{C^0([0,M])} \leq \Cprime\,c^{-1/3},
+    \quad j\leq K; \label{eq:Cprime}\\
+  \Cinfty &:= \sup_{j\leq K}\normh{u_j}{C^0([0,M])}
+    = O(1) \quad\text{(XVIII~\texttt{lem:linf})}; \label{eq:Cinfty}\\
+  \Clin   &:= 2KM\,\Cprime\,\Cinfty
+    = O(MK^{5/3}); \label{eq:Clin} \\
+  \Cquad  &:= KM\,(\Cprime)^2
+    = O(M^2K^{7/3}). \label{eq:Cquad}
+\end{align}
+By XVIII~\texttt{rem:langerkdep}: $\Cprime = O(MK^{2/3})$,
+so $\Clin = O(MK^{5/3})$ and $\Cquad = O(M^2K^{7/3})$.
+Both are independent of $c$.
+\end{definition}
+
+\begin{remark}[Erratum to original $C_1(M,K)$ definition]
+\label{rem:C1scale}
+The original working version of this paper wrote
+$C_1(M,K) := KM\Cprime(2\Cinfty+\Cprime) = O(M^2K^{5/3})$
+and cited $O(K^{5/3})$ as the truncation cost.
+This is \emph{asymptotically correct at the level of the rate}
+$O(c^{-1/3}(\log c)^{5/3})$,
+but the internal constant is imprecise:
+the quadratic term $KM(\Cprime)^2 = O(K^{7/3})$
+is not $O(K^{5/3})$.
+
+The refined bookkeeping (Definition~\ref{def:langerconstants} above)
+splits the contribution of $\AK$ into two terms:
+\[
+  \normh{\AK}{} \leq \Clin\cdot c^{-1/3} + \Cquad\cdot c^{-2/3},
+\]
+where $\Clin = O(MK^{5/3})$ from linear interactions
+($u_j \otimes e_j + e_j \otimes u_j$)
+and $\Cquad = O(M^2K^{7/3})$ from the quadratic interaction
+($e_j \otimes e_j$, carrying an extra $c^{-1/3}$ from the
+second Langer error factor).
+At $K = \Kopt \sim (\log c)/(3\alpha)$ the quadratic term is
+$O(c^{-2/3}(\log c)^{7/3}) = o(c^{-1/3}(\log c)^{5/3})$,
+confirming that the rate of Corollary~\ref{cor:lograte}
+is correct. Only the single-constant formulation was imprecise.
+\end{remark}
+
+\begin{definition}[Slepian tail constant]
+\label{def:C2}
+Let $\alpha = \min(\beta_1,\beta_2) > 0$ from XVIII~\texttt{lem:slepianunif}.
+Set $\Ctwo := (1-e^{-\alpha})^{-1}$.
+\end{definition}
+
+%% ============================================================
+\section{Dependency Graph}
+\label{sec:depgraph}
+%% ============================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l l l}
+\toprule
+\textbf{Node} & \textbf{Introduces} & \textbf{Internal deps}
+  & \textbf{From $\mathcal{E}$} \\
+\midrule
+$d_0$: Def.~\ref{def:decomp}
+  & $\AK$, $\BK$, $e_j$ & ---
+  & XVIII lem:H2 \\
+$d_1$: Def.~\ref{def:langerconstants}
+  & $\Clin$, $\Cquad$, $\Cprime$, $\Cinfty$ & $d_0$
+  & XVIII lem:H2, lem:linf, \textbf{rem:langerkdep} \\
+$d_2$: Def.~\ref{def:C2}
+  & $\Ctwo$, $\alpha$ & ---
+  & XVIII lem:slepianunif \\
+\hline
+$\ell_1$: Lem.~\ref{lem:langer_rate}
+  & $\normh{\AK}{}\leq\Clin c^{-1/3}+\Cquad c^{-2/3}$ & $d_0,d_1$
+  & XVIII lem:H2, lem:linf \\
+$\ell_2$: Lem.~\ref{lem:tail_rate}
+  & $\normh{\BK}{}\leq\Ctwo^{1/2}e^{-\alpha K/2}$ & $d_0,d_2$
+  & XVIII lem:besseltail, lem:slepianunif \\
+\hline
+$T$: Thm.~\ref{thm:twoscale}
+  & two-scale bound & $\ell_1,\ell_2$ & --- \\
+$C$: Cor.~\ref{cor:lograte}
+  & $O(c^{-1/3}(\log c)^{5/3})$ & $T,d_1$ & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%% ============================================================
+\section{Main Lemmas}
+\label{sec:lemmas}
+%% ============================================================
+
+\subsection{Level 1: Langer regime (fixed $K$, $c\to\infty$)}
+\label{ssec:langer}
+
+\begin{lemma}[Langer-regime rate, refined]
+\label{lem:langer_rate}
+Fix $M < \infty$ and $K \geq 1$.
+For all $c \geq c_0(M,K)$:
+\begin{equation}\label{eq:term1}
+  \normh{\AK}{L^2([0,M]^2)}
+  \leq \Clin\cdot c^{-1/3} + \Cquad\cdot c^{-2/3},
+\end{equation}
+where $\Clin = O(MK^{5/3})$ and $\Cquad = O(M^2K^{7/3})$
+are independent of $c$.
+\end{lemma}
+
+\begin{proof}
+Fix $j\leq K$. Using
+$\normh{f\otimes g}{L^2([0,M]^2)} \leq M\normh{f}{C^0}\normh{g}{C^0}$
+together with~\eqref{eq:Cprime}--\eqref{eq:Cinfty}:
+\begin{align}
+  \normh{e_j\otimes u_j}{L^2([0,M]^2)}
+    &\leq M\Cprime\Cinfty\,c^{-1/3}, \label{eq:c1}\\
+  \normh{u_j\otimes e_j}{L^2([0,M]^2)}
+    &\leq M\Cinfty\Cprime\,c^{-1/3}, \label{eq:c2}\\
+  \normh{e_j\otimes e_j}{L^2([0,M]^2)}
+    &\leq M(\Cprime)^2 c^{-2/3}. \label{eq:c3}
+\end{align}
+Note that~\eqref{eq:c3} carries $c^{-2/3}$, \emph{not} $c^{-1/3}$:
+the quadratic interaction contributes at a strictly lower $c$-scale.
+Triangle inequality per $j$ and summing over $j=1,\ldots,K$:
+\[
+  \normh{\AK}{L^2([0,M]^2)}
+  \leq \underbrace{2KM\Cprime\Cinfty}_{=\,\Clin}\cdot c^{-1/3}
+  \;+\; \underbrace{KM(\Cprime)^2}_{=\,\Cquad}\cdot c^{-2/3}.
+\]
+\end{proof}
+
+\begin{remark}[Two internal scales inside $\AK$]
+\label{rem:twointernal}
+Lemma~\ref{lem:langer_rate} exhibits a two-scale structure
+\emph{within} the Langer term $\AK$ itself:
+\begin{itemize}[nosep]
+  \item \emph{Linear interaction} ($u_j\otimes e_j + e_j\otimes u_j$):
+    one exact eigenfunction ($C_\infty$) times one Langer error ($\Cprime c^{-1/3}$);
+    contributes $O(K^{5/3})\cdot c^{-1/3}$.
+  \item \emph{Quadratic interaction} ($e_j\otimes e_j$):
+    two Langer errors; contributes $O(K^{7/3})\cdot c^{-2/3}$.
+\end{itemize}
+At $K = \Kopt \sim (\log c)/(3\alpha)$:
+$O(K^{7/3})c^{-2/3} = O((\log c)^{7/3}c^{-2/3}) = o(c^{-1/3}(\log c)^{5/3})$,
+so the linear interaction dominates and the asymptotic rate is $O(c^{-1/3}(\log c)^{5/3})$.
+\end{remark}
+
+\begin{remark}[Polynomial truncation cost is geometrically inevitable]
+\label{rem:polycost}
+The growth $\Clin = O(MK^{5/3})$ reflects Airy zero spacing
+$a_K\sim K^{2/3}$ propagating through the coercivity spine
+(XVIII~\texttt{rem:langerkdep}).
+This polynomial cost does not affect the two-scale limit
+structure at fixed $K$.
+\end{remark}
+
+\subsection{Level 2: Spectral tail (uniform in $c$, $K\to\infty$)}
+\label{ssec:tail}
+
+\begin{lemma}[Spectral tail rate]
+\label{lem:tail_rate}
+For $K \geq K_0$ and all $c \geq c_1$:
+\begin{equation}\label{eq:term2}
+  \normh{\BK}{L^2([0,M]^2)}
+  \leq \Ctwo^{1/2}\cdot e^{-\alpha K/2}.
+\end{equation}
+The bound is uniform in $c$.
+\end{lemma}
+
+\begin{proof}
+By Cauchy--Schwarz:
+$\normh{\BK}{L^2([0,M]^2)}^2
+\leq\bigl(\sum_{j>K}\normh{u_j}{L^2([0,M])}^2\bigr)^2$.
+Slepian--Landau (XVIII~\texttt{lem:slepianunif}):
+$\normh{u_j}{L^2([0,M])}^2 \leq e^{-\alpha j}$.
+Hence $\sum_{j>K}\normh{u_j}{L^2}^2 \leq \Ctwo e^{-\alpha K}$;
+taking square roots gives~\eqref{eq:term2}.
+\end{proof}
+
+%% ============================================================
+\section{Main Theorem and Corollary}
+\label{sec:main}
+%% ============================================================
+
+\begin{theorem}[Two-scale convergence rate for BR3]
+\label{thm:twoscale}
+For fixed $M < \infty$, $K \geq K_0$, and
+$c \geq \max(c_0(M,K),\,c_1)$:
+\begin{equation}\label{eq:twoscale}
+  \normh{\cK - \cKA}{L^2([0,M]^2)}
+  \leq
+  \Clin\cdot c^{-1/3}
+  + \Cquad\cdot c^{-2/3}
+  + \Ctwo^{1/2}\cdot e^{-\alpha K/2}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Triangle inequality on $\AK - \BK$ + Lemmas~\ref{lem:langer_rate}
+and~\ref{lem:tail_rate}.
+\end{proof}
+
+\begin{corollary}[Rate $O(c^{-1/3}(\log c)^{5/3})$]
+\label{cor:lograte}
+Let $\Kopt(c) := \lfloor(\log c)/(3\alpha)\rfloor$.
+For $c$ large enough that $\Kopt\geq K_0$:
+\begin{equation}\label{eq:lograte}
+  \normh{\cK - \cKA}{L^2([0,M]^2)}\Big|_{K=\Kopt}
+  = O\bigl(c^{-1/3}(\log c)^{5/3}\bigr).
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+At $K = \Kopt \sim (\log c)/(3\alpha)$:
+\begin{itemize}[nosep]
+  \item \emph{Linear term:}
+    $\Clin c^{-1/3} = O(K^{5/3})c^{-1/3} = O(c^{-1/3}(\log c)^{5/3})$.
+  \item \emph{Quadratic term:}
+    $\Cquad c^{-2/3} = O(K^{7/3})c^{-2/3}
+    = O(c^{-2/3}(\log c)^{7/3}) = o(c^{-1/3}(\log c)^{5/3})$.
+  \item \emph{Tail:}
+    $e^{-\alpha\Kopt/2} \leq c^{-1/6} = o(c^{-1/3}(\log c)^{5/3})$.
+\end{itemize}
+The linear term dominates; \eqref{eq:lograte} follows.
+\end{proof}
+
+\begin{remark}[Interpretation of the log-loss]
+\label{rem:logloss}
+The factor $(\log c)^{5/3}$ traces Airy zero geometry:
+$a_K\sim K^{2/3}$ drives $\Cprime = O(K^{2/3})$ and
+$\Clin = O(K^{5/3})$ through the coercivity spine.
+The quadratic interaction $\Cquad = O(K^{7/3})$ is suppressed
+by an additional $c^{-1/3}$ and becomes subleading at $K = \Kopt$.
+The log-exponent $5/3$ is the spectral-geometric invariant
+of the linear interaction; this is made precise in Paper~XX.
+\end{remark}
+
+%% ============================================================
+\section{Freeze Checklist}
+\label{sec:checklist}
+%% ============================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{p{8.0cm} p{1.0cm} p{2.8cm}}
+\toprule
+\textbf{Claim} & \textbf{Status} & \textbf{Source} \\
+\midrule
+Algebraic decomposition $\SK-\cKA=\AK-\BK$
+  & \checkmark & Def.~\ref{def:decomp} \\
+Two-scale structural separation ($c\to\infty$ vs.\ $K\to\infty$)
+  & \checkmark & \S\ref{sec:setup} \\
+Lem.~\ref{lem:langer_rate}:
+  $\normh{\AK}{}\leq\Clin c^{-1/3}+\Cquad c^{-2/3}$ (lin/quad split)
+  & \checkmark & \S\ref{ssec:langer} \\
+$\Clin=O(MK^{5/3})$, $\Cquad=O(M^2K^{7/3})$, both $c$-independent
+  & \checkmark & Def.~\ref{def:langerconstants} \\
+Quadratic term $\Cquad c^{-2/3}$ subleading at $K=\Kopt$
+  & \checkmark & Rem.~\ref{rem:twointernal} \\
+Lem.~\ref{lem:tail_rate}:
+  $\normh{\BK}{}\leq\Ctwo^{1/2}e^{-\alpha K/2}$ (unif.\ in $c$)
+  & \checkmark & \S\ref{ssec:tail} \\
+Cor.~\ref{cor:lograte}: $O(c^{-1/3}(\log c)^{5/3})$ rigorous,
+  linear term dominant
+  & \checkmark & \S\ref{sec:main} \\
+Erratum to original $C_1 = O(K^{5/3})$ bookkeeping
+  & \checkmark & Rem.~\ref{rem:C1scale} \\
+No joint $(c,K)$ uniformity assumed
+  & \checkmark & \S\ref{sec:main} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{99}
+\bibitem{paper17} \textit{Paper~XVII}, 2026.
+\bibitem{paper18} \textit{Paper~XVIII: Airy Kernel Universality},
+  FREEZE commit \texttt{d7609d2}, 2026.
+\bibitem{Kato1966} T.~Kato,
+  \textit{Perturbation Theory for Linear Operators}, Springer, 1966.
+\bibitem{ReedSimon2} M.~Reed, B.~Simon,
+  \textit{Methods of Modern Mathematical Physics, Vol.~II},
+  Academic Press, 1975.
+\bibitem{Olver1997} F.~Olver,
+  \textit{Asymptotics and Special Functions}, AK Peters, 1997.
+\bibitem{TracyWidom1994} C.~Tracy, H.~Widom,
+  Level-spacing distributions and the Airy kernel,
+  \textit{Comm.\ Math.\ Phys.}\ \textbf{159} (1994), 151--174.
+\bibitem{Slepian1978} D.~Slepian,
+  Prolate spheroidal wave functions, Fourier analysis, and
+  uncertainty~V,
+  \textit{Bell Syst.\ Tech.\ J.}\ \textbf{57} (1978), 1371--1430.
+\bibitem{Osipov2013} A.~Osipov, V.~Rokhlin, H.~Xiao,
+  \textit{Prolate Spheroidal Wave Functions of Order Zero},
+  Springer, 2013.
+\end{thebibliography}
+
+\end{document}

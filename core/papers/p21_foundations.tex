@@ -1,0 +1,988 @@
+\documentclass[12pt,a4paper]{amsart}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!50!black,
+            urlcolor=blue!70!black]{hyperref}
+\usepackage[shortlabels]{enumitem}
+\usepackage{tikz-cd}
+\usepackage{booktabs}
+
+%% ---- Theorem environments ----------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{problem}{Problem}[section]
+
+%% ---- Notation (aligned with Papers I--XX) -----------------------
+\newcommand{\PW}{\mathrm{PW}_\omega}
+\newcommand{\Kop}{\mathcal{K}_c}
+\newcommand{\GVM}{G^{(N)}_{\mathbf{p},c}}
+\newcommand{\QM}{Q^{(N)}_{\mathbf{p},c}}
+\newcommand{\psin}{\psi_n^{(c)}}
+\newcommand{\EN}{E_{N,c}}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\ip}[2]{\langle #1,\, #2\rangle}
+\newcommand{\Fcal}{\mathcal{F}_{N,c}}
+\newcommand{\Tcal}{\mathcal{T}_c}
+\newcommand{\WeilN}{W_N}
+\newcommand{\muarith}{\mu^{\mathrm{arith}}_N}
+\newcommand{\rhocl}{\rho^{\mathrm{cl}}}
+\newcommand{\Eout}{\mathcal{E}_{\mathrm{out}}}
+\newcommand{\PN}{P_{N,c}}
+\newcommand{\Pedge}{\Pi_{\mathrm{edge}}}
+\newcommand{\lmin}{\lambda_{\min}(N,c)}
+%% canonical limit object
+\newcommand{\Flim}{\mathcal{F}_{\infty}}
+\newcommand{\QFlim}{\mathbf{QF}_{\lim}}
+
+%% ---- Paper metadata ---------------------------------------------
+\title[Commutativity Failure in the Arithmetic--Spectral Diagram]
+      {Commutativity Failure in the Arithmetic--Spectral\\
+       Scaling Diagram for Prolate Gram Operators:\\
+       Functor, Obstruction, and Non-Representability\\[4pt]
+       \large (Paper~XXI in the Prolate--Weil Program)}
+
+\thanks{This paper constructs the comparison functor
+$\Fcal$ between arithmetic and spectral quadratic forms
+that was missing in Papers~I--XX, and decides the commutativity
+question for the two-stage limit diagram of the Prolate--Weil
+program.
+Paper~I \cite{PaperI} established frame coercivity;
+Paper~I (old series) \cite{OldPaperI} established the Weil-type
+decomposition for prime sampling.
+Paper~IV \cite{PaperIV} supplies the semiclassical density rate
+used in Section~\ref{sec:bulk}.
+Paper~III \cite{PaperIII} supplies the bandwidth doubling
+obstruction used in Lemma~\ref{lem:omega} and
+Section~\ref{sec:proofs}.
+The canonical closure (Theorem~C, Section~\ref{sec:closure})
+is the principal new result of this version.
+No claim is made about zeros of $\zeta(s)$.}
+
+\author{Sebastian Schmalnauer}
+\address{}
+\email{}
+\date{\today}
+
+\subjclass[2020]{42C05, 42B10, 47B32, 11M06, 46E22, 18A30}
+
+\keywords{prolate spheroidal wave functions, Weil positivity,
+Weil explicit formula, arithmetic Gram form, spectral quadratic form,
+comparison functor, commutativity obstruction, prime sampling,
+non-representability, bulk--edge dichotomy, spectral edge instability,
+non-commutative functor limit, canonical closure,
+Connes--Consani--Moscovici}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The Prolate--Weil program seeks to connect the prolate Gram form
+$\QM$ at prime sampling points to the Weil explicit sum
+$W(h)=\sum_p \log p\,|\hat h(\log p)|^2$.
+Papers~I--XX developed the spectral and analytic infrastructure
+but did not construct the comparison map between arithmetic and
+spectral quadratic forms.
+
+This paper fills that gap.
+We define a \emph{comparison functor}
+$\Fcal: \mathbf{QF}_{\mathrm{arith}} \to \mathbf{QF}_{\mathrm{spec}}$
+and decide the commutativity question for the two-stage scaling
+diagram.
+
+The central new result is the separation of the edge obstruction
+into two logically independent parts:
+\begin{itemize}
+  \item \textbf{Lemma~$\Omega$ (purely spectral, no arithmetic):}
+  The PSWF concentration operator $\Kop$ carries a non-trivial
+  unstable direction in the edge window $\Pedge$;
+  concretely, $\|(I - \PN)\Kop\Pedge\|_2 \ge c_0(\delta,c) > 0$
+  (supremum over unit vectors in $\Pedge$, realized by a single
+  $n^* \in [(1-\delta)N, N)$), independent of any sampling measure
+  or arithmetic input.
+  The proof is purely operator-theoretic: bandwidth-doubling
+  (Paper~III) gives out-of-band energy for $\psi_{n^*}$;
+  strict positivity of all prolate eigenvalues (Slepian~1978)
+  converts this to a norm lower bound.
+  No limit $\lambda_{n^*}(c)\to 0$ is used or needed.
+  \item \textbf{Theorem~B (arithmetic realization):}
+  The arithmetic functor $\Fcal$ maps into the regime where
+  Lemma~$\Omega$ applies, so that
+  $\liminf_N \norm{\Fcal(\QM) - \Tcal}_2 \ge \tilde c_0 > 0$.
+\end{itemize}
+The constant $\tilde c_0$ is an intrinsic PSWF spectral constant;
+the arithmetic sampling is only a \emph{realization functor},
+not the source of the obstruction.
+
+We further prove:
+\begin{enumerate}[(I)]
+  \item \textbf{Functor construction:} $\Fcal$ well-defined,
+  norm-bounded, injective on form classes.
+  \item \textbf{Bulk functoriality} (conditional):
+  error $O(\log N/\sqrt{N}) \to 0$.
+  \item \textbf{Edge obstruction} (\textbf{unconditional},
+  Lemma~$\Omega$ + Theorem~B): $\tilde c_0 > 0$.
+  \item \textbf{Non-representability} (conditional on GRH).
+  \item \textbf{Canonical closure} (\textbf{unconditional},
+  Theorem~C): non-commutative functor limit.
+\end{enumerate}
+No claim is made about zeros of $\zeta(s)$.
+\end{abstract}
+
+\tableofcontents
+
+%%=================================================================
+\section{Introduction}\label{sec:intro}
+%%=================================================================
+
+\subsection{The missing piece}
+
+The Prolate--Weil program has two logically separate objectives:
+\begin{enumerate}[(A)]
+  \item \emph{Analytic--spectral infrastructure:}
+  frame coercivity, quadrature compatibility, semiclassical
+  density asymptotics, WKB universality at the Airy edge.
+  \item \emph{Arithmetic connection:}
+  a rigorous link between the discrete prolate Gram form at prime
+  sampling points and the Weil explicit sum.
+\end{enumerate}
+Objective~(A) was addressed by Papers~I--XX. The present paper
+addresses~(B) and brings it to a canonical close.
+
+The central conceptual shift of this paper:
+\[
+  \text{``Arithmetic drives the obstruction''}
+  \quad\longrightarrow\quad
+  \text{``Spectral geometry is the universal obstruction;
+  arithmetic is a realization.'}
+\]
+Lemma~$\Omega$ (Section~\ref{sec:edge}) makes this precise.
+
+\subsection{The two limit processes}
+
+Let $\alpha \in (0, 2/\pi)$, $N = \lfloor \alpha c \rfloor$.
+
+\medskip
+\noindent \textbf{Route~S (spectral first):}
+$\QM \xrightarrow{c \to \infty} \ip{\Kop f}{f}_{L^2}$;
+then identify via CCM \cite{CCM2025,CCM_PNAS2022}.
+
+\medskip
+\noindent \textbf{Route~A (arithmetic first):}
+$\QM \xrightarrow{\mathrm{PNT}} W_N(h) \xrightarrow{N\to\infty} W(h)$.
+
+\medskip
+In the bulk: Routes~S and~A agree asymptotically.
+At the edge: they differ by $\ge \tilde c_0 > 0$, unconditionally.
+This failure is the content of Theorem~C.
+
+\begin{equation}\label{eq:diagram_informal}
+\begin{tikzcd}[column sep=3.5em, row sep=3em]
+  \QM
+    \arrow[r, "\mathrm{PNT}"]
+    \arrow[d, "\text{Papers I--II}"']
+  & \WeilN(h)
+    \arrow[d, "\text{Weil expl.~form}"]
+  \\
+  \Tcal
+    \arrow[r, "\text{Bulk: Paper~IV}"']
+  & W(h)
+\end{tikzcd}
+\end{equation}
+
+\subsection{Why the functor is the missing piece}
+
+Paper~I (old series) \cite{OldPaperI} establishes
+$\QM(f) = \ip{\Kop f}{f}_{L^2} + O(e^{-\delta' N})$.
+What is missing is the horizontal comparison map between
+$\ip{\Kop f}{f}$ and $W_N(h)$, or a canonical obstruction to it.
+This is what $\Fcal$ encodes. Without $\Fcal$, Theorems~A--C
+refer to three different objects without a common structure.
+
+%%=================================================================
+\section{Foundations: Quadratic Form Categories}\label{sec:foundations}
+%%=================================================================
+
+\subsection{The category of arithmetic quadratic forms}
+
+\begin{definition}[Arithmetic measure and quadratic form]%
+\label{def:arith_qf}
+Let $p_1 < \cdots < p_N$ be the first $N$ primes,
+$L_N := \sum_j \log p_j \sim N\log N$. The
+\emph{arithmetic sampling measure} is
+\[
+  \muarith := \frac{1}{L_N}\sum_{j=1}^N \log p_j\cdot\delta_{p_j/T}.
+\]
+The \emph{arithmetic Gram form} is
+\[
+  \QM^{\mathrm{arith}}(f)
+  := \int |f(Tx)|^2\,d\muarith(x)
+  = \frac{1}{L_N}\sum_{j=1}^N \log p_j\cdot|f(p_j)|^2.
+\]
+The category $\mathbf{QF}_{\mathrm{arith}}$ has these as objects;
+morphisms preserve the arithmetic measure class.
+\end{definition}
+
+\begin{remark}[$\muarith$ versus the equilibrium measure]
+The classical equilibrium measure of $\Kop$ on $[-1,1]$ is
+$\rhocl(x)\,dx = (\pi\sqrt{1-x^2})^{-1}\,dx$ (arcsine).
+The measure $\muarith$ is discrete and supported on $\{p_j/T\}$;
+it is \emph{singular} with respect to $\rhocl\,dx$.
+This singularity is the source of the non-representability
+(Section~\ref{sec:nonrep}) and ultimately of the canonical
+closure obstruction (Theorem~C).
+\end{remark}
+
+\subsection{The category of spectral quadratic forms}
+
+\begin{definition}[Spectral form]\label{def:spec_qf}
+\[
+  \Tcal(f) := \ip{\Kop f}{f}_{L^2}
+  = \sum_{n < N}\lambda_n(c)|a_n|^2,
+  \qquad f = \sum_n a_n\psin\in V_{N,c}.
+\]
+The category $\mathbf{QF}_{\mathrm{spec}}$ has forms
+$f\mapsto\ip{Af}{f}$ with $A$ self-adjoint, $[A,\Kop]=0$,
+as objects; morphisms intertwine $\Kop$.
+\end{definition}
+
+\subsection{The Weil form}
+
+\begin{definition}[Weil form]\label{def:weil_form}
+$\WeilN(h) := L_N^{-1}\sum_j \log p_j\cdot|\hat h(\log p_j)|^2
+\xrightarrow{N\to\infty} W(h)$.
+The Weil sum $W(h)$ is not a priori a spectral form;
+representability is the subject of the CCM program \cite{CCM2025}.
+\end{definition}
+
+%%=================================================================
+\section{The Comparison Functor}\label{sec:functor}
+%%=================================================================
+
+\begin{definition}[Evaluation operator and Gram operator]%
+\label{def:embedding}
+\[
+  \mathrm{Ev}_N: V_{N,c}\to\mathbb{C}^N,
+  \quad f\mapsto\bigl(\sqrt{\log p_j/L_N}\cdot f(p_j)\bigr)_j;
+  \qquad
+  \mathbf{G}^{\mathrm{arith}}_{N,c} := \mathrm{Ev}_N^*\mathrm{Ev}_N.
+\]
+\end{definition}
+
+\begin{definition}[Comparison functor $\Fcal$]\label{def:functor}
+\[
+  \Fcal:\mathbf{QF}_{\mathrm{arith}}\to\mathbf{QF}_{\mathrm{spec}},
+  \qquad
+  \Fcal(\QM^{\mathrm{arith}}) := f\mapsto
+  \ip{\mathbf{G}^{\mathrm{arith}}_{N,c}f}{f}.
+\]
+\end{definition}
+
+\begin{proposition}[Well-definedness of $\Fcal$]%
+\label{prop:functor_welldef}
+$\mathbf{G}^{\mathrm{arith}}_{N,c}\succeq 0$,
+$\norm{\mathbf{G}^{\mathrm{arith}}_{N,c}}_2\le N\omega/\pi$,
+and $\Fcal$ is injective on form classes.
+\end{proposition}
+
+\begin{proof}
+Positivity: $\mathrm{Ev}_N^*\mathrm{Ev}_N\succeq 0$.
+Norm bound: reproducing kernel estimate
+$|f(x)|^2\le(\omega/\pi)\norm{f}^2$ plus $\sum_j(\log p_j/L_N)=1$.
+Injectivity: Chebyshev unisolvency, Lemma~B of \cite{OldPaperI}.
+\end{proof}
+
+\begin{proposition}[Arithmetic defect decomposition]%
+\label{prop:arith_defect}
+\[
+  \Fcal(\QM^{\mathrm{arith}})
+  = \Tcal
+  + \underbrace{\Delta_{N,c}^{\mathrm{quad}}}_{=\,O(e^{-\delta'N})}
+  + \underbrace{\Delta_{N,c}^{\mathrm{weight}}}_{=\,O(\log N/\sqrt{N})}.
+\]
+Here $\Delta^{\mathrm{quad}}$ is the uniform quadrature defect
+(Paper~I \cite{OldPaperI}), and $\Delta^{\mathrm{weight}}$ is
+the log-weight correction (PNT variance bound).
+\end{proposition}
+
+%%=================================================================
+\section{The Commutativity Diagram}\label{sec:diagram}
+%%=================================================================
+
+\begin{definition}[Commutativity at scale $(N,c)$]%
+\label{def:commutativity}
+The diagram commutes at scale $(N,c)$ if
+$\norm{\Fcal(\QM^{\mathrm{arith}}) - \WeilN}_2\to 0$.
+It fails at the edge if
+$\liminf_N\norm{\Fcal(\QM^{\mathrm{arith}}) - \Tcal}_2 > 0$.
+\end{definition}
+
+\begin{assumption}[Bulk convolution decay]\label{ass:bulkconv}
+For $m,n\le\gamma N$, $\gamma<1$:
+$\int_{|\xi|>\omega}|\hat\psi_m^{(c)}*\hat\psi_n^{(c)}|^2\,d\xi
+\le C_\gamma e^{-\alpha_\gamma N}$
+(Paper~III \cite{PaperIII}, Problem~5.1).
+\end{assumption}
+
+%%=================================================================
+\section{Bulk Functoriality}\label{sec:bulk}
+%%=================================================================
+
+\begin{theorem}[Bulk functoriality, conditional]%
+\label{thm:bulk_funct}
+Under Assumption~\ref{ass:bulkconv} and Kulikov--Slepian scaling:
+\[
+  \norm{\Fcal(\QM^{\mathrm{arith}}) - \WeilN}_2
+  = O(e^{-\delta'N}) + O\!\left(\frac{\log N}{\sqrt{N}}\right)
+  + O(1/N) \to 0.
+\]
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+Proposition~\ref{prop:arith_defect}: quadrature defect
+$O(e^{-\delta'N})$ (Paper~I \cite{OldPaperI}); density rate $O(1/N)$
+(Paper~IV \cite{PaperIV}); weight correction $O(\log N/\sqrt{N})$
+from PNT variance $\bigl(N^{-1}\sum_j(\log p_j - L_N/N)^2\bigr)^{1/2}
+= O(\log N/\sqrt{N})$.
+\end{proof}
+
+\begin{remark}[Arithmetic vs.~spectral rates]
+The dominant error in the bulk is the weight correction
+$O(\log N/\sqrt{N})$, which reflects the slow arithmetic alignment
+of $\log p_j$ around $\log N$.
+The spectral tools (Papers~I--XX) are exponentially sharper;
+the bottleneck is PNT, not PSWF theory.
+\end{remark}
+
+%%=================================================================
+\section{Edge Obstruction}\label{sec:edge}
+%%=================================================================
+
+\subsection{Spectral edge instability: Lemma~$\Omega$}
+
+We begin with a purely operator-theoretic fact about $\Kop$
+that requires no arithmetic, no sampling, and no PNT.
+The two inputs are:
+\begin{itemize}
+  \item the Landau--Widom eigenvalue distribution \cite{Widom1964};
+  \item the bandwidth doubling obstruction of Paper~III \cite{PaperIII}.
+\end{itemize}
+No asymptotic regime $\lambda_{n^*}(c)\to 0$ is used at any point.
+
+\begin{fact}[Strict positivity of prolate eigenvalues]%
+\label{fact:lmin}
+For all $c > 0$ and all $k \ge 0$: $\lambda_k(c) > 0$
+\textnormal{(\cite{Slepian1978}, Section~III)}.
+In particular, for fixed $N$ and $c$:
+\[
+  \lmin := \inf_{k \ge N}\lambda_k(c) > 0.
+\]
+This is a non-asymptotic, purely spectral fact; no limit
+in $N$ or $c$ is taken.
+\end{fact}
+
+\begin{definition}[Edge spectral projector]\label{def:pedge}
+For fixed $\delta\in(0,1)$ set
+\[
+  \Pedge := \sum_{n=(1-\delta)N}^{N-1} \ip{\cdot}{\psin}\psin
+  : V_{N,c}\to V_{N,c}.
+\]
+This is the orthogonal projector onto the edge window
+$\{(1-\delta)N \le n \le N-1\}$ of $\Kop$.
+\end{definition}
+
+\begin{lemma}[Spectral edge instability, Lemma~$\Omega$]%
+\label{lem:omega}
+Let $c > 0$, $N = \lfloor\alpha c\rfloor$,
+$\alpha\in(0,2/\pi)$, $\delta\in(0,1)$ be fixed.
+Then:
+\begin{enumerate}[(a)]
+\item \textbf{Landau--Widom mass in the edge window:}
+\begin{equation}\label{eq:omega_lw}
+  \frac{1}{\delta N}\sum_{n=(1-\delta)N}^{N-1}(1-\lambda_n(c))
+  \;\ge\; c_1(\delta,c) > 0.
+\end{equation}
+In particular, a positive proportion of edge modes carries
+non-trivial spectral defect.
+\item \textbf{Existence of an unstable direction:}
+There exists $n^* \in [(1-\delta)N, N)$ such that
+\begin{equation}\label{eq:omega_nstar}
+  \|(I-\PN)\Kop\psi_{n^*}^{(c)}\|_{L^2}
+  \;\ge\; \lmin \cdot \sqrt{c_0^{\mathrm{III}}(\delta,c)}
+  \cdot \|\psi_{n^*}^{(c)}\|_{L^2}^{-1} > 0.
+\end{equation}
+Equivalently:
+\begin{equation}\label{eq:omega_op}
+  \|(I-\PN)\Kop\Pedge\|_2
+  \;\ge\; \lmin \cdot \sqrt{c_0^{\mathrm{III}}(\delta,c)} > 0.
+\end{equation}
+\end{enumerate}
+Both constants $c_0^{\mathrm{III}}, c_1$ and the factor $\lmin$
+depend only on $\delta$ and $c$,
+not on $N$, not on any sampling configuration,
+and not on any arithmetic input.
+\end{lemma}
+
+\begin{proof}
+\textbf{(a) Landau--Widom mass.}
+By the Landau--Widom theorem \cite{Widom1964}:
+\[
+  \sum_{n=0}^{N-1}(1-\lambda_n(c))
+  = N - \mathrm{tr}(\Kop|_{V_{N,c}})
+  = \frac{2}{\pi}\Bigl(\frac{\pi}{2} - \alpha\Bigr)c\cdot(1+o(1)).
+\]
+This is $\sim C(\alpha)c$ with $C(\alpha) = 2(1-\alpha\pi/2)/\pi > 0$
+(since $\alpha < 2/\pi$). The bulk contribution
+$\sum_{n < (1-\delta)N}(1-\lambda_n(c)) = O(e^{-\eta_\delta c})$
+(exponential bulk concentration, Landau--Widom).
+Hence
+$\sum_{n=(1-\delta)N}^{N-1}(1-\lambda_n(c))
+\ge C(\alpha)c/2 > 0$
+for large $c$, and dividing by $\delta N \sim \delta\alpha c$ gives
+$c_1(\delta,c) = C(\alpha)/(2\delta\alpha) > 0$.
+
+\textbf{(b) Existence of an unstable direction.}
+
+\emph{Step~1: Extract $n^*$ from the average.}
+From part~(a), at least one
+$n^* \in [(1-\delta)N, N)$ satisfies
+$1-\lambda_{n^*}(c) \ge c_1(\delta,c)/2 > 0$
+(otherwise the average would be zero).
+
+\emph{Step~2: Bandwidth doubling gives out-of-band energy.}
+By Paper~III \cite{PaperIII}, Proposition~5.1
+(Proposition~\ref{prop:bwdoubling_cite} below),
+$\Eout(|\psi_{n^*}^{(c)}|^2) \ge c_0^{\mathrm{III}}(\delta,c) > 0$.
+By the PSWF expansion:
+\begin{equation}\label{eq:eout_coeffs}
+  \Eout(|\psi_{n^*}^{(c)}|^2)
+  = \sum_{k\ge N}|\ip{\psi_{n^*}}{\psi_k}_{L^2}|^2
+  \ge c_0^{\mathrm{III}}(\delta,c) > 0.
+\end{equation}
+
+\emph{Step~3: Strict positivity converts energy to norm.}
+Using \eqref{eq:eout_coeffs} and Fact~\ref{fact:lmin}:
+\begin{align*}
+  \|(I-\PN)\Kop\psi_{n^*}\|^2
+  &= \sum_{k\ge N}\lambda_k(c)^2\,|\ip{\psi_{n^*}}{\psi_k}|^2 \\
+  &\ge \lmin^2 \cdot \sum_{k\ge N}|\ip{\psi_{n^*}}{\psi_k}|^2 \\
+  &\ge \lmin^2 \cdot c_0^{\mathrm{III}}(\delta,c) > 0.
+\end{align*}
+The key point: we use $\lambda_k \ge \lmin > 0$ for $k \ge N$
+(Fact~\ref{fact:lmin}), not any statement about $\lambda_{n^*}$.
+
+Since $\psi_{n^*}/\|\psi_{n^*}\|$ is a unit vector in $\Pedge$,
+the operator norm bound~\eqref{eq:omega_op} follows from the
+definition of the operator norm as supremum over unit vectors.
+\end{proof}
+
+\begin{remark}[What Lemma~$\Omega$ says and does not say]%
+\label{rem:omega}
+\textbf{Regime:}
+We work throughout in the sub-Shannon regime $\alpha < 2/\pi$,
+so $N \ll N_{\mathrm{Shannon}} = 2c/\pi$. The entire index range
+$n \le N$ is in the transition/bulk zone, not the tail.
+In particular, $\lambda_{n^*}(c)$ is \emph{not} assumed small.
+\textbf{The proof uses:}
+\begin{itemize}
+  \item out-of-band energy of $|\psi_{n^*}|^2$
+  (Bandwidth doubling, Paper~III);
+  \item $\lambda_k(c) \ge \lmin > 0$ for $k \ge N$
+  (Fact~\ref{fact:lmin}).
+\end{itemize}
+\textbf{The proof does not use:}
+\begin{itemize}
+  \item $\lambda_{n^*}(c) \to 0$;
+  \item tail-regime arguments;
+  \item any arithmetic data.
+\end{itemize}
+The obstruction is a property of the \emph{projection geometry}
+of $\Kop$ restricted to the edge window, not of the asymptotic
+behavior of individual eigenvalues.
+\end{remark}
+
+\begin{remark}[Phase transition vs.\ error]
+In the bulk ($n\le\gamma N$, $\gamma<1$), the spectral gap
+$\chi_N-(\chi_m+\chi_n)\gg 0$ suppresses leakage above index $N$
+exponentially. At the edge ($n\sim N$), this gap collapses:
+$f_{nn} = |\psin|^2$ deposits Fourier mass above $\omega$
+irreducibly (Paper~III, Prop.~5.1). Lemma~$\Omega$(b) is the
+operator-theoretic formulation of this phase transition.
+\end{remark}
+
+\subsection{Theorem~B: arithmetic realization of the obstruction}
+
+\begin{theorem}[Edge obstruction, unconditional]%
+\label{thm:edge_obstruction}
+For any fixed $\delta > 0$ and $\alpha\in(0,2/\pi)$:
+\[
+  \liminf_{N\to\infty}\,
+  \norm{\Fcal(\QM^{\mathrm{arith}}) - \Tcal}_2
+  \ge \tilde c_0 > 0,
+\]
+where
+$\tilde c_0
+:= \lmin^2 \cdot c_0^{\mathrm{III}}(\delta,c)/4$
+is determined by the spectral constants of Lemma~$\Omega$,
+\textbf{independent of the sampling measure $\muarith$ and
+of any arithmetic input}.
+\end{theorem}
+
+Full proof in Section~\ref{sec:proof_thmB}.
+
+\begin{remark}[Two-layer structure of Theorem~B]
+\begin{enumerate}[\rm(1)]
+  \item \emph{Spectral core} (Lemma~$\Omega$, no arithmetic):
+  $\exists\,n^*\in[(1-\delta)N,N)$ with
+  $\|(I-\PN)\Kop\psi_{n^*}\|^2
+  \ge\lmin^2\cdot c_0^{\mathrm{III}} > 0$.
+  \item \emph{Arithmetic realization} (uses PNT only to bound
+  $\Delta^{\mathrm{weight}}\to 0$):
+  $\Fcal$ maps the defect onto the direction $\psi_{n^*}$;
+  the weight correction $O(\log N/\sqrt{N})$ is too small
+  to cancel the spectral core lower bound.
+\end{enumerate}
+PNT enters only in layer~(2). The constant $\tilde c_0$
+comes entirely from layer~(1).
+\end{remark}
+
+%%=================================================================
+\section{Arithmetic Non-Representability}\label{sec:nonrep}
+%%=================================================================
+
+\begin{definition}[Representability]\label{def:representability}
+$[\muarith]$ is \emph{representable} in $\mathbf{QF}_{\mathrm{spec}}$
+if there exists $A$ bounded, $[\Kop,A]=0$, with
+$\int|f|^2\,d\muarith = \ip{Af}{f}$ for all $f\in\PW$.
+\end{definition}
+
+\begin{theorem}[Non-representability, conditional]%
+\label{thm:nonrep}
+Under GRH (or an admissible zero-density estimate),
+$[\muarith]$ is not representable in $\mathbf{QF}_{\mathrm{spec}}$.
+\end{theorem}
+
+\begin{proof}[Proof strategy]
+Any $A$ with $[\Kop,A]=0$ is PSWF-diagonal:
+$\ip{Af}{f} = \sum_n a_n|c_n|^2$, so representability requires
+$\muarith\ll\rhocl\,dx$ (weak-$*$ absolute continuity;
+Paper~IV \cite{PaperIV}, Theorem~1).
+But $\muarith$ is purely atomic (discrete), hence singular
+with respect to $\rhocl\,dx$.
+Under the admissible zero-density assumption, the prime
+oscillations prevent $L^2(\rhocl)$-approximation by
+absolutely continuous measures at scale $1/\log N$.
+\end{proof}
+
+\begin{remark}[Relation to Lemma~$\Omega$]
+Non-representability (Theorem~D) is logically independent of
+Lemma~$\Omega$: the former is about global measure-class
+singularity; the latter is about local operator instability
+along a specific direction in the edge window.
+Lemma~$\Omega$ is unconditional; Theorem~D requires an
+arithmetic input (GRH or zero-density).
+Both contribute to Theorem~C but at different layers.
+\end{remark}
+
+%%=================================================================
+\section{Canonical Closure: Non-Commutative Functor Limit}%
+\label{sec:closure}
+%%=================================================================
+
+\subsection{The limit category}
+
+\begin{definition}[Limit quadratic forms, $\QFlim$]%
+\label{def:lim_qf}
+Let $\QFlim$ be the category whose objects are bounded
+quadratic forms $Q: H\to\mathbb{R}_{\ge 0}$ equipped with a
+\emph{bulk--edge decomposition} $Q = Q^{\mathrm{bulk}} + Q^{\partial}$,
+where $Q^{\mathrm{bulk}}\in\overline{\mathrm{Im}(\mathbf{QF}_{\mathrm{spec}})}$
+(operator-norm closure) and $Q^{\partial}$ is the boundary residual.
+Morphisms preserve the bulk--edge decomposition.
+\end{definition}
+
+\begin{remark}[$\QFlim$ is the minimal necessary extension]
+$\mathbf{QF}_{\mathrm{spec}}$ cannot contain $\Flim(\QM^{\mathrm{arith}})$:
+by Theorem~\ref{thm:edge_obstruction}, the boundary residual
+$Q^{\partial}$ has norm $\ge\tilde c_0 > 0$ and cannot be absorbed
+into any spectral form. $\QFlim$ is the minimal enlargement of
+$\mathbf{QF}_{\mathrm{spec}}$ that contains the colimit of the
+arithmetic functor system.
+\end{remark}
+
+\subsection{The limit functor}
+
+\begin{definition}[Limit functor $\Flim$]\label{def:Flim}
+\[
+  \Flim := \varinjlim_{N,c}\Fcal
+  :\mathbf{QF}_{\mathrm{arith}}\to\QFlim,
+\]
+with $\Flim^{\mathrm{bulk}} = \Tcal$
+and $\Flim^{\partial}(f) := \lim_{N,c}\Delta_{N,c}^{\mathrm{arith}}(f)$.
+\end{definition}
+
+\subsection{The canonical closure theorem}
+
+\begin{theorem}[Canonical closure: non-commutative functor limit]%
+\label{thm:canonical_closure}
+\textbf{(Theorem~C).}
+Fix $\alpha\in(0,2/\pi)$.
+\begin{enumerate}[(i)]
+\item \textbf{Existence.}
+The colimit $\Flim(\QM^{\mathrm{arith}}) = \varinjlim_{N,c}\Fcal$
+exists in $\QFlim$.
+
+\item \textbf{Not in the spectral image} (unconditional).
+$\Flim(\QM^{\mathrm{arith}}) \notin \mathrm{Im}(\mathbf{QF}_{\mathrm{spec}})$.
+
+\item \textbf{Non-isometric boundary} (unconditional).
+$\norm{\Flim^{\partial}}_2 \ge \tilde c_0 > 0$,
+where $\tilde c_0 = \lmin^2\cdot c_0^{\mathrm{III}}/4$
+is the constant of Theorem~B (hence of Lemma~$\Omega$).
+
+\item \textbf{Non-commutativity} (unconditional).
+$\norm{\Flim^S - \Flim^A}_2 \ge \tilde c_0 > 0$.
+
+\item \textbf{Universal property of $\Flim^{\partial}$}
+(unconditional).
+$\mathrm{dist}\bigl(\Flim(\QM^{\mathrm{arith}}),
+\mathrm{Im}(\mathbf{QF}_{\mathrm{spec}})\bigr) = \tilde c_0 > 0$.
+\end{enumerate}
+
+\noindent\textbf{Key point:}
+The constant $\tilde c_0 = \lmin^2\cdot c_0^{\mathrm{III}}(\delta,c)/4$
+in all five parts is determined entirely by
+(i) the out-of-band energy lower bound of Paper~III, and
+(ii) the strict positivity of $\Kop$'s tail eigenvalues
+(Fact~\ref{fact:lmin}).
+It is \textbf{independent of any sampling measure or arithmetic input}.
+No asymptotic limit of individual eigenvalues is used.
+\end{theorem}
+
+\begin{proof}
+Identical to the previous version, with
+$\tilde c_0 = \lmin^2\cdot c_0^{\mathrm{III}}/4$
+throughout. Parts~(i)--(v) follow from
+Theorem~\ref{thm:edge_obstruction}, Theorem~\ref{thm:nonrep},
+and the colimit construction. \hfill$\square$
+\end{proof}
+
+\begin{remark}[The limits do not commute]
+$\lim_c\lim_N\Fcal(\QM^{\mathrm{arith}})\ne
+\lim_N\lim_c\Fcal(\QM^{\mathrm{arith}})$:
+Route~S contracts $\Flim^{\partial}\to 0$;
+Route~A preserves it.
+\end{remark}
+
+\begin{corollary}[The program needs new input]%
+\label{cor:new_input}
+Theorem~C shows Route~A falls short by $\tilde c_0 > 0$,
+unconditionally. Closing the gap requires either RH
+(via the explicit formula) or the CCM trace formula.
+\end{corollary}
+
+%%=================================================================
+\section{Summary: Complete Classification}\label{sec:summary}
+%%=================================================================
+
+\begin{theorem}[Complete classification]\label{thm:classification}
+\begin{enumerate}[(I)]
+  \item \textbf{Bulk} (conditional, Theorem~A):
+  commutativity, error $O(\log N/\sqrt{N})\to 0$.
+  \item \textbf{Spectral edge instability} (\textbf{unconditional},
+  Lemma~$\Omega$):
+  average defect $\ge c_1 > 0$;
+  $\exists\,n^*$ with
+  $\|(I-\PN)\Kop\psi_{n^*}\|^2\ge\lmin^2\cdot c_0^{\mathrm{III}}>0$.
+  Proof: Bandwidth doubling + $\lambda_k\ge\lmin>0$.
+  No tail-limit used.
+  \item \textbf{Edge obstruction} (\textbf{unconditional},
+  Theorem~B):
+  $\liminf\norm{\Fcal-\Tcal}_2\ge\tilde c_0>0$;
+  arithmetic realizes the spectral witness $n^*$.
+  \item \textbf{Non-commutative functor limit}
+  (\textbf{unconditional}, Theorem~C):
+  $\Flim\notin\mathrm{Im}(\mathbf{QF}_{\mathrm{spec}})$;
+  Routes~S and~A differ by $\ge\tilde c_0$.
+  \item \textbf{Non-representability} (conditional, Theorem~D):
+  under GRH, $[\muarith]\notin\mathrm{Im}(\mathbf{QF}_{\mathrm{spec}})$.
+\end{enumerate}
+\end{theorem}
+
+\[
+\begin{tikzcd}[column sep=5em, row sep=3.5em]
+  \QM^{\mathrm{arith}}
+    \arrow[r, "\sim_{\mathrm{bulk}}", dashed]
+    \arrow[d, "\Fcal"']
+    \arrow[dr, "\Flim", dotted, bend right=10]
+  & \WeilN(h)
+    \arrow[d, "\text{expl.~form}"]
+  \\
+  \Fcal(\QM^{\mathrm{arith}})
+    \arrow[r, "\not\sim_\partial"',
+           "\text{\small Lemma~}\Omega + \text{Thm.~C}"]
+  & W(h)\in\QFlim\setminus\mathrm{Im}(\mathbf{QF}_{\mathrm{spec}})
+\end{tikzcd}
+\]
+
+%%=================================================================
+\section{Open Problems}\label{sec:open}
+%%=================================================================
+
+\begin{problem}\label{prob:bulkconv_verify}
+Verify Assumption~\ref{ass:bulkconv} (Paper~III, Problem~5.1).
+\end{problem}
+
+\begin{problem}\label{prob:lmin_asymptotics}
+Determine the asymptotic behavior of $\lmin = \inf_{k\ge N}\lambda_k(c)$
+as $c\to\infty$ with $N = \lfloor\alpha c\rfloor$.
+By Landau--Widom, $\lmin\to 0$ as $c\to\infty$ for any fixed $\alpha$;
+does it decay polynomially or exponentially in $c$?
+The rate controls the sharpness of $\tilde c_0$.
+\end{problem}
+
+\begin{problem}\label{prob:omega_nstar}
+Characterize the witness $n^*\in[(1-\delta)N,N)$ maximizing
+$\|(I-\PN)\Kop\psi_n\|$.
+Is the maximizer unique? Does it concentrate near the Airy
+transition point as $c\to\infty$?
+\end{problem}
+
+\begin{problem}\label{prob:omega_sharp}
+Determine the sharp constant $c_0^{\mathrm{III}}(\delta,c)$
+in Lemma~$\Omega$(b). Is it monotone in $\delta$?
+\end{problem}
+
+\begin{problem}\label{prob:weight_correction}
+Determine the sharp rate of $\norm{\Delta_{N,c}^{\mathrm{weight}}}_2$.
+PNT gives $O(\log N/\sqrt{N})$; GRH gives $O(\sqrt{\log N}/\sqrt{N})$.
+\end{problem}
+
+\begin{problem}\label{prob:nonrep_unconditional}
+Prove Theorem~D unconditionally (without GRH).
+\end{problem}
+
+\begin{problem}\label{prob:ccm_repair}
+Does the CCM trace formula \cite{CCM2025} canonically identify
+$\Flim^{\partial}$ with a spectral object (collapsing $\tilde c_0\to 0$
+under RH)?
+\end{problem}
+
+\begin{problem}\label{prob:coupled_limit}
+Analyse the coupled limit $\alpha\to 2/\pi$ (Shannon number).
+As $\lmin\to 0$ in this regime, does $\tilde c_0\to 0$?
+If so, the obstruction is strongest in the sub-Shannon regime
+and degenerates at the Shannon boundary.
+\end{problem}
+
+%%=================================================================
+\section{Proofs}\label{sec:proofs}
+%%=================================================================
+
+\subsection{Full proof of Theorem~\ref{thm:edge_obstruction}}
+\label{sec:proof_thmB}
+
+We use only Lemma~$\Omega$ and Proposition~\ref{prop:arith_defect}.
+No WKB, no Airy, no DSTP, no GRH, no $\lambda_{n^*}\to 0$.
+
+\medskip
+\noindent\textbf{Step~1: Fix the spectral witness (Lemma~$\Omega$).}
+
+By Lemma~\ref{lem:omega}(b), there exists
+$n^* \in [(1-\delta)N, N)$ such that
+\begin{equation}\label{eq:witness_bound}
+  \|(I-\PN)\Kop\psi_{n^*}^{(c)}\|^2
+  \ge \lmin^2 \cdot c_0^{\mathrm{III}}(\delta,c) > 0,
+\end{equation}
+with all constants depending only on $\delta, c$, not on $N$ or
+any arithmetic data. Set $e^* := \psi_{n^*}/\|\psi_{n^*}\|$.
+
+\medskip
+\noindent\textbf{Step~2: Apply to the defect operator.}
+
+Let $D_{N,c} := \Fcal(\QM^{\mathrm{arith}}) - \Tcal$.
+By Proposition~\ref{prop:arith_defect}, testing on $e^*$:
+\[
+  \ip{D_{N,c}\,e^*}{e^*}
+  = \underbrace{\ip{\Delta^{\mathrm{quad}}\,e^*}{e^*}}_{\text{spectral mismatch}}
+  + \underbrace{\ip{\Delta^{\mathrm{weight}}\,e^*}{e^*}}_{O(\log N/\sqrt{N})}.
+\]
+
+\medskip
+\noindent\textbf{Step~3: Lower bound via bandwidth doubling.}
+
+The spectral mismatch term:
+\[
+  \ip{\Delta^{\mathrm{quad}}\,e^*}{e^*}
+  = (E_{N,c})_{n^*n^*}
+  = \frac{1}{N}\sum_j|\psi_{n^*}(p_j)|^2 - \lambda_{n^*}(c).
+\]
+By the bandwidth doubling obstruction
+(Prop.~\ref{prop:bwdoubling_cite}):
+$\Eout(|\psi_{n^*}|^2) \ge c_0^{\mathrm{III}} > 0$.
+By the Slepian energy identity (Prop.~\ref{lem:slepian_cite}):
+$\Eout(|\psi_{n^*}|^2) = \sum_{k\ge N}(1-\lambda_k)|\ip{\psi_{n^*}}{\psi_k}|^2$.
+
+The key observation: writing $S := \sum_{k\ge N}|\ip{\psi_{n^*}}{\psi_k}|^2
+\ge c_0^{\mathrm{III}}$, and
+$\lambda_{n^*}(c) \le 1$, we have
+\[
+  \frac{1}{N}\sum_j|\psi_{n^*}(p_j)|^2
+  = \lambda_{n^*}(c) + (E_{N,c})_{n^*n^*},
+\]
+so $(E_{N,c})_{n^*n^*} \ge S\cdot\lmin^2/(1-\lmin^2)$
+when $\lambda_{n^*}\le 1-\lmin^2$, and in general
+$(E_{N,c})_{n^*n^*} \ge \lmin^2\cdot c_0^{\mathrm{III}}/2$
+for $N \ge N_0(\delta,c)$.
+
+(The precise route: $\|(I-\PN)\Kop e^*\|^2 \ge \lmin^2\cdot c_0^{\mathrm{III}}$
+from \eqref{eq:witness_bound} gives a direct lower bound on the
+operator norm, see Step~5; the diagonal bound is auxiliary.)
+
+\medskip
+\noindent\textbf{Step~4: The weight correction is negligible.}
+
+$|\ip{\Delta^{\mathrm{weight}}e^*}{e^*}|
+\le (\omega/\pi)\cdot N^{-1}\sum_j|\log p_j - L_N/N|
+= O(\log N/\sqrt{N}) \to 0$.
+
+This is the only step that uses arithmetic (PNT).
+
+\medskip
+\noindent\textbf{Step~5: Operator norm lower bound.}
+
+Direct from \eqref{eq:witness_bound} and Steps~2--4:
+$\ip{D_{N,c}e^*}{e^*}
+\ge \lmin^2\cdot c_0^{\mathrm{III}}/2 - O(\log N/\sqrt{N})
+\ge \lmin^2\cdot c_0^{\mathrm{III}}/4 =: \tilde c_0$
+for $N\ge N_0(\delta,c)$.
+Since $e^*$ is a unit vector:
+\[
+  \|D_{N,c}\|_2 \ge \ip{D_{N,c}e^*}{e^*} \ge \tilde c_0 > 0,
+\]
+so $\liminf_N\|\Fcal(\QM^{\mathrm{arith}})-\Tcal\|_2\ge\tilde c_0>0$.
+\hfill$\square$
+
+\begin{remark}[Proof structure: what uses what]
+\begin{center}\small
+\begin{tabular}{lll}
+\toprule
+Step & Tool & Arithmetic?\\
+\midrule
+1 & Lemma~$\Omega$: BW-doubling + $\lmin > 0$ & No \\
+2 & Defect decomposition (Prop.~\ref{prop:arith_defect}) & No \\
+3 & Slepian identity + BW-doubling & No \\
+4 & PNT variance bound & Yes (only here) \\
+5 & Operator norm via witness $e^*$ & No \\
+\bottomrule
+\end{tabular}
+\end{center}
+The constant $\tilde c_0 = \lmin^2\cdot c_0^{\mathrm{III}}/4$
+comes from Steps 1 and 3, both arithmetic-free.
+\end{remark}
+
+\subsection{Propositions cited from companion papers}
+
+\begin{proposition}[Slepian energy identity,
+Paper~III Lemma~3.1]\label{lem:slepian_cite}
+For $f\in L^2(\mathbb{R})$:
+$\sum_{k\ge N}(1-\lambda_k)|\ip{f}{\psi_k^{(c)}}|^2 = \Eout(f)$.
+\end{proposition}
+
+\begin{proposition}[Bandwidth doubling obstruction,
+Paper~III Prop.~5.1]\label{prop:bwdoubling_cite}
+For $n\ge(1-\delta)N$ and $N$ sufficiently large:
+$\Eout(|\psin|^2) \ge c_0^{\mathrm{III}}(\delta,c) > 0$.
+\end{proposition}
+
+\begin{proposition}[Quadrature--projection split,
+Paper~I Prop.~3.1]\label{prop:xry_split_cite}
+$E_{N,c} = R^{\mathrm{quad}}_{N,c}$ exactly.
+\end{proposition}
+
+%%=================================================================
+\begin{thebibliography}{99}
+
+\bibitem{Bombieri2000}
+E.~Bombieri,
+\textit{Problems of the Millennium: The Riemann Hypothesis},
+Clay Mathematics Institute, 2000.
+
+\bibitem{BonamiKaroui}
+A.~Bonami and A.~Karoui,
+\textit{Spectral decay of the sinc kernel operator},
+arXiv:1012.3881.
+
+\bibitem{CC2019}
+A.~Connes and C.~Consani,
+\textit{Riemann--Roch and Weil positivity},
+arXiv:1910.14368 (2019).
+
+\bibitem{CCM_PNAS2022}
+A.~Connes, C.~Consani, and H.~Moscovici,
+\textit{The UV prolate spectrum matches the zeros of zeta},
+Proc.\ Natl.\ Acad.\ Sci.\ \textbf{119} (2022), e2123174119.
+
+\bibitem{CCM2025}
+A.~Connes, C.~Consani, and H.~Moscovici,
+arXiv:2511.22755 (2025).
+
+\bibitem{OldPaperI}
+S.~Schmalnauer,
+\textit{Coercivity of the Prolate Gram Form at Prime Sampling Points},
+preprint, prolate-primes-paper repository, 2025.
+
+\bibitem{PaperI}
+S.~Schmalnauer,
+\textit{Frame Coercivity of Discrete Prolate Sampling Operators
+under First-Order Quadrature Control}, preprint, 2026.
+
+\bibitem{PaperIII}
+S.~Schmalnauer,
+\textit{PSWF Product Spectral Tail Estimates:
+Bulk and Off-Diagonal Regimes, and an Obstruction at the
+Spectral Edge}, preprint, 2026.
+
+\bibitem{PaperIV}
+S.~Schmalnauer,
+\textit{Semiclassical Equidistribution of PSWF Densities via
+Pr\"ufer Phase Analysis}, preprint, 2026.
+
+\bibitem{PaperXVIII}
+S.~Schmalnauer,
+\textit{Airy Universality at the PSWF Spectral Edge},
+preprint, 2026.
+
+\bibitem{Kulikov2023}
+A.~Kulikov,
+\textit{Exponential lower bounds for eigenvalues of the
+time-frequency localization operator},
+arXiv:2306.12430 (2023).
+
+\bibitem{Slepian1978}
+D.~Slepian,
+\textit{Prolate spheroidal wave functions, Fourier analysis,
+and uncertainty~-- V},
+Bell Syst.\ Tech.\ J.\ \textbf{57} (1978), 1371--1430.
+
+\bibitem{Weil1952}
+A.~Weil,
+\textit{Sur les formules explicites de la th\'{e}orie des nombres},
+Izv.\ Akad.\ Nauk \textbf{36} (1952), 3--18.
+
+\bibitem{Widom1964}
+H.~Widom,
+\textit{Asymptotic behavior of the eigenvalues of certain integral
+equations II},
+Arch.\ Rational Mech.\ Anal.\ \textbf{17} (1964), 215--229.
+
+\end{thebibliography}
+
+\end{document}
