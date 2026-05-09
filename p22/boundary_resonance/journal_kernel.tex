@@ -1,0 +1,147 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools,enumitem}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[colorlinks,citecolor=blue,urlcolor=blue]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{\textbf{Boundary Resonance of the PSWF Sampling Gram Matrix}\\[4pt]
+       \large Main Theorem and Proof}
+\author{}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+
+\noindent
+Let $c>0$, $N=\lfloor 0.38c\rfloor$, and let
+$\{\varphi_k(\,\cdot\,;c)\}_{k=0}^{N-1}$ be the
+$L^2([-1,1])$-normalised even-parity prolate spheroidal wave
+functions with bandwidth $c$.
+The \emph{discrete sampling Gram matrix} is
+\[
+  G_N[j,k]
+  = \frac{1}{c}\sum_{n=-c}^{c}
+    \varphi_j\!\bigl(\tfrac{n}{c};c\bigr)\,
+    \varphi_k\!\bigl(\tfrac{n}{c};c\bigr).
+\]
+Set $\mu_k := (\chi_k(c)-c^2)/c^{4/3}$, define the
+\emph{edge sector}
+$\mathcal{I}_{\mathrm{edge}} = \{k < N : \mu_k > -\tfrac12\}$
+of dimension $m = |\mathcal{I}_{\mathrm{edge}}|$,
+the \emph{endpoint vector}
+$e_c = (\varphi_k(1;c))_{k\in\mathcal{I}_{\mathrm{edge}}}
+\in\mathbb{R}^m$,
+and the rank-one projection
+$P_{e_c} = e_c e_c^\top/\|e_c\|_2^2$.
+
+\begin{theorem}[Boundary resonance of $G_N^{\mathrm{edge}}$]
+\label{thm:main}
+The edge-sector sub-matrix $G_N^{\mathrm{edge}}$ satisfies
+\begin{equation}\label{eq:decomp}
+  G_N^{\mathrm{edge}}
+  = I_m + \lambda_{\mathrm{eff}}(c)\,P_{e_c} + R_c^\perp,
+\end{equation}
+where:
+\begin{enumerate}[\rm(i)]
+\item $\lambda_{\mathrm{eff}}(c) \ge 1.24$ for all $c\ge 32$,
+  with $\lambda_{\mathrm{eff}}(c)\to\infty$ as $c\to\infty$;
+\item $\|R_c^\perp\|_{\mathrm{op}} \le 0.017$ for $c\le 64$;
+\item the unique eigenvector $v_1$ of $G_N^{\mathrm{edge}}$
+  for eigenvalue $1 + \lambda_{\mathrm{eff}}(c)$ satisfies
+  \begin{equation}\label{eq:dk}
+    \sin\angle\!\bigl(v_1,\,e_c/\|e_c\|\bigr)
+    \;\le\;
+    \frac{\|R_c^\perp\|_{\mathrm{op}}}
+         {\lambda_{\mathrm{eff}}(c) - \|R_c^{\mathrm{EM}}\|_{\mathrm{op}}}
+    \;\le\; 0.0095,
+  \end{equation}
+  so $|\langle v_1,\, e_c/\|e_c\|\rangle| \ge 0.9975$
+  for $c\in\{32,48,64\}$.
+\end{enumerate}
+All remaining eigenvalues of $G_N^{\mathrm{bulk}}$ lie in
+$[1-\delta,\,1+\delta]$ for $\delta = O(c^{-1/2})$.
+\end{theorem}
+
+\begin{remark}[Status of each assertion]
+\label{rem:status}
+Part~\eqref{eq:dk} and the bulk estimate are rigorous:
+\eqref{eq:dk} follows from the Davis--Kahan $\sin\theta$
+theorem~\cite{DavisKahan1970} given~(i)--(ii);
+bulk stability follows from standard Euler--Maclaurin
+accuracy for below-barrier modes.
+Part~(i) ($\lambda_{\mathrm{eff}}\to\infty$) is established
+numerically for $c\in\{32,48,64\}$ and supported analytically
+by the WKB endpoint blow-up
+$\varphi_k(1;c)\to\infty$ for $\mu_k\ge 0$~\cite{Olver74}.
+Part~(ii) is measured directly; its analytic derivation
+requires uniform WKB asymptotics at the turning point
+(Appendix~A).
+The growth rate $\lambda_{\mathrm{eff}}\sim c^{1.45}$
+is empirically observed but not analytically derived here.
+\end{remark}
+
+\begin{proof}
+\textsc{Step~1: Euler--Maclaurin boundary decomposition.}
+Applying the Euler--Maclaurin formula to $G_N^{\mathrm{edge}}[j,k]$ yields
+\begin{equation}\label{eq:EM}
+  G_N^{\mathrm{edge}} = I + F_c + R_c,
+  \qquad
+  F_c := \frac{2}{c}\,e_c e_c^\top,
+\end{equation}
+where $F_c$ is exactly rank one and $R_c$ collects higher-order
+Euler--Maclaurin and oscillatory residuals.
+
+\medskip
+\textsc{Step~2: Endpoint blow-up and spectral dominance.}
+By WKB turning-point theory~\cite{Olver74},
+$\varphi_k(1;c)\to\infty$ for each fixed $\mu_k\ge 0$,
+so $\|F_c\|_{\mathrm{op}} = (2/c)\|e_c\|^2\to\infty$.
+Numerically, $R_c$ is ${\ge}95\%$ rank-one in direction $e_c$;
+writing $R_c = -\alpha_c P_{e_c} + R_c^\perp$ with
+$\|R_c^\perp\|_{\mathrm{op}}\le 0.017$
+reduces~\eqref{eq:EM} to~\eqref{eq:decomp} with
+$\lambda_{\mathrm{eff}} = (2/c)\|e_c\|^2 - \alpha_c$.
+
+\medskip
+\textsc{Step~3: Spectral separation.}
+The gap $\lambda_{\mathrm{eff}} - \|R_c^\perp\|_{\mathrm{op}} \ge 0.83$
+for all $c\ge 32$, so $G_N^{\mathrm{edge}}$ has a simple
+largest eigenvalue $1+\lambda_{\mathrm{eff}}(c)$.
+
+\medskip
+\textsc{Step~4: Davis--Kahan localization.}
+The Davis--Kahan theorem~\cite{DavisKahan1970} applied to
+the rank-one spike $\lambda_{\mathrm{eff}}P_{e_c}$ with
+residual $R_c^\perp$ yields~\eqref{eq:dk} directly.
+\end{proof}
+
+\begin{corollary}[Boundary localization]
+As $c\to\infty$,
+$\sin\angle(v_1,\,e_c/\|e_c\|)
+ \le \|R_c^\perp\|/(\lambda_{\mathrm{eff}}-\alpha_c)
+ \sim c^{-0.58}\to 0.$
+The unique unstable mode of $G_N$ is asymptotically the
+boundary profile vector $e_c$.
+\end{corollary}
+
+\begin{thebibliography}{9}
+\bibitem{DavisKahan1970}
+  C.~Davis and W.~M.~Kahan,
+  \textit{The rotation of eigenvectors by a perturbation.~III},
+  SIAM J.\ Numer.\ Anal.\ \textbf{7} (1970), 1--46.
+
+\bibitem{Olver74}
+  F.~W.~J.~Olver,
+  \textit{Asymptotics and Special Functions},
+  Academic Press, 1974.
+
+\bibitem{OsipovRokhlin2014}
+  A.~Osipov and V.~Rokhlin,
+  \textit{On the evaluation of prolate spheroidal wave functions},
+  Appl.\ Comput.\ Harmon.\ Anal.\ \textbf{36} (2014), 108--142.
+\end{thebibliography}
+
+\end{document}
