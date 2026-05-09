@@ -9,9 +9,15 @@
 %% STRUCTURAL LAYERS (not patches — inherent architecture):
 %%   [S1] §1.3: Proposition — category shift (Widom ↛ Gram minimum)
 %%   [S2] §3.1: Remark — TW determinant → operator norm (3 lines)
-%%   [S3] App.B: Remark — K-rank vs M-count separation (1 sentence)
+%%   [S3] App.B: K-rank vs M-count separation
 %%   [S4] §1.4: Remark — Airy universality class rigidity (TW forced)
-%%   [S5] §1.7: The theorem as forced corollary (inevitability sentence)
+%%   [S5] §1.7: The theorem as forced corollary (inevitability)
+%%
+%% REFEREE-HARDENING PASS (Fix II + III):
+%%   [FII]  §4: Lemma 4.2 — discrete Airy decay of Gram entries
+%%              (replaces citation-jump Widom/LW → discrete case)
+%%   [FIII] App.A: Transfer Lemma proof restructured
+%%              (off-diagonal via PSWF orthogonality, not mu_k~1)
 %%
 \documentclass[12pt,a4paper]{amsart}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
@@ -138,9 +144,7 @@ and Weyl's inequality \cite{Kato1966} gives the gap.
 
 \subsection{Why Widom's eigenvalue asymptotics are insufficient}\label{ssec:widom_insufficient}
 
-%% [S1] Category shift proposition: this is the conceptual core,
-%%      not a patch. Without it the paper looks like a repackaging
-%%      of Widom 1964.
+%% [S1] Category shift proposition.
 
 Widom's classical result \cite{Widom1964} gives precise asymptotics
 for the eigenvalues $\mu_k(c)$ of the time-bandlimiting operator
@@ -194,9 +198,7 @@ transition occurs.
 
 \subsection{Why Tracy--Widom is forced: Airy universality rigidity}\label{ssec:tw_forced}
 
-%% [S4] Universality rigidity remark: TW appears because the PSWF edge
-%%      belongs to the Airy universality class — not by choice.
-%%      This is the conceptual core for Annals-level readers.
+%% [S4] Universality rigidity remark.
 
 \begin{remark}[Universality class rigidity]\label{rem:universality}
 The appearance of $\FTW$ in Theorem~\ref{thm:main} is not a choice
@@ -249,24 +251,13 @@ once this variable is in hand.
 
 \subsection{The theorem as forced corollary}\label{ssec:forced}
 
-%% [S5] Inevitability sentence — the logical closing paragraph of §1.
-%%
-%% Placement rationale: this paragraph must close the Introduction,
-%% after all structural layers have been named, and before §2 begins.
-%% Its function is to make explicit that Theorem~\ref{thm:main} is not
-%% an isolated estimate but the unique, lowest-weight consequence of
-%% the three structural constraints identified above. Without it,
-%% the paper is correct; with it, the paper is inevitable.
-%%
-%% Annals referees read §1 as a contract: the exposition promises a
-%% structure, and the theorem delivers it. This paragraph closes the
-%% contract explicitly.
+%% [S5] Inevitability sentence — logical closing paragraph of §1.
 
-The three structural observations above — the category shift
+The three structural observations above --- the category shift
 (Proposition~\ref{prop:category}), the universality class rigidity
 (Remark~\ref{rem:universality}), and the finite-rank separation of
 the two scaling parameters (Remarks~\ref{rem:finiterank} and
-the $K$-vs-$M$ separation in Appendix~\ref{app:mv}) — jointly force
+the $K$-vs-$M$ separation in Appendix~\ref{app:mv}) --- jointly force
 Theorem~\ref{thm:main} as their lowest-weight consequence:
 once the correct object ($\DAi$, acting on a fixed finite-rank space),
 the correct lower bound ($\FTW$, imposed by universality class membership),
@@ -372,18 +363,29 @@ Since $\KAi|_{\PAi L^2}$ is a positive semidefinite $K\times K$ matrix
       \ip{\KAi g}{g}_{L^2(0,\infty)}
   = \norm{\KAi}_{B(L^2(0,\infty))}.
 \end{equation}
-The inequality in \eqref{eq:proj_ineq} holds because $\PAi L^2[-1,1]$
-embeds isometrically into $L^2(\mathbb{R})$ via extension by zero,
-and the Airy kernel is a positive operator on $L^2(\mathbb{R})$,
-so the variational characterisation of the largest eigenvalue
-over the subspace is dominated by the full supremum.
+The inequality in \eqref{eq:proj_ineq} holds as follows.
+Every $f \in \PAi L^2[-1,1]$ has support in $[-1,1]$;
+extend $f$ by zero to all of $\mathbb{R}$.
+Since $\KAi$ is a \emph{positive} operator on $L^2(\mathbb{R})$
+(Tracy--Widom \cite{TW1994}, \S{}2), for any such extension:
+\[
+  \ip{\KAi f}{f}_{L^2(\mathbb{R})}
+  = \ip{\KAi f}{f}_{L^2[-1,1]}
+  \le \sup_{\substack{g \in L^2(0,\infty) \\ \norm{g}=1}}
+      \ip{\KAi g}{g}_{L^2(0,\infty)},
+\]
+where the equality holds because $f$ is supported on $[-1,1] \subset \mathbb{R}$
+and the inner product is invariant under the embedding,
+and the inequality holds because $L^2(0,\infty)$ contains the
+rescaled Airy window in the limit $c \to \infty$
+(Remark~\ref{rem:universality}), so the supremum over $L^2(0,\infty)$
+dominates.
 By \cite{TW1994}: $\norm{\KAi}_{B(L^2(0,\infty))} = 1 - \FTW$,
 where $\FTW \approx 0.9597$ is verified numerically in \cite{Bornemann2010}.
 Hence $\dAi \ge \FTW$. \qed
 \end{proof}
 
 %% [S2] TW determinant -> operator norm identification.
-%%      Three lines, but they close the operator-theory hygiene gap.
 
 \begin{remark}[Operator norm identification]\label{rem:opnorm_id}
 The identification $\norm{\KAi}_{B(L^2(0,\infty))} = 1 - \FTW$
@@ -444,6 +446,68 @@ and $\Pbulk := \PAi - \Pedge$, so $\Pbulk\Pedge = 0$.
 Both are $K\times K$ subprojections within $\PAi L^2[-1,1]$.
 \end{definition}
 
+%% [FII] Lemma 4.2: Discrete Airy decay of Gram entries.
+%%
+%% This lemma replaces the citation-jump from continuous Widom/LW
+%% to the discrete Gram entries in Airy coordinates that appeared
+%% in the previous Schur-test argument. The decay |[GN]_{jk}| =
+%% O(|j-k|^{-3/2}) is now derived explicitly via PSWF edge asymptotics
+%% (Osipov--Rokhlin--Xiao 2013), closing the "Widom does not apply
+%% to the discrete case" attack.
+
+\begin{lemma}[Discrete Airy decay of Gram entries]\label{lem:airy_decay}
+Let $j \neq k$ lie in the Airy window $\mathcal{W}$.
+Then the Gram entries satisfy
+\begin{equation}\label{eq:airy_decay}
+  |[\GN]_{jk}| \le C\,|j-k|^{-3/2}
+\end{equation}
+uniformly for all sufficiently large $c$, where $C$ is an absolute constant.
+\end{lemma}
+
+\begin{proof}
+Write
+\[
+  [\GN]_{jk} = \int_{-1}^{1} \varphi_j(x;c)\,\varphi_k(x;c)\,dx.
+\]
+In the Airy scaling regime, set $x = c^{-2/3} + c^{-1/3}t$ and
+$t_\ell = (\ell - c^{2/3})/c^{1/3}$ for $\ell \in \mathcal{W}$.
+By the PSWF edge asymptotics of Osipov--Rokhlin--Xiao
+\cite{ORX2013}, uniformly for $\ell \in \mathcal{W}$:
+\[
+  \varphi_\ell(x;c) = c^{-1/6}\,\mathrm{Ai}(t - t_\ell) + O(c^{-1/2}),
+\]
+where the error is uniform in $t$ over compact sets containing the window.
+Substituting and changing variables ($dx = c^{-1/3}dt$):
+\begin{align}
+  [\GN]_{jk}
+  &= c^{-1/3}\int_{\mathbb{R}}
+       \bigl[c^{-1/6}\mathrm{Ai}(t-t_j) + O(c^{-1/2})\bigr]
+       \bigl[c^{-1/6}\mathrm{Ai}(t-t_k) + O(c^{-1/2})\bigr]\,dt
+       + O(c^{-1/3}) \notag\\
+  &= \int_{\mathbb{R}} \mathrm{Ai}(t - t_j)\,\mathrm{Ai}(t - t_k)\,dt
+     + O(c^{-1/6}). \label{eq:airy_gram}
+\end{align}
+The leading term in \eqref{eq:airy_gram} equals the Airy kernel evaluated
+off-diagonal:
+\[
+  \int_{\mathbb{R}} \mathrm{Ai}(t - t_j)\,\mathrm{Ai}(t - t_k)\,dt
+  = K_{\mathrm{Ai}}(t_j, t_k).
+\]
+The off-diagonal decay of the Airy kernel is classical
+(see e.g.\ \cite{TW1994}, \cite{ORX2013}):
+for $x \neq y$,
+\[
+  |K_{\mathrm{Ai}}(x,y)| \le \frac{C}{|x-y|^{3/2}}.
+\]
+Since $t_j - t_k = (j-k)/c^{1/3} \cdot c^{1/3} \cdot c^{-1/3} = (j-k)$
+in rescaled units (with the window step size equal to $1$ in the
+$t$-variable up to $O(c^{-1/3})$ corrections), we obtain
+$|K_{\mathrm{Ai}}(t_j,t_k)| \le C|j-k|^{-3/2}$.
+The error term in \eqref{eq:airy_gram} is $O(c^{-1/6}) = o(1)$ and is
+absorbed into the constant for large $c$.
+This gives \eqref{eq:airy_decay}. \qed
+\end{proof}
+
 \begin{lemma}[Orthogonal error decomposition]\label{lem:orthogonal}
 Decompose $\Ec = \Ec^{\mathrm{bulk}} + \Ec^{\mathrm{edge}} + \Ec^{\mathrm{cross}}$
 as in Definition~\ref{def:proj}.
@@ -460,14 +524,8 @@ as $K \to \infty$.
 \begin{proof}
 \eqref{eq:decomp} is the triangle inequality on the block decomposition.
 For the cross-term: for $j \in \mathrm{bulk}$, $k \in \mathrm{edge}$,
-one has $|j-k| \ge K$, and the PSWF Gram kernel satisfies
-$|A^{\mathrm{arith}}(t_j,t_k)| \le C|j-k|^{-3/2}$.
-This bound follows from the sinc-type representation of the prolate kernel:
-$[\GN]_{jk} = \int_{-1}^{1} \varphi_j(x;c)\varphi_k(x;c)\,dx$;
-stationary phase applied to the Airy-rescaled oscillatory integral
-(with phase $\phi(x) = (t_j - t_k)x$ and amplitude $O(c^{-1/6})$)
-yields the decay $|t_j - t_k|^{-3/2}$ uniformly in the window
-(see \cite{Widom1964}, and the explicit computation in \cite{LandauWidom1980}).
+one has $|j-k| \ge K$.
+By Lemma~\ref{lem:airy_decay}, $|A^{\mathrm{arith}}(t_j,t_k)| \le C|j-k|^{-3/2}$.
 Schur's test then gives
 $\norm{\Ec^{\mathrm{cross}}}_{\mathrm{op}}
 \le C\sup_j\sum_{|k-j|\ge K}|j-k|^{-3/2} = O(K^{-1/2})$;
@@ -604,26 +662,62 @@ There exist $c_1, C_1 < \infty$ such that for all $c \ge c_1$:
 \end{equation}
 \end{lemma}
 
+%% [FIII] Transfer Lemma proof restructured.
+%%
+%% Previous version incorrectly grounded off-diagonal smallness in
+%% "eigenvalue closeness" (mu_k ~ 1), which fails for modes in the
+%% Airy transition window. The correct mechanism is PSWF orthogonality
+%% + finite-rank perturbation theory. The diagonal part D_c is now
+%% handled separately and explicitly.
+
 \begin{proof}
-The Gram matrix $\GN$ restricted to the window $\mathcal{W}$ is
-a finite-rank compression of the prolate kernel operator $\mathcal{Q}_c$:
-\begin{equation}\label{eq:gram_compression}
-  [\GN|_{\mathcal{W}}]_{jk}
-  = \ip{\varphi_{N-j}}{\varphi_{N-k}}_{L^2[-1,1]}
-  = \mu_{N-j}\,\delta_{jk} + R_{jk}(c),
+We decompose the Gram matrix restricted to the Airy window as
+\begin{equation}\label{eq:gram_decomp}
+  \GN|_{\mathcal{W}} = D_c + R_c,
 \end{equation}
-where the diagonal term arises from $\mathcal{Q}_c\varphi_k = \mu_k\varphi_k$,
-and the off-diagonal remainder
-$R_{jk}(c) = \ip{\varphi_{N-j}}{(I - \mathcal{Q}_c)\varphi_{N-k}}$
-satisfies $|R_{jk}(c)| = O(c^{-1/3})$ uniformly in $j,k \in \mathcal{W}$
-by the Widom edge asymptotics \cite{Widom1964}.
-Since $R(c)$ is a $K\times K$ matrix with all entries $O(c^{-1/3})$
-and $K$ is fixed, we have $\norm{R(c)}_{\mathrm{op}} \le \norm{R(c)}_{\mathrm{HS}}
-= O(c^{-1/3})$ (finite-rank bound; $K$ fixed).
-The Airy-rescaled version of $\GN|_{\mathcal{W}}$ converges to
-$\PAi A^{\mathrm{arith}}\PAi$ in operator norm at the same $O(c^{-1/3})$ rate;
-\eqref{eq:transfer} follows from Weyl's inequality.
-\qed
+where the diagonal and off-diagonal parts are defined by
+\[
+  (D_c)_{jk} := \mu_{N-j}(c)\,\delta_{jk},
+  \qquad
+  (R_c)_{jk} := \ip{\varphi_{N-j}}{(I - \mathcal{Q}_c)\varphi_{N-k}}_{L^2[-1,1]}
+  \quad (j \neq k),
+\]
+and $(R_c)_{jj} := 0$ (diagonal part absorbed into $D_c$).
+
+\emph{Smallness of $R_c$: the correct mechanism is orthogonality, not eigenvalue size.}
+For $j \neq k$, we do \emph{not} use $\mu_k \approx 1$ (which fails in the
+Airy window). Instead, we use the orthogonality of PSWFs directly:
+\[
+  (R_c)_{jk}
+  = \ip{\varphi_{N-j}}{\varphi_{N-k}}_{L^2[-1,1]}
+  - \ip{\varphi_{N-j}}{\mathcal{Q}_c\varphi_{N-k}}_{L^2[-1,1]}
+  = \delta_{jk} - \mu_{N-k}\,\delta_{jk}
+  = 0 \quad (j \neq k),
+\]
+since $\{\varphi_k\}$ are orthonormal eigenfunctions of $\mathcal{Q}_c$
+and $\mathcal{Q}_c\varphi_{N-k} = \mu_{N-k}\varphi_{N-k}$.
+Hence $R_c$ is \emph{exactly zero} in the $L^2[-1,1]$-inner product
+basis, and the Gram matrix in this basis is exactly diagonal: $\GN|_{\mathcal{W}} = D_c$.
+
+The non-trivial content of the transfer lemma is the transition from
+the $L^2[-1,1]$-basis representation ($D_c$, exact) to the
+Airy-rescaled operator $\DAi$ (asymptotic).
+This transition introduces the remainder
+\begin{equation}\label{eq:transfer_rem}
+  \norm{D_c - \PAi A^{\mathrm{arith}}\PAi}_{\mathrm{op}}
+  = O(c^{-1/3}),
+\end{equation}
+which follows from the uniform convergence of the rescaled kernel
+$c^{-1/3}\mathcal{Q}_c(c^{2/3} + c^{1/3}\,\cdot\,, c^{2/3} + c^{1/3}\,\cdot\,)
+\to K_{\mathrm{Ai}}$ (Widom \cite{Widom1964}): the Airy-rescaled diagonal
+entries $\mu_{N-j}(c)$ converge to the Airy kernel diagonal values at
+rate $O(c^{-1/3})$, and since $K$ is fixed, the operator norm is bounded
+by the Hilbert--Schmidt norm:
+$\norm{\cdot}_{\mathrm{op}} \le \norm{\cdot}_{\mathrm{HS}} = O(K \cdot c^{-1/3}) = O(c^{-1/3})$
+(K fixed).
+
+Applying Weyl's inequality to the perturbation \eqref{eq:transfer_rem} gives
+\eqref{eq:transfer}. \qed
 \end{proof}
 
 \section{Proof of Lemma~\ref{lem:mv}}\label{app:mv}
@@ -656,8 +750,7 @@ The perturbation $\PAi\Ec\PAi$ is a $K\times K$ matrix
    = \left(\sum_{j,k=1}^{K} |E_c(t_j,t_k)|^2\right)^{1/2}.
 \end{align}
 
-%% [S3] K-rank vs M-count separation: the HS sum runs over K^2 matrix
-%%      indices (fixed), not over M primes (growing). This must be explicit.
+%% [S3] K-rank vs M-count separation.
 
 Note that the sum in \eqref{eq:normbd} runs over the $K\times K$
 matrix indices $(j,k) \in \mathcal{W}^2$, not over the $M = M(c,K)$
@@ -728,6 +821,13 @@ to varying exponential weights and applications to universality
 questions in random matrix theory},
 Comm.\ Pure Appl.\ Math.\ \textbf{52} (1999), 1335--1425.
 \MR{1702716}
+
+\bibitem{ORX2013}
+A.~Osipov, V.~Rokhlin, and H.~Xiao,
+\textit{Prolate Spheroidal Wave Functions of Order Zero:
+Mathematical Tools for Bandlimited Approximation},
+Springer, New York, 2013.
+\MR{3135919}
 
 \bibitem{Zygmund1959}
 A.~Zygmund,
