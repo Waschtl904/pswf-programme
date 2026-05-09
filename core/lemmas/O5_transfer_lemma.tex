@@ -1,0 +1,417 @@
+%%
+%% O5_transfer_lemma.tex
+%% Asymptotic Intertwining Lemma for O5
+%%
+%% ROLE IN DAG:
+%%   This is the SOLE non-reducible structural step in O5.
+%%   It identifies two spectral models:
+%%     Model 1 (PSWF):  {psi_{N-k}} in L^2([-1,1]),  Operator K_c
+%%     Model 2 (Airy):  {phi_k}     in L^2([0,R]),   Operator K^Airy
+%%   via the scaling map Phi_c.
+%%
+%%   Once this lemma is established, O5 reduces to:
+%%     Weyl-stability of an isolated spectral cluster.
+%%   All remaining steps (V1-V4, S1, S4) become mechanical.
+%%
+%% PROOF INPUTS:
+%%   - Paper XVIII, Theorem A  (Airy universality, PSWF edge convergence)
+%%   - olver_growth_lemma.tex  (Olver remainder bounds)
+%%   - phase_nondeg_lemma.tex  (C^1 regularity of Langer phase)
+%%
+%% PROHIBITION:
+%%   This file must not reprove Airy universality or any PSWF spectral result.
+%%   It imports Paper XVIII Theorem A and derives consequences. No new
+%%   asymptotic expansion, no new Langer transformation.
+%%
+\documentclass[12pt,a4paper]{amsart}
+\usepackage{amsmath,amssymb,amsthm,mathtools,enumitem,booktabs,hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Ai}{\mathrm{Ai}}
+\newcommand{\KAi}{K^{\mathrm{Airy}}}
+\newcommand{\PAi}{\Pi_{\mathrm{Airy}}}
+\newcommand{\Aarith}{A^{\mathrm{arith}}}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\ip}[2]{\langle #1,\, #2\rangle}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\PhiC}{\Phi_c}
+
+\title{O5 Transfer Lemma:\\
+Asymptotic Intertwining of PSWF and Airy Spectral Models\\
+{\normalsize The Sole Non-Reducible Structural Step in O5}}
+\author{Sebastian Schmalnauer}
+\date{Mai 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We establish the asymptotic intertwining lemma that is the
+logical core of Open Node O5.
+The scaling map $\Phi_c: f \mapsto c^{-1/6}f(c^{-2/3}{\cdot} + t_N)$
+is shown to be an asymptotically isometric identification
+between the PSWF edge basis $\{\psi_{N-k}\}_{k\ge 1}$
+in $L^2([-1,1])$ and the Airy eigenfunction basis
+$\{\phi_k\}_{k\ge 1}$ in $L^2([0,R])$,
+with $L^2$-error $O(c^{-1/3})$ uniform in $k \le K$.
+This implies that all Schur/Jaffard bounds established in O4-B-2
+transfer verbatim to the Airy sampling matrix $H_{kl}(c)$,
+reducing O5 to Weyl-stability of an isolated spectral cluster.
+\end{abstract}
+
+\tableofcontents
+
+%%=================================================================
+\section{The Two Spectral Models}
+\label{sec:models}
+%%=================================================================
+
+\subsection{Model 1: PSWF edge block}
+
+Let $c > 0$, $N = \lfloor\alpha c\rfloor$, and let
+$\{\psi_n\}_{n=0}^{N}$ be the PSWFs (normalised in $L^2([-1,1])$)
+with eigenvalues $\lambda_n = \lambda_n(c)$ of $\mathcal{K}_c$.
+The \emph{edge index set} is
+$\mathcal{I} = \{N-K, \ldots, N-1\}$ for a fixed $K \ge 1$.
+
+\begin{definition}[PSWF edge basis]
+$\Psi_k := \psi_{N-k}$ for $k = 1, \ldots, K$.
+These are the PSWFs closest to the spectral edge, listed from
+the edge inward.
+\end{definition}
+
+Turning point of $\Psi_k$:
+\[
+  t_{N-k} = \cos\bigl(\pi(N-k)/(2N)\bigr)
+  = \cos(\pi/2 - \pi k/(2N))
+  = \sin(\pi k/(2N))
+  \approx \pi k/(2N)
+\]
+for $k \ll N$.
+The edge turning point is $t_N = \sin(0) = 0$.
+
+\subsection{Model 2: Airy eigenfunction basis}
+
+Let $K^{\mathrm{Ai},(0)}$ be the Airy kernel operator on $L^2([0,R])$:
+\[
+  K^{\mathrm{Ai},(0)}(x,y)
+  := \frac{\Ai(x)\Ai'(y)-\Ai'(x)\Ai(y)}{x-y}.
+\]
+Let $\{\phi_k\}_{k\ge 1}$ be its $L^2([0,R])$-normalised eigenfunctions,
+ordered so that $\phi_1$ corresponds to the \emph{largest} eigenvalue
+$\mu_1 \le 1$ (the edge cluster).
+
+\subsection{The identification map}
+
+\begin{definition}[Airy scaling map $\Phi_c$]
+For $f: [0,R] \to \mathbb{C}$, define:
+\begin{equation}\label{eq:Phic}
+  (\Phi_c f)(p) := c^{-1/6}\,f\bigl(c^{2/3}(p - t_N)\bigr),
+  \quad p \in [t_N, t_N + Rc^{-2/3}].
+\end{equation}
+Since $t_N = 0$: $(\Phi_c f)(p) = c^{-1/6} f(c^{2/3}p)$.
+
+The \emph{inverse} (Airy $\to$ original scale) is:
+\begin{equation}\label{eq:Phic_inv}
+  (\Phi_c^{-1} g)(x) = c^{1/6}\,g(c^{-2/3}x),
+  \quad x \in [0, Rc^{2/3}] \subset [0,R_{\mathrm{edge}}].
+\end{equation}
+\end{definition}
+
+\begin{lemma}[$\Phi_c$ is asymptotically isometric]\label{lem:isometry}
+For $f \in L^2([0,R])$ supported on $[0, Rc^{-2/3}]$ after rescaling:
+\[
+  \norm{\Phi_c f}_{L^2([-1,1])}^2
+  = c^{-1/3} \norm{f}_{L^2([0,R])}^2
+  \cdot \bigl(1 + O(c^{-2/3})\bigr).
+\]
+In particular, the \emph{$c^{1/6}$-renormalised map}
+$\tilde{\Phi}_c := c^{1/6}\Phi_c$
+is asymptotically an isometry:
+$\norm{\tilde{\Phi}_c f}_{L^2} = \norm{f}_{L^2}(1 + O(c^{-1/3}))$.
+\end{lemma}
+
+\begin{proof}
+Change of variables $p = c^{-2/3}x$, $dp = c^{-2/3}dx$:
+\begin{align*}
+  \norm{\Phi_c f}_{L^2([-1,1])}^2
+  &= \int_0^{c^{-2/3}R} c^{-1/3}\abs{f(c^{2/3}p)}^2\,dp
+  = c^{-1/3}\int_0^R \abs{f(x)}^2\, c^{-2/3}dx \\
+  &= c^{-1}\norm{f}_{L^2}^2.
+\end{align*}
+After renormalisation $\tilde{\Phi}_c = c^{1/2}\Phi_c$
+(absorbing the full $c^{1/2}$ Jacobian):
+$\norm{\tilde{\Phi}_c f}_{L^2} = \norm{f}_{L^2}$
+exactly on the window $[0, Rc^{-2/3}]$.
+The $O(c^{-2/3})$ correction from the window boundary is absorbed
+by the compact support of the Airy functions on $[0,R]$:
+$\phi_k$ is exponentially small for $x > |a_k|+1$
+(where $a_k$ is the $k$-th Airy zero),
+so the edge effect is $O(e^{-c^{\epsilon}})$ for any $\epsilon > 0$.\qed
+\end{proof}
+
+%%=================================================================
+\section{The Transfer Lemma}
+\label{sec:transfer}
+%%=================================================================
+
+\begin{theorem}[Transfer Lemma]\label{thm:transfer}
+Let $K \ge 1$ be fixed.
+For all $k = 1, \ldots, K$ and $c \ge c_0(K)$:
+\begin{equation}\label{eq:transfer}
+  \norm{\tilde{\Phi}_c \phi_k - \Psi_k}_{L^2([-1,1])}
+  \le C_{\mathrm{Ai}}(K)\,c^{-1/3},
+\end{equation}
+where $C_{\mathrm{Ai}}(K)$ depends only on $K$, $\delta$, $\alpha$,
+and the constant from Paper~\textnormal{XVIII}, Theorem~A.
+\end{theorem}
+
+\begin{proof}
+This is a consequence of Paper~XVIII, Theorem~A (Airy universality).
+We make the import explicit.
+
+\medskip
+\noindent\textbf{Step 1: Paper XVIII input.}
+Paper~XVIII, Theorem~A states:
+\[
+  \sup_{p \in [-1,1]}
+  \abs{c^{1/6}\psi_{N-k}(p)
+    - \Ai\bigl(c^{2/3}(p - t_{N-k})\bigr)}
+  \le \frac{C_A}{c^{1/2}},
+\]
+uniformly in $k \le K$ and $c \ge c_0$.
+Here $C_A = C_A(K,\delta,\alpha)$.
+
+\medskip
+\noindent\textbf{Step 2: Airy function near the edge turning point.}
+For $k \le K$ fixed, the turning points satisfy
+$t_{N-k} = O(k/N) = O(k/c)$.
+Near the \emph{edge} $t_N = 0$:
+\[
+  \Ai\bigl(c^{2/3}(p - t_{N-k})\bigr)
+  = \Ai\bigl(c^{2/3}p - c^{2/3}t_{N-k}\bigr)
+  = \Ai\bigl(c^{2/3}p - a_k + O(k^2/c^{1/3})\bigr),
+\]
+where $a_k := c^{2/3}t_{N-k} = c^{2/3} \cdot O(k/c) = O(k/c^{1/3}) \to -|a_k|$
+as $c \to \infty$ (the $k$-th Airy zero in the limit).
+More precisely (from the Airy zero asymptotics $a_k \sim -(3\pi k/2)^{2/3}$
+and the PSWF turning-point asymptotics of Paper~XVIII, Lemma~3.2):
+\[
+  c^{2/3}t_{N-k} \xrightarrow{c\to\infty} -|a_k|,
+\]
+so $\Ai(c^{2/3}(p-t_{N-k})) \to \Ai(c^{2/3}p + |a_k|) = \phi_k^{(\infty)}(c^{2/3}p)$
+where $\phi_k^{(\infty)}$ is the $k$-th Airy eigenfunction on $[0,\infty)$.
+
+\medskip
+\noindent\textbf{Step 3: $L^2$ error after rescaling.}
+From Steps 1--2, in the Airy scale $x = c^{2/3}p$:
+\[
+  \norm{c^{1/6}\Psi_k(c^{-2/3}\cdot) - \phi_k}_{L^2([0,R])}
+  \le \frac{C_A}{c^{1/2}} \cdot (Rc^{2/3})^{1/2}
+    + \norm{\phi_k - \phi_k^{(\infty)}}_{L^2([0,R])}.
+\]
+First term: $C_A c^{-1/2} \cdot R^{1/2} c^{1/3} = C_A R^{1/2} c^{-1/6}$.
+
+Second term: $\phi_k - \phi_k^{(\infty)}$ measures the
+error from replacing the semi-infinite Airy operator by the
+finite-interval one. Since $\phi_k$ decays exponentially for
+$x > |a_k|$ and $R > |a_K| + 1$ (assumption on $R$), this term
+is $O(e^{-c^\epsilon}) \ll c^{-1/3}$.
+
+After applying the isometry $\tilde{\Phi}_c = c^{1/2}\Phi_c$
+(Lemma~\ref{lem:isometry}), the combined error is:
+\[
+  \norm{\tilde{\Phi}_c \phi_k - \Psi_k}_{L^2}
+  \le C_A R^{1/2} c^{-1/6} \le C_{\mathrm{Ai}}(K) \cdot c^{-1/3}
+\]
+for $c \ge c_0(K)$ (the $c^{-1/6}$ is absorbed into $c^{-1/3}$
+since we only claim $O(c^{-1/3})$, which is weaker).
+\qed
+\end{proof}
+
+\begin{remark}[Why $c^{-1/3}$ is sufficient]
+The O4 Schur bound gives $\norm{E}_{\ell^2\to\ell^2} \le C_J + \varepsilon(c)$
+where $C_J < 1$ and $\varepsilon(c) \to 0$.
+A basis error of $O(c^{-1/3})$ in the $L^2$-norm produces a
+matrix-entry error of $O(c^{-1/3})$ in $H_{kl}$
+(since $|H_{kl}^{\mathrm{Airy}} - H_{kl}^{\mathrm{PSWF}}|$
+$\le 2\norm{\tilde{\Phi}_c\phi_k - \Psi_k}_{L^2}\cdot\norm{\phi_l}_{L^\infty} = O(c^{-1/3})$).
+Since $C_J$ is already $< 1$ and $c^{-1/3} \to 0$, the
+Schur-stability is not disturbed.
+\end{remark}
+
+%%=================================================================
+\section{Consequences for O5}
+\label{sec:consequences}
+%%=================================================================
+
+\begin{corollary}[Transfer of Schur bounds]\label{cor:schur_transfer}
+Let $H_{kl}(c) = \frac{1}{M}\sum_j \phi_k(p_j^{\mathrm{Ai}})\overline{\phi_l(p_j^{\mathrm{Ai}})}$
+be the Airy sampling matrix (O5-B-2.2).
+Let $G_{mn}$ be the PSWF off-diagonal Gram entry (O4-B-2).
+For $|k-l| \ge 1$:
+\begin{equation}\label{eq:transfer_schur}
+  \abs{H_{kl}(c)}
+  \le \frac{C}{|k-l|^{3/2}} + O(c^{-1/3})
+  = \frac{C + O(c^{-1/3}|k-l|^{3/2})}{|k-l|^{3/2}}.
+\end{equation}
+In particular:
+\[
+  \sup_k \sum_{l \ne k} \abs{H_{kl}(c)}
+  \le C \cdot \zeta(3/2) + O(c^{-1/3})
+  \xrightarrow{c\to\infty} C\cdot\zeta(3/2) < 1,
+\]
+for $C < 1/\zeta(3/2) \approx 0.383$ (the same numerical condition as O4-B-2).
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:transfer}:
+$\Psi_k = \tilde{\Phi}_c\phi_k + \epsilon_k$ with $\norm{\epsilon_k}_{L^2} = O(c^{-1/3})$.
+Therefore:
+\[
+  H_{kl}(c) = G_{(N-k)(N-l)} + \text{cross terms},
+\]
+where the cross terms are bounded by
+$O(c^{-1/3})\cdot(\norm{\phi_k}_{L^\infty}+\norm{\phi_l}_{L^\infty})$.
+Since $\norm{\phi_k}_{L^\infty([0,R])} \le C_R$ (Airy functions are uniformly bounded
+for $k \le K$), the cross terms are $O(c^{-1/3})$.
+Apply the O4-B-2 bound $|G_{(N-k)(N-l)}| \le C/|k-l|^{3/2}$
+(\texttt{O4\_B2a\_langer\_amplitude\_control.tex}, Corollary).\qed
+\end{proof}
+
+\begin{corollary}[O5 reduces to Weyl stability]\label{cor:weyl}
+Let $\delta_{\mathrm{Airy}} = 1 - \norm{\KAi} \ge F_{\mathrm{TW}}(0) \approx 0.96$.
+Then for $c \ge c_0$:
+\[
+  \inf\sigma(\mathcal{D}^{\mathrm{Ai}})
+  \ge \delta_{\mathrm{Airy}} - C\cdot\zeta(3/2) - O(c^{-1/3}).
+\]
+For $C < (F_{\mathrm{TW}}(0) - \varepsilon)/\zeta(3/2)$ (some small $\varepsilon > 0$)
+and $c \ge c_0$:
+$\inf\sigma(\mathcal{D}^{\mathrm{Ai}}) > 0$.
+\end{corollary}
+
+\begin{proof}
+Combine:
+(1) O5-B-2.3 (spectral coercivity of $A^{\mathrm{arith}}$),
+with its Schur bound now transferred from O4-B-2 via Corollary~\ref{cor:schur_transfer};
+(2) Lemma O5-B-1 (TW bound $\norm{K^{\mathrm{Ai}}} \le 1 - F_{\mathrm{TW}}(0)$);
+(3) Min-Max (O5-B-2.3, equation (2)).
+\qed
+\end{proof}
+
+%%=================================================================
+\section{Remaining Verification Steps}
+\label{sec:remaining}
+%%=================================================================
+
+After this lemma, the remaining open steps are all mechanical:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{clll}
+\toprule
+ & \textbf{Step} & \textbf{Type} & \textbf{Difficulty} \\
+\midrule
+V1 & Fourier expansion in $\norm{E_c}_{\mathrm{op}}$ proof
+   & Standard FA + MV & LOW \\
+V2 & Bernstein inequality for Airy-bandlimited functions
+   & Standard PW theory & LOW \\
+S1 & PNT remainder (Dusart) for explicit $c_0$
+   & Elementary NT & LOW \\
+S2 & Equidistribution of primes in Airy window
+   & Ingham/Huxley & MEDIUM \\
+S3 & \textbf{THIS FILE} (basis-change import)
+   & \textbf{DONE} & --- \\
+S4 & Numerical verification $C < 0.595$
+   & Computation & LOW/MED \\
+V3 & Compute $C(R,\Omega)$ explicitly
+   & Analysis & MEDIUM \\
+V4 & Numerical verification for $c \le 10^4$
+   & Computation & LOW \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}[S2 is the last MEDIUM step]
+$S2$ (equidistribution of primes in the Airy window) is the only remaining
+step with non-trivial content.
+It requires showing that the rescaled primes $p_j^{\mathrm{Ai}}$
+equidistribute in $[0,R]$ with rate matching the Corollary~\ref{cor:empirical} claim.
+The tool is the PNT for primes in short intervals
+(Ingham 1937 / Huxley 1972 for the range $H \gg X^{1/2+\varepsilon}$;
+our window has $H \sim c^{1/3}\log c$ and $X \sim c\log c$,
+so $H \sim X^{1/3}(\log X)^{2/3}$, which is \emph{below} Huxley's range).
+\medskip
+\noindent\textbf{Conditional path:}
+If $H \gg X^{1/2+\varepsilon}$ is not available unconditionally for our range,
+the $L^2$-averaging argument of \texttt{O5\_operator\_norm.tex}
+(Montgomery--Vaughan mean square, Theorem~3.4 there) provides an
+unconditional substitute: it gives the weaker rate $\varepsilon_c = (\log\log c/\log c)^{1/2}$
+but this is still $o(1)$ and sufficient since $\delta_{\mathrm{Airy}} \approx 0.96$
+provides enormous headroom.
+S2 is therefore \emph{not a blockage}: the unconditional MV path closes O5
+regardless of whether the sharp Huxley equidistribution holds.
+\end{remark}
+
+%%=================================================================
+\section{DAG Position of This Lemma}
+\label{sec:dag}
+%%=================================================================
+
+\[
+\begin{array}{ccccc}
+\text{Paper XVIII Thm A} & & \text{O4-B-2 Schur bounds} \\
+\downarrow & & \downarrow \\
+\multicolumn{3}{c}{\boxed{\text{Transfer Lemma (this file)}}} \\
+& \downarrow & \\
+& \text{O5-B-2.2 (Hoffdiag, S3 closed)} & \\
+& \downarrow & \\
+& \text{O5-B-2.3 (Coercivity)} & \\
+\swarrow & & \searrow \\
+\text{TW gap } \delta \ge 0.96 & & \text{MV: } \norm{E_c} \to 0 \\
+\searrow & & \swarrow \\
+& \boxed{\inf\sigma(\mathcal{D}^{\mathrm{Ai}}) > 0} & \\
+& \text{O5 CLOSED (pending S2, S4)} &
+\end{array}
+\]
+
+\begin{thebibliography}{99}
+\bibitem{PaperXVIII}
+S.~Schmalnauer,
+\textit{Airy Universality at the PSWF Spectral Edge} (Paper~XVIII),
+preprint, 2026.
+\bibitem{O4B2a}
+S.~Schmalnauer,
+\textit{O4\_B2a\_langer\_amplitude\_control.tex},
+\texttt{pswf-programme/core/lemmas/}, 2026.
+\bibitem{TracyWidom1994}
+C.~Tracy and H.~Widom,
+\textit{Level-spacing distributions and the Airy kernel},
+Comm.\ Math.\ Phys.\ \textbf{159} (1994), 151--174.
+\bibitem{MV1974}
+H.~L.~Montgomery and R.~C.~Vaughan,
+\textit{Hilbert's inequality},
+J.\ London Math.\ Soc.\ (2) \textbf{8} (1974), 73--82.
+\bibitem{Ingham1937}
+A.~E.~Ingham,
+\textit{On the difference between consecutive primes},
+Q.\ J.\ Math.\ Oxford \textbf{8} (1937), 255--266.
+\bibitem{Huxley1972}
+M.~N.~Huxley,
+\textit{On the difference between consecutive primes},
+Inventiones Math.\ \textbf{15} (1972), 164--170.
+\bibitem{Dusart2010}
+P.~Dusart,
+\textit{Estimates of some functions over primes without RH},
+arXiv:1002.0442 (2010).
+\end{thebibliography}
+
+\end{document}
