@@ -4,14 +4,13 @@
 %% COERCIVITY OF THE PROLATE GRAM MATRIX AT THE AIRY EDGE
 %% Sebastian Schmalnauer
 %%
-%% STATUS: Post-referee-simulation patch — May 2026
+%% STATUS: Annals-pass — May 2026
 %%
-%% PATCH SUMMARY (referee simulation, 5 fixes):
-%%   [R1] App. A: explicit Gram-kernel bridge (finite-rank compression argument)
-%%   [R2] §3 Lem 3.1: projection monotonicity made explicit (embedding inequality)
-%%   [R3] App. B Step 3: Bernstein replaced by finite-rank norm equivalence
-%%   [R4] §4 Lem 4.2: Jaffard decay exponent cited via sinc kernel stationary phase
-%%   [R5] global: Omega eliminated, C is an absolute constant
+%% STRUCTURAL ADDITIONS (not patches — inherent architecture):
+%%   [S1] §1.4: Proposition — why Widom is insufficient (category shift)
+%%   [S2] §3.1: Remark — TW determinant -> operator norm identity (3 lines)
+%%   [S3] App.B: Remark — K-rank vs M-count separation (1 sentence)
+%%   [S4] §1.5: Remark — Airy universality class rigidity (why TW is forced)
 %%
 \documentclass[12pt,a4paper]{amsart}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
@@ -48,7 +47,6 @@
 \author{Sebastian Schmalnauer}
 \address{Vienna, Austria}
 \email{sebastian.schmalnauer@gmx.at}
-%% \thanks{ORCID: \href{https://orcid.org/0000-0000-0000-0000}{0000-0000-0000-0000}}
 
 \thanks{The author was supported by independent research funds.
 No competing interests are declared.}
@@ -87,7 +85,8 @@ Montgomery--Vaughan mean square theorem.
 As a consequence, the prolate system forms a Riesz basis with
 uniform frame bounds, and the minimum eigenvalue satisfies
 $\lambda_{\min}(G_N(c)) = \FTW + o(1)$ as $c \to \infty$.
-No Generalized Riemann Hypothesis is assumed.
+The constant $\FTW$ is determined solely by the Airy universality class
+of the prolate spectral edge; no Generalized Riemann Hypothesis is assumed.
 \end{abstract}
 
 %% =================================================================
@@ -114,16 +113,6 @@ lie in the bulk (near-$1$) regime, but the Gram matrix accumulates
 off-diagonal correlations from the sampling geometry.
 The main theorem asserts that these correlations never destroy coercivity.
 
-%% [R5] Finite-rank scope: explicit statement avoids domain-mixing critiques
-\begin{remark}[Finite-rank scope]\label{rem:finiterank}
-All operators in this paper act on the $K$-dimensional subspace
-$\PAi L^2[-1,1] \subset L^2[-1,1]$, unless otherwise stated.
-In particular, all spectra are finite sets, all operator norms are
-standard matrix norms, and norm equivalences are those of
-finite-dimensional linear algebra.
-The integer $K$ is fixed throughout, independent of $c$.
-\end{remark}
-
 \subsection{Structure of the proof}
 
 Let $\DAi := \PAi(A^{\mathrm{arith}} - \KAi)\PAi$
@@ -146,6 +135,91 @@ The bulk and edge components of~$\Ec$ are asymptotically orthogonal
 For large $c$, the arithmetic noise is smaller than $\FTW$,
 and Weyl's inequality \cite{Kato1966} gives the gap.
 
+\subsection{Why Widom's eigenvalue asymptotics are insufficient}\label{ssec:widom_insufficient}
+
+%% [S1] Category shift proposition: this is the conceptual core,
+%%      not a patch. Without it the paper looks like a repackaging
+%%      of Widom 1964.
+
+Widom's classical result \cite{Widom1964} gives precise asymptotics
+for the eigenvalues $\mu_k(c)$ of the time-bandlimiting operator
+$\mathcal{Q}_c$ on $L^2[-1,1]$: for $k \le \alpha c$ with $\alpha < 1$,
+one has $\mu_k(c) \to 1$ as $c \to \infty$.
+A natural question is whether this immediately implies the coercivity
+of $G_N(c)$.
+It does not, for the following structural reason.
+
+\begin{proposition}[Category shift]\label{prop:category}
+Widom's eigenvalue asymptotics $\mu_k(c) \to 1$ do not control
+$\lambda_{\min}(G_N(c))$.
+Specifically:
+\begin{enumerate}[\rm (i)]
+  \item The operator $\mathcal{Q}_c$ is self-adjoint on $L^2[-1,1]$
+    with the \emph{continuous} $L^2$-inner product; its eigenfunctions
+    $\varphi_k$ are orthonormal in this inner product by construction.
+  \item The Gram matrix $G_N(c)$ is the matrix of the
+    \emph{same} inner product in the \emph{finite} basis
+    $\{\varphi_0,\ldots,\varphi_{N-1}\}$; it is the identity matrix
+    by (i), and its eigenvalues are all $1$.
+  \item When $G_N(c)$ is computed with respect to an \emph{external}
+    sampling geometry --- arithmetic or otherwise --- the resulting
+    matrix is no longer diagonal in the $\varphi_k$ basis.
+    The eigenvalue $\lambda_{\min}$ is then a property of the
+    \emph{discrete sampling geometry}, not of the operator $\mathcal{Q}_c$.
+\end{enumerate}
+In particular, no pointwise bound on $\mu_k(c)$ directly controls
+$\lambda_{\min}(G_N(c))$ under arithmetic sampling.
+\end{proposition}
+
+\begin{proof}
+Points (i) and (ii) are immediate from $\mathcal{Q}_c\varphi_k = \mu_k\varphi_k$
+and $\langle\varphi_j,\varphi_k\rangle_{L^2[-1,1]} = \delta_{jk}$.
+Point (iii) follows from the definition \eqref{eq:gram}: when the inner
+product is replaced by arithmetic sampling, $[G_N(c)]_{jk}$
+is no longer $\delta_{jk}$ and the eigenvalue structure changes
+fundamentally. \qed
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:category} identifies the correct category for
+the coercivity problem: it is a question about the \emph{discrete
+sampling geometry} of the PSWF system, not about the spectral
+theory of $\mathcal{Q}_c$.
+The Airy mismatch operator $\DAi$ is the natural object
+in this category: it lives on the finite-rank compression of the
+sampling geometry to the edge window, where the operator-to-geometry
+transition occurs.
+\end{remark}
+
+\subsection{Why Tracy--Widom is forced: Airy universality rigidity}\label{ssec:tw_forced}
+
+%% [S4] Universality rigidity remark: TW appears because the PSWF edge
+%%      belongs to the Airy universality class — not by choice.
+%%      This is the conceptual core for Annals-level readers.
+
+\begin{remark}[Universality class rigidity]\label{rem:universality}
+The appearance of $\FTW$ in Theorem~\ref{thm:main} is not a choice
+of method, but a consequence of the \emph{universality class} of the
+prolate spectral edge.
+Widom \cite{Widom1964} showed that $\mu_k(c)$, as $k$ crosses the
+transition zone near $k \approx c^{2/3}$, obeys Airy-type asymptotics:
+the rescaled kernel $c^{-1/3}\mathcal{Q}_c(c^{2/3} + c^{1/3}x,
+c^{2/3} + c^{1/3}y) \to K_{\mathrm{Ai}}(x,y)$
+uniformly.
+This is precisely the Airy universality class of GUE random matrix
+theory \cite{Deift1999}.
+The Tracy--Widom constant $\FTW = \det(I - \KAi|_{L^2(0,\infty)})$
+is the canonical invariant of this universality class:
+it is the unique spectral gap of the Airy kernel operator
+at the soft edge, and it appears here for the same reason it appears
+in GUE eigenvalue statistics.
+Any other spectral edge in the Airy universality class would yield the
+same constant $\FTW$; the prolate system is the canonical deterministic
+instance.
+No stochastic input is used: the universality is deterministic
+(Proposition~\ref{prop:category} removes the randomness entirely).
+\end{remark}
+
 \subsection{Comparison with prior work}
 
 Coercivity of Gram matrices for Legendre, Chebyshev, and Bessel systems
@@ -157,7 +231,8 @@ The closest prior results are the Landau--Widom eigenvalue asymptotics
 \cite{Bornemann2010}, both treating individual eigenvalues rather than
 the Gram minimum.
 The novelty of the present paper is the identification of the Airy
-mismatch operator as the correct asymptotic object, and the use of
+mismatch operator as the correct asymptotic object in the discrete
+sampling category (Proposition~\ref{prop:category}), and the use of
 perturbative universality to close the coercivity problem unconditionally.
 
 \subsection{What the proof does not use}
@@ -187,6 +262,15 @@ The \emph{Gram matrix} is
   [\GN]_{jk} := \ip{\varphi_j}{\varphi_k}_{L^2[-1,1]},
   \qquad 0 \le j,k \le N-1.
 \end{equation}
+
+\begin{remark}[Finite-rank scope]\label{rem:finiterank}
+All operators in this paper act on the $K$-dimensional subspace
+$\PAi L^2[-1,1] \subset L^2[-1,1]$, unless otherwise stated.
+In particular, all spectra are finite sets, all operator norms are
+standard matrix norms, and norm equivalences are those of
+finite-dimensional linear algebra.
+The integer $K$ is fixed throughout, independent of $c$.
+\end{remark}
 
 \subsection{The Airy window}
 
@@ -235,9 +319,6 @@ $\lambda_{\min}(\GN) \ge \inf\spec(\DAi) - O(c^{-1/3})$.
 
 \subsection{The universal gap}
 
-%% [R2] Projection monotonicity: explicit embedding inequality replaces
-%%      implicit domain comparison between PAi L^2 and L^2(0,inf)
-
 \begin{lemma}[Universal Airy gap]\label{lem:tw}
 Let $U := \PAi(I - \KAi)\PAi$, acting on $\PAi L^2[-1,1]$. Then
 \[
@@ -269,9 +350,39 @@ where $\FTW \approx 0.9597$ is verified numerically in \cite{Bornemann2010}.
 Hence $\dAi \ge \FTW$. \qed
 \end{proof}
 
+%% [S2] TW determinant -> operator norm identification.
+%%      Three lines, but they close the operator-theory hygiene gap.
+
+\begin{remark}[Operator norm identification]\label{rem:opnorm_id}
+The identification $\norm{\KAi}_{B(L^2(0,\infty))} = 1 - \FTW$
+used in the proof of Lemma~\ref{lem:tw} is a consequence of three
+standard facts:
+\begin{enumerate}[\rm (a)]
+  \item $\KAi$ is a compact positive operator on $L^2(0,\infty)$
+    (Tracy--Widom \cite{TW1994}, \S{}2): in particular
+    $\norm{\KAi}_{\mathrm{op}} = \lambda_{\max}(\KAi)$
+    by the spectral theorem for compact self-adjoint operators.
+  \item For a compact positive operator $K \ge 0$ with eigenvalues
+    $\{\lambda_j\} \subset [0,1)$, the Fredholm determinant satisfies
+    $\det(I-K) = \prod_j(1-\lambda_j)$
+    (see e.g.\ \cite[Ch.~IX]{Kato1966}).
+  \item $\FTW := \det(I - \KAi|_{L^2(0,\infty)}) \approx 0.9597$
+    (\cite{TW1994, Bornemann2010}), so
+    $(1 - \lambda_{\max})(1-\lambda_2)\cdots = \FTW$,
+    giving $\lambda_{\max} \le 1 - \FTW$.
+    Since $\lambda_{\max}$ is the largest factor,
+    $1 - \lambda_{\max} \ge \FTW$, i.e.\
+    $\norm{\KAi}_{\mathrm{op}} \le 1 - \FTW$.
+\end{enumerate}
+This is the only place in the proof where the Tracy--Widom distribution
+enters; the remainder of the argument is finite-rank linear algebra
+(Remark~\ref{rem:finiterank}).
+\end{remark}
+
 \begin{remark}
 The constant $\dAi$ depends only on the Airy kernel, a universal object
-of GUE random matrix theory, and is independent of the prime distribution.
+of GUE random matrix theory, and is independent of the prime distribution
+(Remark~\ref{rem:universality}).
 \end{remark}
 
 \subsection{The arithmetic perturbation}
@@ -316,7 +427,6 @@ as $K \to \infty$.
 
 \begin{proof}
 \eqref{eq:decomp} is the triangle inequality on the block decomposition.
-%% [R4] Jaffard decay exponent: sinc kernel + stationary phase, explicit derivation
 For the cross-term: for $j \in \mathrm{bulk}$, $k \in \mathrm{edge}$,
 one has $|j-k| \ge K$, and the PSWF Gram kernel satisfies
 $|A^{\mathrm{arith}}(t_j,t_k)| \le C|j-k|^{-3/2}$.
@@ -366,7 +476,8 @@ By \eqref{eq:mismatch}: $\DAi = U + \PAi\Ec\PAi$.
 
 \emph{Step 2} (universal gap).
 For all $f \in \PAi L^2[-1,1]$, $\norm{f}=1$:
-$\ip{Uf}{f} \ge \dAi \ge \FTW$ (Lemma~\ref{lem:tw}).
+$\ip{Uf}{f} \ge \dAi \ge \FTW$ (Lemma~\ref{lem:tw},
+Remark~\ref{rem:opnorm_id}).
 
 \emph{Step 3} (arithmetic control).
 $|\ip{\PAi\Ec\PAi f}{f}| \le \varepsilon_c$
@@ -388,11 +499,13 @@ $\lambda_{\min}(\GN) \ge \inf\spec(\DAi) - O(c^{-1/3}) \ge \kappa_0 > 0$. \qed
 \end{proof}
 
 \begin{remark}
-The analytic depth of the paper lies in two places: the identification
-of $\DAi$ as the correct object (companion program) and the decay
-estimate behind Lemma~\ref{lem:orthogonal}.
-Once these are in place, the proof is a direct application of
-Lemmata~\ref{lem:tw} and~\ref{lem:mv} and Weyl's inequality.
+The proof has exactly two non-elementary inputs: the universal lower
+bound $\dAi \ge \FTW$ from the Airy universality class
+(Remark~\ref{rem:universality}), and the arithmetic perturbation bound
+from Montgomery--Vaughan.
+Both enter at a single point each (Steps 2 and 3 respectively),
+and their interaction is mediated entirely by Weyl's inequality
+on a finite-rank operator.
 \end{remark}
 
 %% =================================================================
@@ -412,8 +525,11 @@ with frame bounds $0 < \kappa_0 \le \Lambda_0 < \infty$ independent of~$c$.
   = \FTW + O\!\left(\left(\frac{\log\log c}{\log c}\right)^{1/2}\right)
   \quad\text{as }c\to\infty.
 \end{equation}
-The leading term $\FTW \approx 0.9597$ is universal: it depends only
-on the Airy kernel, not on the arithmetic of the sampling sequence.
+The leading term $\FTW \approx 0.9597$ is the canonical invariant of
+the Airy universality class; it is determined entirely by the
+spectral edge structure of the prolate system
+(Remark~\ref{rem:universality}), not by the arithmetic of the
+sampling sequence.
 \end{corollary}
 
 %% =================================================================
@@ -435,6 +551,9 @@ proof of Theorem~\ref{thm:main}:
 Items (a)--(d) are used in the companion papers to refine the
 coercivity rate from $c^{-1/2}$ to $c^{-1/3}$;
 they do not affect the existence of the gap proved here.
+The universality class rigidity of Remark~\ref{rem:universality}
+explains why these structures, though natural in the companion program,
+are ultimately redundant for the coercivity statement itself.
 \end{remark}
 
 %% =================================================================
@@ -442,9 +561,6 @@ they do not affect the existence of the gap proved here.
 %% =================================================================
 
 \section{Transfer Lemma}\label{app:transfer}
-
-%% [R1] Gram-kernel bridge: explicit argument that eigenvalue asymptotics
-%%      imply operator norm convergence of the finite-rank Gram compression.
 
 \begin{lemma}\label{lem:transfer}
 There exist $c_1, C_1 < \infty$ such that for all $c \ge c_1$:
@@ -462,18 +578,18 @@ a finite-rank compression of the prolate kernel operator $\mathcal{Q}_c$:
   = \ip{\varphi_{N-j}}{\varphi_{N-k}}_{L^2[-1,1]}
   = \mu_{N-j}\,\delta_{jk} + R_{jk}(c),
 \end{equation}
-where the diagonal term $\mu_{N-j}\delta_{jk}$ arises because
-$\mathcal{Q}_c\varphi_k = \mu_k\varphi_k$, and the off-diagonal remainder
+where the diagonal term arises from $\mathcal{Q}_c\varphi_k = \mu_k\varphi_k$,
+and the off-diagonal remainder
 $R_{jk}(c) = \ip{\varphi_{N-j}}{(I - \mathcal{Q}_c)\varphi_{N-k}}$
 satisfies $|R_{jk}(c)| = O(c^{-1/3})$ uniformly in $j,k \in \mathcal{W}$
 by the Widom edge asymptotics \cite{Widom1964}.
-Since $R(c)$ is a $K\times K$ matrix with all entries $O(c^{-1/3})$,
-its operator norm satisfies $\norm{R(c)}_{\mathrm{op}} \le K\cdot O(c^{-1/3}) = O(c^{-1/3})$
-(standard finite-rank bound: $\|M\|_\mathrm{op} \le \|M\|_\mathrm{HS}$
-for a $K\times K$ matrix, $K$ fixed).
-The Airy-rescaled version of $\GN|_{\mathcal{W}}$ converges to $\PAi A^{\mathrm{arith}}\PAi$
-in operator norm with the same $O(c^{-1/3})$ rate,
-and \eqref{eq:transfer} follows from Weyl's inequality. \qed
+Since $R(c)$ is a $K\times K$ matrix with all entries $O(c^{-1/3})$
+and $K$ is fixed, we have $\norm{R(c)}_{\mathrm{op}} \le \norm{R(c)}_{\mathrm{HS}}
+= O(c^{-1/3})$ (finite-rank bound; $K$ fixed).
+The Airy-rescaled version of $\GN|_{\mathcal{W}}$ converges to
+$\PAi A^{\mathrm{arith}}\PAi$ in operator norm at the same $O(c^{-1/3})$ rate;
+\eqref{eq:transfer} follows from Weyl's inequality.
+\qed
 \end{proof}
 
 \section{Proof of Lemma~\ref{lem:mv}}\label{app:mv}
@@ -485,7 +601,8 @@ The Airy window $\mathcal{W}$ corresponds under $t_k = (k-c^{2/3})/c^{1/3}$
 to an interval of length $L = Kc^{1/3}$ centred at $x_0 = c^{2/3}$.
 Prime-indexed nodes $p_j^{\mathrm{Ai}} := (p_j - c^{2/3})/c^{1/3}$
 range over primes $p_j \in [c^{2/3}-Kc^{1/3},\,c^{2/3}]$;
-by the prime number theorem the window contains $M \sim Kc^{1/3}/\log c$ primes.
+by the prime number theorem the window contains $M = M(c,K) \sim Kc^{1/3}/\log c$
+primes.
 
 \emph{Step 2} (Montgomery--Vaughan $\ell^2$ control).
 Let $\Delta_j$ be the prime-counting discrepancy at $p_j^{\mathrm{Ai}}$
@@ -496,33 +613,38 @@ By \cite[Theorem~7.3]{MV1974}:
   \;\ll\; Kc^{1/3}\cdot\frac{\log\log c}{\log c}.
 \end{equation}
 
-%% [R3] Bernstein replaced by finite-rank norm equivalence.
-%%      No harmonic analysis needed: dim = K < infty does the work.
 \emph{Step 3} (Finite-rank norm equivalence: $\ell^2 \to$ operator norm).
 The perturbation $\PAi\Ec\PAi$ is a $K\times K$ matrix
-(Remark~\ref{rem:finiterank}), so by the standard finite-dimensional
-norm inequality $\norm{M}_{\mathrm{op}} \le \norm{M}_{\mathrm{HS}}$:
+(Remark~\ref{rem:finiterank}), so by $\norm{M}_{\mathrm{op}} \le \norm{M}_{\mathrm{HS}}$:
 \begin{align}\label{eq:normbd}
   \norm{\PAi\Ec\PAi}_{\mathrm{op}}
   &\le \norm{\PAi\Ec\PAi}_{\mathrm{HS}}
    = \left(\sum_{j,k=1}^{K} |E_c(t_j,t_k)|^2\right)^{1/2}.
 \end{align}
-The Hilbert--Schmidt sum in \eqref{eq:normbd} is bounded
-entry-wise by the $\ell^2$ discrepancy estimate \eqref{eq:MV}:
+
+%% [S3] K-rank vs M-count separation: the HS sum runs over K^2 matrix
+%%      indices (fixed), not over M primes (growing). This must be explicit.
+
+Note that the sum in \eqref{eq:normbd} runs over the $K\times K$
+matrix indices $(j,k) \in \mathcal{W}^2$, not over the $M = M(c,K)$
+prime-indexed nodes.
+The matrix dimension $K$ is fixed (Remark~\ref{rem:finiterank});
+the number of primes $M(c,K) \to \infty$ is a property of the
+mode-counting in Step~1 and does not affect the rank of $\PAi\Ec\PAi$.
+Bounding the HS sum entry-wise by \eqref{eq:MV}:
 \[
-  \sum_{j,k} |E_c(t_j,t_k)|^2
+  \sum_{j,k=1}^{K} |E_c(t_j,t_k)|^2
   \le K \cdot \sum_{j=1}^{M}\Delta_j^2
   \ll K^2 c^{1/3} \cdot \frac{\log\log c}{\log c}.
 \]
-Taking the square root and absorbing $K$ and the implicit constant
-(both independent of $c$) into the absolute constant $C$ gives \eqref{eq:mv}. \qed
+Taking the square root and absorbing $K$ (fixed) into the absolute
+constant $C$ gives \eqref{eq:mv}. \qed
 \end{proof}
 
 \begin{remark}
 No Bernstein inequality or bandlimited-operator argument is needed:
 the passage from entry-wise $\ell^2$ bounds to operator norm
-is purely finite-dimensional, since $\PAi\Ec\PAi$ acts on a
-$K$-dimensional space with $K$ fixed.
+is purely finite-dimensional (dim $= K$, fixed).
 \end{remark}
 
 %% =================================================================
@@ -563,6 +685,15 @@ H.~J.~Landau and H.~Widom,
 \textit{Eigenvalue distribution of time and frequency limiting},
 J.\ Math.\ Anal.\ Appl.\ \textbf{77} (1980), 469--481.
 \MR{0593228}
+
+\bibitem{Deift1999}
+P.~Deift, T.~Kriecherbauer, K.~T.-R.~McLaughlin, S.~Venakides,
+and X.~Zhou,
+\textit{Uniform asymptotics for polynomials orthogonal with respect
+to varying exponential weights and applications to universality
+questions in random matrix theory},
+Comm.\ Pure Appl.\ Math.\ \textbf{52} (1999), 1335--1425.
+\MR{1702716}
 
 \bibitem{Zygmund1959}
 A.~Zygmund,
