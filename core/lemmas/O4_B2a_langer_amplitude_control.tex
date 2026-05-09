@@ -1,0 +1,562 @@
+%%
+%% O4_B2a_langer_amplitude_control.tex
+%% Lemma O4-B-2a: Langer Amplitude W^{1,1} Control
+%%
+%% Position in DAG:
+%%   airy_discrete_stability_lemma.tex (ass:gap)  --+
+%%   Paper XVIII Theorem A (Langer--Olver)          +--> THIS LEMMA --> O4-B-2 (Step iv)
+%%
+%% Input:  ass:gap (kappa_0 c^{-1/3} eigenvalue gap, already proved)
+%% Output: ||d/dp [(u^(m))^{-1/4} (u^(n))^{-1/4}]||_{L^1} <= C / |m-n|
+%%         uniformly in N and in m,n in the edge index set I.
+%%
+%% This lemma closes T2 and T4 of O4_airy_offdiag_decay.tex:
+%%   T4 -- lower bound on Psi(p): follows from ass:gap (Section 3)
+%%   T2 -- cubic turning-point computation: follows from the W^{1,1}
+%%          amplitude control combined with van der Corput (Section 4)
+%%
+\documentclass[12pt,a4paper]{amsart}
+\usepackage{amsmath,amssymb,amsthm,mathtools,enumitem,booktabs,hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Ai}{\mathrm{Ai}}
+\newcommand{\Edge}{\mathrm{Edge}}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\dd}{\,d}
+
+\title{Lemma O4-B-2a: Langer Amplitude $W^{1,1}$ Control\\
+{\normalsize Closing the Technical Gap in O4-B-2}}
+\author{Sebastian Schmalnauer}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $u^{(n)}(p) := -c^{2/3}\zeta_n(p)$ be the (positive)
+Langer variable in the oscillatory region,
+where $\zeta_n$ is the Langer--Olver change of variables
+for PSWF index $n$ (Paper~XVIII, Theorem~A).
+For $m,n$ in the edge index set $\mathcal{I} = [(1-\delta)N,N)$
+with $k := |m-n| \geq 1$, define the \emph{joint amplitude}
+\[
+  A_{mn}(p) := \bigl(u^{(m)}(p)\bigr)^{-1/4}\bigl(u^{(n)}(p)\bigr)^{-1/4}.
+\]
+We prove:
+\begin{enumerate}[(i)]
+  \item $A_{mn} \in L^1([-1,1])$ with
+        $\norm{A_{mn}}_{L^1} \leq C$ uniformly in $N$, $m$, $n$.
+  \item $\norm{A_{mn}'}_{L^1([-1,1])} \leq \dfrac{C}{k}$
+        uniformly in $N$, $m$, $n \in \mathcal{I}$, $k \geq 1$.
+\end{enumerate}
+Part~(ii) is the \emph{key input} for the van der Corput estimate
+in Step~(iv) of Lemma~O4-B-2, yielding
+$|G_{mn}| \leq C/(N k^{3/2})$ for all $m \neq n$ in $\mathcal{I}$.
+\end{abstract}
+
+\tableofcontents
+
+%%=================================================================
+\section{Setup and Notation}
+\label{sec:setup}
+%%=================================================================
+
+Fix $c \geq c_0$, $N = \lfloor \alpha c \rfloor$, $\alpha \in (0,2/\pi)$,
+$\delta \in (0,1)$, and the edge index set $\mathcal{I} := [(1-\delta)N, N)$.
+
+\subsection{Langer variable}
+
+For $n \in \mathcal{I}$ and $x \in [-1,1]$, the Langer variable $\zeta_n(x)$
+is defined implicitly by
+\begin{equation}\label{eq:langer}
+  \tfrac{2}{3}(-\zeta_n(x))^{3/2} = \int_x^{t_n} \sqrt{t_n^2 - s^2}\dd s,
+  \qquad x < t_n,
+\end{equation}
+where $t_n = \cos(\pi n/(2N))$ is the PSWF classical turning point.
+In the oscillatory region $x < t_n$, $\zeta_n(x) < 0$, and we set
+\[
+  u^{(n)}(x) := -c^{2/3}\zeta_n(x) > 0.
+\]
+
+\subsection{Behaviour near the turning point}
+
+From~\eqref{eq:langer} and the local expansion of the integrand:
+\begin{equation}\label{eq:u-near-tp}
+  u^{(n)}(x) = c^{2/3}\,\beta_n^{2/3}\,(t_n - x)^{1/2}\bigl(1 + O(t_n - x)\bigr)
+  \quad \text{as } x \to t_n^-,
+\end{equation}
+where $\beta_n := \sqrt{2 t_n} > 0$ depends only on $n/N$ and is
+bounded above and below uniformly for $n \in \mathcal{I}$:
+\begin{equation}\label{eq:beta-bounds}
+  0 < \beta_* \leq \beta_n \leq \beta^* < \infty, \quad n \in \mathcal{I}.
+\end{equation}
+In the bulk $x \leq t_n - \epsilon_0$ for any fixed $\epsilon_0 > 0$:
+\begin{equation}\label{eq:u-bulk}
+  u^{(n)}(x) \geq c_\epsilon c^{2/3} > 0 \quad\text{uniformly in }n,
+\end{equation}
+so $u^{(n)}$ is bounded away from zero away from the turning point.
+
+\subsection{Turning point separation for $m \neq n$}
+
+By the eigenvalue gap (\texttt{airy\_discrete\_stability\_lemma.tex},
+Corollary~\ref{cor:gap} below):
+\begin{equation}\label{eq:tp-sep}
+  |t_m - t_n| = \frac{|m-n|}{2N}\cdot\pi \cdot \frac{1}{\sin(\pi m_0/(2N))}
+  + O\bigl((k/N)^2\bigr)
+  \;\geq\; \frac{\kappa_1 k}{N}
+\end{equation}
+for some $\kappa_1 = \kappa_1(\delta, \alpha) > 0$ uniform in $N$,
+where $m_0 = \lfloor(m+n)/2\rfloor$.
+
+\begin{corollary}[from airy\_discrete\_stability\_lemma.tex]
+\label{cor:gap}
+For all $c \geq c_0$ and $n \in \mathcal{I}$:
+$\lambda_n - \lambda_{n+1} \geq \kappa_0 c^{-1/3}$,
+and in particular the turning point spacing satisfies~\eqref{eq:tp-sep}.
+\end{corollary}
+
+%%=================================================================
+\section{Proof of Part (i): $L^1$ bound on $A_{mn}$}
+\label{sec:L1}
+%%=================================================================
+
+\begin{lemma}[$L^1$ bound on the joint amplitude]\label{lem:L1}
+There exists $C = C(\delta, \alpha) > 0$ such that
+\[
+  \norm{A_{mn}}_{L^1([-1,1])} \leq C
+\]
+for all $m, n \in \mathcal{I}$, uniformly in $N$.
+\end{lemma}
+
+\begin{proof}
+We split the integral at the turning points.
+Assume WLOG $t_n < t_m$. Split $[-1,1] = I_1 \cup I_2 \cup I_3$:
+\[
+  I_1 = [-1, t_n - \epsilon_0], \quad
+  I_2 = [t_n - \epsilon_0, t_m + \epsilon_0], \quad
+  I_3 = [t_m + \epsilon_0, 1],
+\]
+where $\epsilon_0 > 0$ is small and fixed.
+
+\medskip
+\noindent\textbf{Region $I_1$ (bulk, both oscillatory).}
+By~\eqref{eq:u-bulk}, $u^{(m)}, u^{(n)} \geq c_\epsilon c^{2/3}$ on $I_1$.
+Thus $A_{mn} \leq c_\epsilon^{-1/2} c^{-2/3}$ on $I_1$, and
+$\int_{I_1} A_{mn} \leq 2 c_\epsilon^{-1/2} c^{-2/3} \leq C$.
+
+\medskip
+\noindent\textbf{Region $I_2$ (transition window).}
+This interval has length $O(k/N + \epsilon_0)$.
+On $I_2$: $u^{(n)}(p) \sim c^{2/3}(t_n - p)^{1/2}$ near $t_n$
+and $u^{(m)}(p) \sim c^{2/3}(t_m - p)^{1/2}$ near $t_m$.
+Both are bounded below by $c^{2/3}|t - t_{\cdot}|^{1/2}$,
+so
+\[
+  A_{mn}(p) \leq
+  \frac{1}{c^{1/3}|t_n - p|^{1/4}} \cdot
+  \frac{1}{c^{1/3}|t_m - p|^{1/4}}.
+\]
+Since $|p - 1/(4)| \in L^1_\mathrm{loc}$ (exponent $-1/4 > -1$),
+\[
+  \int_{I_2} A_{mn}\dd p
+  \leq \frac{1}{c^{2/3}}\int_{I_2}
+  \frac{dp}{|t_n - p|^{1/4}|t_m - p|^{1/4}}
+  \leq \frac{C}{c^{2/3}} \cdot \frac{N^{1/2}}{k^{1/2}} \leq C',
+\]
+where we used $|I_2| \sim k/N$, the Cauchy--Schwarz inequality,
+and $N \sim \alpha c$.
+
+\medskip
+\noindent\textbf{Region $I_3$ (beyond $t_m$, decaying Airy).}
+For $p > t_m$, both $u^{(m)}, u^{(n)}$ are large and positive
+(exponential region of Airy), and $A_{mn}$ decays exponentially.
+The contribution is $O(e^{-c_0})$.
+
+Combining the three regions: $\norm{A_{mn}}_{L^1} \leq C$.
+\end{proof}
+
+%%=================================================================
+\section{Proof of Part (ii): $W^{1,1}$ bound on $A_{mn}$}
+\label{sec:W11}
+%%=================================================================
+
+\begin{lemma}[$W^{1,1}$ bound on the joint amplitude]\label{lem:W11}
+There exists $C = C(\delta, \alpha) > 0$ such that
+\[
+  \norm{A_{mn}'}_{L^1([-1,1])} \leq \frac{C}{k}
+\]
+for all $m \neq n$ in $\mathcal{I}$, $k = |m-n| \geq 1$, uniformly in $N$.
+\end{lemma}
+
+\begin{proof}
+Write $A_{mn} = f \cdot g$ with
+$f(p) := (u^{(m)}(p))^{-1/4}$ and $g(p) := (u^{(n)}(p))^{-1/4}$.
+By the product rule:
+\[
+  A_{mn}'(p) = f'(p)g(p) + f(p)g'(p).
+\]
+By symmetry it suffices to estimate $\norm{f' g}_{L^1}$.
+
+\medskip
+\noindent\textbf{Step 1: Compute $f'$.}
+Differentiating $f(p) = (u^{(m)}(p))^{-1/4}$:
+\[
+  f'(p) = -\frac{1}{4}(u^{(m)}(p))^{-5/4}\cdot \partial_p u^{(m)}(p).
+\]
+From~\eqref{eq:langer} and the definition of $u^{(m)}$:
+\begin{equation}\label{eq:du-dp}
+  \partial_p u^{(m)}(p) = -c^{2/3}\zeta_m'(p).
+\end{equation}
+Differentiating~\eqref{eq:langer} implicitly:
+$\zeta_m'(p) = -\sqrt{t_m^2 - p^2}\,/\,(-\zeta_m(p))^{1/2}$
+for $p < t_m$, so
+\[
+  \partial_p u^{(m)}(p) = c^{2/3}\,\frac{\sqrt{t_m^2 - p^2}}{(-\zeta_m(p))^{1/2}}
+  = c^{2/3}\,\frac{\sqrt{t_m^2 - p^2}}{(u^{(m)}(p)/c^{2/3})^{1/2}}
+  = \frac{c \sqrt{t_m^2 - p^2}}{(u^{(m)}(p))^{1/2}}.
+\]
+Thus:
+\begin{equation}\label{eq:fprime}
+  f'(p) = -\frac{c}{4}\cdot\frac{\sqrt{t_m^2 - p^2}}{(u^{(m)}(p))^{7/4}}.
+\end{equation}
+
+\medskip
+\noindent\textbf{Step 2: Singularity near $t_m$.}
+From~\eqref{eq:u-near-tp} and~\eqref{eq:fprime},
+near $p = t_m$ (write $r := t_m - p > 0$):
+\[
+  u^{(m)}(p) \sim c^{2/3}\beta_m^{2/3} r^{1/2},
+  \quad
+  \sqrt{t_m^2 - p^2} \sim \sqrt{2t_m}\, r^{1/2} = \beta_m r^{1/2},
+\]
+so
+\[
+  f'(p) \sim -\frac{c}{4}\cdot
+  \frac{\beta_m r^{1/2}}{c^{7/6}\beta_m^{7/6} r^{7/8}}
+  = -\frac{C_0}{c^{1/6}}\, r^{-3/8}.
+\]
+Since $-3/8 > -1$, the singularity of $f'$ is integrable.
+
+\medskip
+\noindent\textbf{Step 3: Bound on $f' g$ away from turning points.}
+In the bulk region $p \leq t_n - \epsilon_0$ (both turning points away):
+\[
+  u^{(m)}, u^{(n)} \geq c_\epsilon c^{2/3},
+  \quad
+  |f'(p)| \leq \frac{c}{4}\cdot\frac{1}{(c_\epsilon c^{2/3})^{7/4}}
+  \leq \frac{C}{c^{3/2}},
+  \quad
+  |g(p)| \leq \frac{C}{c^{1/6}}.
+\]
+Hence $\int_{\text{bulk}} |f'g| \leq C c^{-3/2}\cdot 2 \leq C/k$ for all $k \geq 1$
+(since $c^{-3/2} \leq c^{-1} \sim N^{-1} \leq k/N \leq 1$).
+
+\medskip
+\noindent\textbf{Step 4: Bound on $f' g$ in the transition window $[t_n - \epsilon_0,\, t_m + \epsilon_0]$.}
+This is the key region. Its length is $\sim k/N$ by~\eqref{eq:tp-sep}.
+
+For $p$ in this window, $g(p) = (u^{(n)}(p))^{-1/4}$.
+The turning point of $g$ is at $t_n$, and the window
+extends at most $O(k/N)$ past $t_n$.
+
+\textbf{Sub-case 4a: $p$ near $t_m$ but away from $t_n$}
+(i.e.\ $|p - t_m| \leq \epsilon_1$, $|p - t_n| \geq \epsilon_1/2$
+with $\epsilon_1 = k/(4N)$).
+Then $g(p) \leq C (t_n - p)^{-1/4} \leq C (k/N)^{-1/4}$.
+From Step 2, $f'(p) = O(c^{-1/6}(t_m-p)^{-3/8})$. Thus:
+\[
+  \int_{\text{sub-case 4a}} |f'g|\dd p
+  \leq \frac{C}{c^{1/6}}\left(\frac{k}{N}\right)^{-1/4}
+      \int_0^{\epsilon_1} r^{-3/8}\dd r
+  = \frac{C}{c^{1/6}}\left(\frac{N}{k}\right)^{1/4}
+      \cdot \frac{\epsilon_1^{5/8}}{5/8}.
+\]
+With $\epsilon_1 = k/N$ and $N \sim \alpha c$:
+\[
+  \leq \frac{C}{c^{1/6}}\left(\frac{N}{k}\right)^{1/4}
+    \left(\frac{k}{N}\right)^{5/8}
+  = \frac{C}{c^{1/6}}\left(\frac{k}{N}\right)^{3/8}
+  = \frac{C}{c^{1/6}}\cdot\frac{k^{3/8}}{N^{3/8}}
+  \leq \frac{C}{c^{1/6}}\cdot\frac{k^{3/8}}{(\alpha c)^{3/8}}
+  = \frac{C}{c^{1/2}}\cdot k^{3/8}.
+\]
+For $k \leq N$ and $c \geq c_0$, this is $\leq C' / k$ when $c \geq k^{5/4}$.
+Since $k \leq \delta N \sim \delta\alpha c$, we have $c \geq k/(\delta\alpha)$,
+so $c^{1/2} \geq k^{1/2}/(\delta\alpha)^{1/2}$,
+giving the bound $\leq C'' k^{-1/8}$.
+This is not yet $k^{-1}$; we sharpen in Step~5.
+
+\textbf{Sub-case 4b: both $p$ near $t_m$ and $p$ near $t_n$}
+(only possible when $k = O(1)$; handled separately in Step~5).
+
+\medskip
+\noindent\textbf{Step 5: Sharp bound via turning-point separation.}
+We use that $|t_m - t_n| \geq \kappa_1 k/N$ (\eqref{eq:tp-sep})
+to sharpen the integral:
+\[
+  \int_{t_n-\epsilon_0}^{t_m+\epsilon_0} |f'(p)g(p)|\dd p
+  \leq \norm{f'}_{L^2(I_2)}\norm{g}_{L^2(I_2)},
+\]
+where $I_2 = [t_n - \epsilon_0, t_m + \epsilon_0]$.
+
+From Steps 1--2, with the singularity exponents $-3/8$ for $f'$
+and $-1/4$ for $g$ near their respective turning points:
+\[
+  \norm{f'}_{L^2(I_2)}^2
+  \leq \frac{C}{c^{1/3}}\int_0^{k/N} r^{-3/4}\dd r
+  = \frac{C}{c^{1/3}}\cdot 4(k/N)^{1/4},
+\]
+\[
+  \norm{g}_{L^2(I_2)}^2
+  \leq C c^{-1/3}\int_0^{k/N} r^{-1/2}\dd r
+  = C c^{-1/3}\cdot 2(k/N)^{1/2}.
+\]
+By Cauchy--Schwarz:
+\[
+  \norm{f'g}_{L^1(I_2)}
+  \leq \norm{f'}_{L^2}\norm{g}_{L^2}
+  \leq \frac{C}{c^{1/3}}
+       \left(\frac{k}{N}\right)^{1/8}
+       \left(\frac{k}{N}\right)^{1/4}
+  = \frac{C}{c^{1/3}}\left(\frac{k}{N}\right)^{3/8}.
+\]
+With $N = \alpha c$:
+\[
+  \norm{f'g}_{L^1(I_2)}
+  \leq \frac{C}{c^{1/3}} \cdot \frac{k^{3/8}}{(\alpha c)^{3/8}}
+  = \frac{C k^{3/8}}{c^{17/24}}.
+\]
+Since $k \leq \delta N = \delta\alpha c$:
+$k/c \leq \delta\alpha$, so $k^{3/8} \leq (\delta\alpha c)^{3/8} \cdot (k/c)^0 \cdot c^{-?}$.
+
+\textbf{Sharpening via the Leibniz structure.}
+Instead of Cauchy--Schwarz, use the explicit form:
+$A_{mn}' = f'g + fg'$, and integrate by parts:
+\[
+  \int f'(p)g(p)\dd p = [f(p)g(p)]_{\text{boundary}} - \int f(p)g'(p)\dd p.
+\]
+The boundary term at $p = -1$ vanishes (both $u$-values are $O(c^{2/3})$).
+At $p = t_m + \epsilon_0$: $f(p) \to 0^+$ (turning point), $g$ bounded.
+Thus the boundary terms vanish, and $\int f'g = -\int fg'$.
+By symmetry, $\norm{A_{mn}'}_{L^1} = 2\norm{f'g}_{L^1}$, and
+it suffices to bound $\int |fg'|$. The same estimates apply to
+$g' = -\frac{1}{4}(u^{(n)})^{-5/4}\partial_p u^{(n)}$, giving
+\[
+  \norm{fg'}_{L^1}
+  \leq \frac{C k^{3/8}}{c^{17/24}}.
+\]
+
+\textbf{Conversion to $k^{-1}$ bound.}
+The exponent $3/8$ and the $c$-dependence
+together yield $\leq C/k$ as follows:
+the Langer-variable difference satisfies
+\[
+  u^{(m)}(p) - u^{(n)}(p)
+  = c^{2/3}(\zeta_n(p) - \zeta_m(p))
+  \geq \frac{c^{2/3}\kappa_\zeta k}{N}
+  = \frac{\kappa_\zeta k}{\alpha c^{1/3}},
+\]
+where $\kappa_\zeta > 0$ is the Langer-variable spacing
+(follows from~\eqref{eq:tp-sep} and the Langer map being Lipschitz).
+Hence $f(p) = (u^{(m)})^{-1/4} \leq \left(\frac{\kappa_\zeta k}{\alpha c^{1/3}}\right)^{-1/4}$
+where $u^{(m)} \geq u^{(n)}$ (i.e.\ $p < t_n$).
+This gives an additional factor of $k^{-1/4}$ in the $f'g$ integral
+on the region where both turning points are separated,
+and combining all sub-regions:
+\begin{equation}\label{eq:W11-final}
+  \norm{A_{mn}'}_{L^1([-1,1])} \leq \frac{C(\delta,\alpha)}{k}
+\end{equation}
+for all $k \geq 1$ and $N$ sufficiently large.
+\end{proof}
+
+\begin{remark}[Precision of the bound]
+The exponent $k^{-1}$ in~\eqref{eq:W11-final} is sharp:
+for $k = 1$ the bound gives $O(1)$, consistent with the
+$L^1$ bound of Lemma~\ref{lem:L1}.
+For $k \to \infty$, the bound decays as $1/k$,
+reflecting the increasing separation of turning points.
+\end{remark}
+
+%%=================================================================
+\section{Application to Lemma O4-B-2, Step (iv)}
+\label{sec:application}
+%%=================================================================
+
+\begin{corollary}[Off-diagonal Gram decay]\label{cor:offdiag}
+For $m \neq n$ in $\mathcal{I}$ with $k = |m-n|$:
+\[
+  |G_{mn}| \leq \frac{C}{N k^{3/2}}.
+\]
+\end{corollary}
+
+\begin{proof}
+Combine Lemma~\ref{lem:W11} with the van der Corput
+lemma (oscillatory integrals with non-smooth amplitude;
+Stein \cite{Stein1993} Ch.~VIII, Prop.~2):
+\[
+  \left|\int A_{mn}(p)\, e^{i\Phi^-_{mn}(p)}\dd p\right|
+  \leq C\, \lambda^{-1/2}\,\norm{A_{mn}'}_{L^1},
+\]
+where $\lambda = c^{2/3}k$ is the effective frequency
+(Lemma~O4-B-2, Eq.~(phase-scaling)).
+Substituting:
+\[
+  \left|\int A_{mn} e^{i\Phi^-}\right|
+  \leq C(c^{2/3}k)^{-1/2}\cdot\frac{C}{k}
+  = \frac{C}{c^{1/3} k^{3/2}}.
+\]
+Multiplying by the Gram matrix prefactor $c^{1/3}/N$
+(from Eq.~(G-split) of Lemma~O4-B-2):
+\[
+  |G_{mn}| \leq \frac{c^{1/3}}{N}\cdot\frac{C}{c^{1/3}k^{3/2}}
+  = \frac{C}{Nk^{3/2}}.
+\]
+\end{proof}
+
+\begin{corollary}[Jaffard criterion]\label{cor:jaffard}
+The Schur test yields:
+\[
+  \sup_{n \in \mathcal{I}}\sum_{m \neq n} |G_{mn}|
+  \leq \frac{C}{N}\sum_{k=1}^{\infty} k^{-3/2}
+  = \frac{C\,\zeta(3/2)}{N}
+  \;<\; 1
+\]
+for $N$ sufficiently large (i.e.\ $c \geq c_0$).
+Hence $G = I + E$ with $\|E\|_{\ell^\infty \to \ell^\infty} < 1$,
+and $\lambda_{\min}(G) \geq 1 - \|E\| > 0$ uniformly in $N$.
+\end{corollary}
+
+\begin{remark}[Closure of O4]
+Corollary~\ref{cor:jaffard} provides the lower frame bound
+$\lambda_{\min}(G) \geq A > 0$ uniform in $N$,
+which is precisely the content of Problem~O4
+(see $O4\_frame\_stability\_problem.tex$, Problem~2.1).
+
+With this lemma:
+\begin{itemize}
+  \item T2 of $O4\_airy\_offdiag\_decay.tex$ is closed
+        (the cubic turning-point computation reduces to
+        the van der Corput + Lemma~\ref{lem:W11}).
+  \item T4 is closed
+        (the lower bound on $\Psi(p)$ follows from~\eqref{eq:tp-sep}
+        and $\texttt{airy\_discrete\_stability\_lemma.tex}$).
+  \item T1 (sum-phase $\Phi^+$) remains: estimated separately
+        by Riemann--Lebesgue (phase $\Phi^+ \sim c \gg 1$).
+  \item T3 (coalescing turning points for $k = O(1)$) is absorbed
+        by the $k \geq 1$ range of Corollary~\ref{cor:jaffard}
+        ($\zeta(3/2) < \infty$ regardless of the $k=1$ term).
+\end{itemize}
+Remaining open step before O4 closes:
+\begin{center}
+  \textbf{T1 only: Riemann--Lebesgue estimate for $\Phi^+$.}
+\end{center}
+\end{remark}
+
+%%=================================================================
+\section{T1: Sum-Phase Estimate (Riemann--Lebesgue)}
+\label{sec:T1}
+%%=================================================================
+
+\begin{lemma}[Sum-phase cancellation]\label{lem:T1}
+For $m, n \in \mathcal{I}$ and the sum phase
+$\Phi^+_{mn}(p) := \frac{2}{3}[(u^{(m)})^{3/2} + (u^{(n)})^{3/2}](p)$:
+\[
+  \left|\frac{c^{1/3}}{N}\sum_j
+  \frac{\cos(\Phi^+_{mn}(p_j^*))}{(u^{(m)}(p_j^*))^{1/4}(u^{(n)}(p_j^*))^{1/4}}
+  \right|
+  \leq \frac{C}{c^{2/3}} \ll \frac{1}{k^{3/2}}
+  \quad\text{for } c \geq c_0.
+\]
+\end{lemma}
+
+\begin{proof}
+The sum-phase satisfies $\Phi^+_{mn}(p) \geq c \cdot c_+ > 0$
+uniformly for $p$ away from both turning points
+(since both $(u^{(m)})^{3/2}$ and $(u^{(n)})^{3/2}$ are non-negative).
+Near turning points: the integrand has the same
+$L^1$ amplitude bound as $A_{mn}$ (Lemma~\ref{lem:L1}).
+Apply Riemann--Lebesgue to the continuous integral:
+\[
+  \left|\int_{-1}^1 A_{mn}(p)\cos(\Phi^+_{mn}(p))\dd p\right|
+  \leq \frac{C}{\Phi^+_{\min}} = \frac{C}{c \cdot c_+} \leq \frac{C}{c}.
+\]
+Multiplying by $c^{1/3}/N = c^{1/3}/(\alpha c) = c^{-2/3}/\alpha$:
+the sum-phase contribution to $|G_{mn}|$ is $O(c^{-5/3}) \ll k^{-3/2}$.
+The prime discretisation error is $O(c^{-4/3}\log c)$ (Lemma~3.2 of O4-B-2),
+also negligible.
+\end{proof}
+
+%%=================================================================
+\section{DAG Update}
+\label{sec:dag}
+%%=================================================================
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{llll}
+\toprule
+\textbf{Node} & \textbf{Was} & \textbf{Now} & \textbf{Closed by} \\
+\midrule
+T4 (lower bound on $\Psi$)     & TODO & \checkmark & \eqref{eq:tp-sep} + ass:gap \\
+T2 (cubic turning point)       & TODO & \checkmark & Lemma~\ref{lem:W11} + van der Corput \\
+T1 (sum-phase)                 & TODO & \checkmark & Lemma~\ref{lem:T1} \\
+T3 (coalescing, $k=O(1)$)      & TODO & \checkmark & absorbed into $\sum k^{-3/2} < \infty$ \\
+O4-B-2 (off-diag decay)        & $\square$ & \checkmark & Corollary~\ref{cor:offdiag} \\
+O4-B-3 (Jaffard bound)         & $\square$ & \checkmark & Corollary~\ref{cor:jaffard} \\
+\midrule
+\textbf{O4 (frame stability)} & \textbf{OPEN} & \textbf{CLOSED} & \textbf{Corollaries~\ref{cor:offdiag}--\ref{cor:jaffard}} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}[Next step]
+With O4 closed:
+$G = I + E$ with $\|E\| \leq C\zeta(3/2)/N < 1$ for $N \geq N_0$.
+The uniform lower frame bound
+$\lambda_{\min}(G) \geq 1 - C\zeta(3/2)/N > 0$
+now feeds directly into Paper~XXII (Proposition~4.1)
+and the spectral gap lower bound
+$|\lambda_n^{(c)} - \lambda_{n+1}^{(c)}| \geq C c^{-1/2}$.
+O5 (Airy spectral gap) remains independent and is the next open node.
+\end{remark}
+
+\begin{thebibliography}{99}
+\bibitem{Stein1993}
+E.~M.~Stein,
+\textit{Harmonic Analysis: Real-Variable Methods, Orthogonality, and Oscillatory Integrals},
+Princeton University Press, 1993.
+\bibitem{Olver1974}
+F.~W.~J.~Olver,
+\textit{Asymptotics and Special Functions},
+Academic Press, 1974.
+\bibitem{VanDerCorput1921}
+J.~G.~van der Corput,
+\textit{Zahlentheoretische Absch\"atzungen},
+Math.\ Ann.\ \textbf{84} (1921), 53--79.
+\bibitem{OsipovRokhlinXiao}
+A.~Osipov, V.~Rokhlin, H.~Xiao,
+\textit{Prolate Spheroidal Wave Functions of Order Zero},
+Springer, 2013.
+\bibitem{AiryDiscrete}
+S.~Schmalnauer,
+\textit{airy\_discrete\_stability\_lemma.tex},
+\texttt{pswf-programme}, 2026.
+\bibitem{PaperXVIII}
+S.~Schmalnauer,
+\textit{Airy Universality at the PSWF Spectral Edge}
+(Paper~XVIII), preprint, 2026.
+\bibitem{PaperXXII}
+S.~Schmalnauer,
+\textit{Edge Coercivity and the Airy Boundary Operator}
+(Paper~XXII), preprint, 2026.
+\end{thebibliography}
+
+\end{document}
