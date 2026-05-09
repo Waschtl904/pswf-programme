@@ -1,0 +1,12 @@
+# system/raw/
+#
+# Temporärer Ordner für Quellversionen aus den Originalrepos.
+# Zweck: Abgleich mit den destillierten system/*.md Dateien.
+#
+# Semantischer Cut:
+#   raw/ = rohe Originalversionen (program_map.md, DEPENDENCIES.md aus prolate-gram-coercivity)
+#   ../   = destillierte, kanonische Steuerungsebene
+#
+# Nach erfolgreicher Verifikation: diesen Ordner löschen.
+#   rm -rf system/raw/
+#   git commit -m 'system: remove raw sources after verification'
