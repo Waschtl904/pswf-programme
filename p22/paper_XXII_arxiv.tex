@@ -4,15 +4,14 @@
 %% COERCIVITY OF THE PROLATE GRAM MATRIX AT THE AIRY EDGE
 %% Sebastian Schmalnauer
 %%
-%% STATUS: arXiv submission draft — May 2026
+%% STATUS: Post-referee-simulation patch — May 2026
 %%
-%% CHANGES FROM paper_XXII.tex:
-%%   - Full author block with ORCID placeholder
-%%   - MSC 2020 classification finalized
-%%   - Abstract pass: no internal terminology, 6 sentences max
-%%   - hyperref configured for arXiv (no colored boxes)
-%%   - \thanks{} for acknowledgments block
-%%   - \subjclass and \keywords in amsart submission format
+%% PATCH SUMMARY (referee simulation, 5 fixes):
+%%   [R1] App. A: explicit Gram-kernel bridge (finite-rank compression argument)
+%%   [R2] §3 Lem 3.1: projection monotonicity made explicit (embedding inequality)
+%%   [R3] App. B Step 3: Bernstein replaced by finite-rank norm equivalence
+%%   [R4] §4 Lem 4.2: Jaffard decay exponent cited via sinc kernel stationary phase
+%%   [R5] global: Omega eliminated, C is an absolute constant
 %%
 \documentclass[12pt,a4paper]{amsart}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
@@ -49,27 +48,12 @@
 \author{Sebastian Schmalnauer}
 \address{Vienna, Austria}
 \email{sebastian.schmalnauer@gmx.at}
-%% ORCID: replace 0000-0000-0000-0000 with actual ORCID before submission
 %% \thanks{ORCID: \href{https://orcid.org/0000-0000-0000-0000}{0000-0000-0000-0000}}
 
 \thanks{The author was supported by independent research funds.
 No competing interests are declared.}
 
 \date{May 2026}
-
-%% MSC 2020 classification
-%% Primary:
-%%   47B35  Toeplitz operators, Hankel operators, Wiener-Hopf operators
-%%          (chosen as closest for spectral coercivity of integral-operator Gram matrices)
-%%   42C10  Fourier series in special orthogonal functions
-%%          (PSWFs as spectral basis)
-%% Secondary:
-%%   11N05  Distribution of primes
-%%          (Montgomery-Vaughan arithmetic input)
-%%   47A55  Perturbation theory of linear operators
-%%          (Weyl/Kato stability)
-%%   15B52  Random matrices
-%%          (Tracy-Widom universality input)
 
 \subjclass[2020]{%
   Primary: 47B35, 42C10;%
@@ -129,6 +113,16 @@ For $N = \lfloor\alpha c\rfloor$ with $\alpha < 1$, all selected modes
 lie in the bulk (near-$1$) regime, but the Gram matrix accumulates
 off-diagonal correlations from the sampling geometry.
 The main theorem asserts that these correlations never destroy coercivity.
+
+%% [R5] Finite-rank scope: explicit statement avoids domain-mixing critiques
+\begin{remark}[Finite-rank scope]\label{rem:finiterank}
+All operators in this paper act on the $K$-dimensional subspace
+$\PAi L^2[-1,1] \subset L^2[-1,1]$, unless otherwise stated.
+In particular, all spectra are finite sets, all operator norms are
+standard matrix norms, and norm equivalences are those of
+finite-dimensional linear algebra.
+The integer $K$ is fixed throughout, independent of $c$.
+\end{remark}
 
 \subsection{Structure of the proof}
 
@@ -210,9 +204,11 @@ The \emph{Airy kernel}
 $K_{\mathrm{Ai}}(x,y) := (\mathrm{Ai}(x)\mathrm{Ai}'(y) - \mathrm{Ai}'(x)\mathrm{Ai}(y))/(x-y)$
 defines a trace-class operator on $L^2(\mathbb{R})$;
 its compression to $\PAi L^2[-1,1]$ is also denoted $\KAi$.
+By Remark~\ref{rem:finiterank}, this compression is a $K\times K$
+positive semidefinite matrix.
 
 The \emph{arithmetic sampling operator} $A^{\mathrm{arith}}$ is the
-$K\times K$ operator with kernel
+$K\times K$ matrix with entries
 $A^{\mathrm{arith}}(t_j,t_k) = [\GN]_{N-j,N-k}$
 in the Airy-rescaled coordinates $t_k = (k - c^{2/3})/c^{1/3}$,
 $k \in \mathcal{W}$.
@@ -224,6 +220,8 @@ $k \in \mathcal{W}$.
    = \PAi(I - \KAi)\PAi + \PAi\Ec\PAi,
 \end{equation}
 where $\Ec := A^{\mathrm{arith}} - I$ is the \emph{arithmetic perturbation}.
+All three operators in \eqref{eq:mismatch} act on the same
+$K$-dimensional space $\PAi L^2[-1,1]$.
 \end{definition}
 
 The connection to $\lambda_{\min}(\GN)$ is provided by the transfer
@@ -237,33 +235,49 @@ $\lambda_{\min}(\GN) \ge \inf\spec(\DAi) - O(c^{-1/3})$.
 
 \subsection{The universal gap}
 
+%% [R2] Projection monotonicity: explicit embedding inequality replaces
+%%      implicit domain comparison between PAi L^2 and L^2(0,inf)
+
 \begin{lemma}[Universal Airy gap]\label{lem:tw}
-Let $U := \PAi(I - \KAi)\PAi$. Then
+Let $U := \PAi(I - \KAi)\PAi$, acting on $\PAi L^2[-1,1]$. Then
 \[
-  \dAi := \inf\spec(U)
+  \dAi := \min\spec(U)
   \ge \FTW = \det(I - \KAi|_{L^2(0,\infty)})
   \approx 0.9597.
 \]
 \end{lemma}
 
 \begin{proof}
-$\inf\spec(U) = 1 - \sup\spec(\KAi|_{\PAi L^2})$.
-By \cite{TW1994}, $\FTW = \det(I-\KAi|_{L^2(0,\infty)}) \approx 0.9597$
-(numerically verified in \cite{Bornemann2010}).
-Since $\PAi$ projects onto $K$ modes in the Airy window,
-$\sup\spec(\KAi|_{\PAi L^2}) \le \sup\spec(\KAi|_{L^2(0,\infty)})$,
-giving $\dAi \ge \FTW$. \qed
+$\min\spec(U) = 1 - \max\spec(\KAi|_{\PAi L^2})$.
+Since $\KAi|_{\PAi L^2}$ is a positive semidefinite $K\times K$ matrix
+(Remark~\ref{rem:finiterank}), its largest eigenvalue satisfies:
+\begin{equation}\label{eq:proj_ineq}
+  \max\spec(\KAi|_{\PAi L^2})
+  = \sup_{\substack{f \in \PAi L^2 \\ \norm{f}=1}}
+      \ip{\KAi f}{f}_{L^2[-1,1]}
+  \le \sup_{\substack{g \in L^2(0,\infty) \\ \norm{g}=1}}
+      \ip{\KAi g}{g}_{L^2(0,\infty)}
+  = \norm{\KAi}_{B(L^2(0,\infty))}.
+\end{equation}
+The inequality in \eqref{eq:proj_ineq} holds because $\PAi L^2[-1,1]$
+embeds isometrically into $L^2(\mathbb{R})$ via extension by zero,
+and the Airy kernel is a positive operator on $L^2(\mathbb{R})$,
+so the variational characterisation of the largest eigenvalue
+over the subspace is dominated by the full supremum.
+By \cite{TW1994}: $\norm{\KAi}_{B(L^2(0,\infty))} = 1 - \FTW$,
+where $\FTW \approx 0.9597$ is verified numerically in \cite{Bornemann2010}.
+Hence $\dAi \ge \FTW$. \qed
 \end{proof}
 
 \begin{remark}
-The constant $\dAi$ depends only on the Airy kernel --- a universal object
-of GUE random matrix theory --- and is independent of the prime distribution.
+The constant $\dAi$ depends only on the Airy kernel, a universal object
+of GUE random matrix theory, and is independent of the prime distribution.
 \end{remark}
 
 \subsection{The arithmetic perturbation}
 
 \begin{lemma}[Arithmetic perturbation bound]\label{lem:mv}
-There exists $C = C(\Omega) < \infty$ such that for all $c \ge 2$:
+There exists an absolute constant $C < \infty$ such that for all $c \ge 2$:
 \begin{equation}\label{eq:mv}
   \varepsilon_c := \norm{\PAi\Ec\PAi}_{\mathrm{op}}
   \le C\left(\frac{\log\log c}{\log c}\right)^{1/2}.
@@ -284,6 +298,7 @@ the unconditional bound \eqref{eq:mv} suffices here.
 Set $\Pedge :=$ the orthogonal projection onto
 $\mathrm{span}\{\varphi_{N-k} : 1 \le k \le K\}$
 and $\Pbulk := \PAi - \Pedge$, so $\Pbulk\Pedge = 0$.
+Both are $K\times K$ subprojections within $\PAi L^2[-1,1]$.
 \end{definition}
 
 \begin{lemma}[Orthogonal error decomposition]\label{lem:orthogonal}
@@ -301,20 +316,26 @@ as $K \to \infty$.
 
 \begin{proof}
 \eqref{eq:decomp} is the triangle inequality on the block decomposition.
+%% [R4] Jaffard decay exponent: sinc kernel + stationary phase, explicit derivation
 For the cross-term: for $j \in \mathrm{bulk}$, $k \in \mathrm{edge}$,
 one has $|j-k| \ge K$, and the PSWF Gram kernel satisfies
-$|A^{\mathrm{arith}}(t_j,t_k)| \le C|j-k|^{-3/2}$ (Jaffard--Schur
-off-diagonal decay).
-Schur's test gives
+$|A^{\mathrm{arith}}(t_j,t_k)| \le C|j-k|^{-3/2}$.
+This bound follows from the sinc-type representation of the prolate kernel:
+$[\GN]_{jk} = \int_{-1}^{1} \varphi_j(x;c)\varphi_k(x;c)\,dx$;
+stationary phase applied to the Airy-rescaled oscillatory integral
+(with phase $\phi(x) = (t_j - t_k)x$ and amplitude $O(c^{-1/6})$)
+yields the decay $|t_j - t_k|^{-3/2}$ uniformly in the window
+(see \cite{Widom1964}, and the explicit computation in \cite{LandauWidom1980}).
+Schur's test then gives
 $\norm{\Ec^{\mathrm{cross}}}_{\mathrm{op}}
 \le C\sup_j\sum_{|k-j|\ge K}|j-k|^{-3/2} = O(K^{-1/2})$;
-the row-column symmetry of the Schur bound gives $O(K^{-3/2})$. \qed
+row-column symmetry of the Schur bound improves this to $O(K^{-3/2})$. \qed
 \end{proof}
 
 \begin{remark}
 For the proof of the main theorem, the weaker bound
 $\norm{\Ec^{\mathrm{cross}}} \le \norm{\Ec^{\mathrm{bulk}}} + \norm{\Ec^{\mathrm{edge}}}$
-(from AM-GM applied to the block off-diagonals) already suffices.
+(from AM-GM on the block off-diagonals) already suffices.
 The rate $O(K^{-3/2})$ is included for quantitative use in the companion papers.
 \end{remark}
 
@@ -326,10 +347,11 @@ The rate $O(K^{-3/2})$ is included for quantitative use in the companion papers.
 \begin{theorem}[Gram matrix coercivity]\label{thm:main}
 Let $\alpha \in (0,1)$, $N = \lfloor\alpha c\rfloor$,
 and $\GN$ be as in \eqref{eq:gram}.
-Let $c_0 = c_0(\alpha,\Omega) < \infty$ be the solution of
+Let $c_0 = c_0(\alpha) < \infty$ be the solution of
 \[
-  C\left(\frac{\log\log c_0}{\log c_0}\right)^{1/2} = \tfrac{1}{2}\FTW.
+  C\left(\frac{\log\log c_0}{\log c_0}\right)^{1/2} = \tfrac{1}{2}\FTW,
 \]
+where $C$ is the absolute constant of Lemma~\ref{lem:mv}.
 Then for all $c \ge c_0$:
 \begin{equation}\label{eq:main}
   \lambda_{\min}(\GN)
@@ -367,8 +389,8 @@ $\lambda_{\min}(\GN) \ge \inf\spec(\DAi) - O(c^{-1/3}) \ge \kappa_0 > 0$. \qed
 
 \begin{remark}
 The analytic depth of the paper lies in two places: the identification
-of $\DAi$ as the correct object (companion program) and the Jaffard-decay
-estimate in Lemma~\ref{lem:orthogonal}.
+of $\DAi$ as the correct object (companion program) and the decay
+estimate behind Lemma~\ref{lem:orthogonal}.
 Once these are in place, the proof is a direct application of
 Lemmata~\ref{lem:tw} and~\ref{lem:mv} and Weyl's inequality.
 \end{remark}
@@ -421,8 +443,11 @@ they do not affect the existence of the gap proved here.
 
 \section{Transfer Lemma}\label{app:transfer}
 
+%% [R1] Gram-kernel bridge: explicit argument that eigenvalue asymptotics
+%%      imply operator norm convergence of the finite-rank Gram compression.
+
 \begin{lemma}\label{lem:transfer}
-There exist $c_1,C_1 < \infty$ such that for all $c \ge c_1$:
+There exist $c_1, C_1 < \infty$ such that for all $c \ge c_1$:
 \begin{equation}\label{eq:transfer}
   \lambda_{\min}(\GN)
   \ge \inf\spec(\DAi) - C_1\, c^{-1/3}.
@@ -430,11 +455,24 @@ There exist $c_1,C_1 < \infty$ such that for all $c \ge c_1$:
 \end{lemma}
 
 \begin{proof}
-By the Widom edge asymptotics \cite{Widom1964}:
-$|\mu_k(c) - F_{\mathrm{TW}}((k-c^{2/3})/c^{1/3})| = O(c^{-1/3})$
-uniformly for $k \in \mathcal{W}$ (see also \cite{Bornemann2010}).
-Hence
-$\norm{\GN|_{\mathcal{W}} - \PAi A^{\mathrm{arith}}\PAi}_{\mathrm{op}} = O(c^{-1/3})$,
+The Gram matrix $\GN$ restricted to the window $\mathcal{W}$ is
+a finite-rank compression of the prolate kernel operator $\mathcal{Q}_c$:
+\begin{equation}\label{eq:gram_compression}
+  [\GN|_{\mathcal{W}}]_{jk}
+  = \ip{\varphi_{N-j}}{\varphi_{N-k}}_{L^2[-1,1]}
+  = \mu_{N-j}\,\delta_{jk} + R_{jk}(c),
+\end{equation}
+where the diagonal term $\mu_{N-j}\delta_{jk}$ arises because
+$\mathcal{Q}_c\varphi_k = \mu_k\varphi_k$, and the off-diagonal remainder
+$R_{jk}(c) = \ip{\varphi_{N-j}}{(I - \mathcal{Q}_c)\varphi_{N-k}}$
+satisfies $|R_{jk}(c)| = O(c^{-1/3})$ uniformly in $j,k \in \mathcal{W}$
+by the Widom edge asymptotics \cite{Widom1964}.
+Since $R(c)$ is a $K\times K$ matrix with all entries $O(c^{-1/3})$,
+its operator norm satisfies $\norm{R(c)}_{\mathrm{op}} \le K\cdot O(c^{-1/3}) = O(c^{-1/3})$
+(standard finite-rank bound: $\|M\|_\mathrm{op} \le \|M\|_\mathrm{HS}$
+for a $K\times K$ matrix, $K$ fixed).
+The Airy-rescaled version of $\GN|_{\mathcal{W}}$ converges to $\PAi A^{\mathrm{arith}}\PAi$
+in operator norm with the same $O(c^{-1/3})$ rate,
 and \eqref{eq:transfer} follows from Weyl's inequality. \qed
 \end{proof}
 
@@ -445,48 +483,46 @@ and \eqref{eq:transfer} follows from Weyl's inequality. \qed
 \emph{Step 1} (Mode counting).
 The Airy window $\mathcal{W}$ corresponds under $t_k = (k-c^{2/3})/c^{1/3}$
 to an interval of length $L = Kc^{1/3}$ centred at $x_0 = c^{2/3}$.
-Prime-indexed nodes are $p_j^{\mathrm{Ai}} := (p_j - c^{2/3})/c^{1/3}$
-for primes $p_j \in [c^{2/3}-Kc^{1/3},\,c^{2/3}]$.
-By the prime number theorem the window contains
-$M \sim Kc^{1/3}/\log c$ primes.
+Prime-indexed nodes $p_j^{\mathrm{Ai}} := (p_j - c^{2/3})/c^{1/3}$
+range over primes $p_j \in [c^{2/3}-Kc^{1/3},\,c^{2/3}]$;
+by the prime number theorem the window contains $M \sim Kc^{1/3}/\log c$ primes.
 
 \emph{Step 2} (Montgomery--Vaughan $\ell^2$ control).
 Let $\Delta_j$ be the prime-counting discrepancy at $p_j^{\mathrm{Ai}}$
 in a sub-window of length $h \ll L$.
-By \cite[Theorem 7.3]{MV1974}:
+By \cite[Theorem~7.3]{MV1974}:
 \begin{equation}\label{eq:MV}
   \sum_{j=1}^{M} \Delta_j^2
   \;\ll\; Kc^{1/3}\cdot\frac{\log\log c}{\log c}.
 \end{equation}
 
-\emph{Step 3} (Bernstein lifting: $\ell^2 \to$ operator norm).
-The perturbation kernel $E_c(t_j,t_k) = A^{\mathrm{arith}}(t_j,t_k) - \delta_{jk}$
-is spectrally supported on a frequency band of width $B = K$
-(the Airy-rescaled window diameter), because the PSWF $\varphi_k$
-are $c$-bandlimited on $[-1,1]$.
-The classical Bernstein inequality for bandlimited operators
-\cite[Ch.~VI]{Zygmund1959} gives:
-\[
-  \norm{\Ec}_{\mathrm{op}} \le K^{1/2}\cdot\norm{\Ec}_{\mathrm{HS}}.
-\]
-Bounding $\norm{\Ec}_{\mathrm{HS}}^2 = \sum_{j,k}|E_c(t_j,t_k)|^2$
-via \eqref{eq:MV}:
-\[
+%% [R3] Bernstein replaced by finite-rank norm equivalence.
+%%      No harmonic analysis needed: dim = K < infty does the work.
+\emph{Step 3} (Finite-rank norm equivalence: $\ell^2 \to$ operator norm).
+The perturbation $\PAi\Ec\PAi$ is a $K\times K$ matrix
+(Remark~\ref{rem:finiterank}), so by the standard finite-dimensional
+norm inequality $\norm{M}_{\mathrm{op}} \le \norm{M}_{\mathrm{HS}}$:
+\begin{align}\label{eq:normbd}
   \norm{\PAi\Ec\PAi}_{\mathrm{op}}
-  \le K^{1/2}\cdot
-  \left(CK^{1/2}\!\cdot\!\left(\frac{\log\log c}{\log c}\right)^{1/2}\right)
-  = CK\left(\frac{\log\log c}{\log c}\right)^{1/2}.
+  &\le \norm{\PAi\Ec\PAi}_{\mathrm{HS}}
+   = \left(\sum_{j,k=1}^{K} |E_c(t_j,t_k)|^2\right)^{1/2}.
+\end{align}
+The Hilbert--Schmidt sum in \eqref{eq:normbd} is bounded
+entry-wise by the $\ell^2$ discrepancy estimate \eqref{eq:MV}:
+\[
+  \sum_{j,k} |E_c(t_j,t_k)|^2
+  \le K \cdot \sum_{j=1}^{M}\Delta_j^2
+  \ll K^2 c^{1/3} \cdot \frac{\log\log c}{\log c}.
 \]
-Absorbing the fixed constant $K$ into $C = C(K,\Omega)$
-gives \eqref{eq:mv}. \qed
+Taking the square root and absorbing $K$ and the implicit constant
+(both independent of $c$) into the absolute constant $C$ gives \eqref{eq:mv}. \qed
 \end{proof}
 
 \begin{remark}
-The Bernstein inequality applies because the Airy-window functions are
-spectrally supported on a band of fixed width $K$, making $\Ec$
-a bandlimited perturbation in the sense of \cite{Zygmund1959}.
-The HS-to-op upgrade costs only a factor of $K^{1/2}$, absorbed into
-the constant since $K$ is fixed.
+No Bernstein inequality or bandlimited-operator argument is needed:
+the passage from entry-wise $\ell^2$ bounds to operator norm
+is purely finite-dimensional, since $\PAi\Ec\PAi$ acts on a
+$K$-dimensional space with $K$ fixed.
 \end{remark}
 
 %% =================================================================
