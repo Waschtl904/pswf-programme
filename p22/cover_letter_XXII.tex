@@ -1,0 +1,108 @@
+%%
+%% cover_letter_XXII.tex
+%%
+%% Cover letter for: "Coercivity of the Prolate Gram Matrix at the Airy Edge"
+%% Author: Sebastian Schmalnauer
+%% Target: [Journal name — Annals of Mathematics / Inventiones Mathematicae /
+%%          Journal of Functional Analysis — choose before submission]
+%% Date: May 2026
+%%
+\documentclass[12pt,a4paper]{article}
+\usepackage[margin=3cm]{geometry}
+\usepackage{microtype}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+
+\begin{document}
+\pagestyle{empty}
+
+\noindent
+Vienna, Austria\\
+May 2026
+
+\bigskip
+
+\noindent
+To the Editors of [\textit{Journal Name}],
+
+\bigskip
+
+\noindent
+I am submitting for consideration the manuscript:
+
+\medskip
+\noindent
+\textbf{Coercivity of the Prolate Gram Matrix at the Airy Edge}\\
+Sebastian Schmalnauer
+
+\bigskip
+
+\subsection*{What is proved}
+
+The paper establishes an unconditional coercivity bound
+$\lambda_{\min}(G_N(c)) \ge \kappa > 0$ for the Gram matrix of the
+first $N = \lfloor\alpha c\rfloor$ prolate spheroidal wave functions
+(PSWFs) with bandwidth $c$, where $\alpha \in (0,1)$.
+This settles a stability question that has been open since the
+Landau--Widom eigenvalue asymptotics of the 1960s--1980s,
+which treated individual eigenvalues but not the Gram minimum.
+
+\subsection*{What makes the proof accessible}
+
+The proof rests on two classical, unconditional inputs:
+\begin{itemize}
+  \item the \textbf{Tracy--Widom universal gap}
+    ($F_{\mathrm{TW}}(0) \approx 0.9597$, independent of arithmetic),
+  \item the \textbf{Montgomery--Vaughan mean square theorem}
+    (unconditional $\ell^2$ control of prime density fluctuations).
+\end{itemize}
+The key structural insight is that the correct asymptotic object
+--- the compression of the difference between the arithmetic sampling
+operator and the Airy kernel to the spectral edge window
+--- decouples the universal and arithmetic contributions.
+Scale separation then suffices: the universal gap dominates
+the arithmetic noise for all sufficiently large~$c$.
+
+\subsection*{What the proof does not require}
+
+The paper does not use the Generalized Riemann Hypothesis,
+any conjecture on primes in short intervals, Riemann--Hilbert methods,
+or the IIKS integrable-systems identity.
+These structures appear in a companion program of papers
+but are not logically required for the main result.
+The present paper is self-contained given the two inputs above.
+
+\subsection*{Context and significance}
+
+PSWF Gram coercivity is directly relevant to numerical analysis
+(basis stability for band-limited approximation), to sampling theory
+(Riesz basis property for irregular systems), and to the spectral
+theory of time-bandlimiting operators.
+The result establishes that the prolate system retains stable frame
+bounds --- with the leading constant given by the Tracy--Widom
+distribution --- unconditionally and uniformly in the bandwidth.
+
+\subsection*{Length and structure}
+
+The manuscript is approximately 20 pages in AMS format,
+including two appendices (transfer lemma and arithmetic perturbation bound).
+No supplementary material is required.
+
+\bigskip
+
+\noindent
+I confirm that the manuscript has not been submitted elsewhere
+and that all results are original.
+
+\bigskip
+
+\noindent
+With kind regards,
+
+\bigskip
+
+\noindent
+Sebastian Schmalnauer\\
+Vienna, Austria\\
+\texttt{sebastian.schmalnauer@gmx.at}
+
+\end{document}

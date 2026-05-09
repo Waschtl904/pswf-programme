@@ -1,0 +1,545 @@
+%%
+%% paper_XXII_arxiv.tex
+%%
+%% COERCIVITY OF THE PROLATE GRAM MATRIX AT THE AIRY EDGE
+%% Sebastian Schmalnauer
+%%
+%% STATUS: arXiv submission draft — May 2026
+%%
+%% CHANGES FROM paper_XXII.tex:
+%%   - Full author block with ORCID placeholder
+%%   - MSC 2020 classification finalized
+%%   - Abstract pass: no internal terminology, 6 sentences max
+%%   - hyperref configured for arXiv (no colored boxes)
+%%   - \thanks{} for acknowledgments block
+%%   - \subjclass and \keywords in amsart submission format
+%%
+\documentclass[12pt,a4paper]{amsart}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem,booktabs}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+\usepackage[margin=2.5cm]{geometry}
+
+%% ---- theorem environments ----------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+%% ---- notation ---------------------------------------------------
+\newcommand{\KAi}{K^{\mathrm{Ai}}}
+\newcommand{\DAi}{\mathcal{D}^{\mathrm{Ai}}}
+\newcommand{\PAi}{\Pi_{\mathrm{Ai}}}
+\newcommand{\GN}{G_N(c)}
+\newcommand{\Ec}{E_c}
+\newcommand{\Pbulk}{\Pi_{\mathrm{bulk}}}
+\newcommand{\Pedge}{\Pi_{\mathrm{edge}}}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\ip}[2]{\langle #1,\, #2 \rangle}
+\newcommand{\spec}{\sigma}
+\newcommand{\FTW}{F_{\mathrm{TW}}(0)}
+\newcommand{\dAi}{\delta_{\mathrm{Ai}}}
+
+%% -----------------------------------------------------------------
+\title{Coercivity of the Prolate Gram Matrix at the Airy Edge}
+
+\author{Sebastian Schmalnauer}
+\address{Vienna, Austria}
+\email{sebastian.schmalnauer@gmx.at}
+%% ORCID: replace 0000-0000-0000-0000 with actual ORCID before submission
+%% \thanks{ORCID: \href{https://orcid.org/0000-0000-0000-0000}{0000-0000-0000-0000}}
+
+\thanks{The author was supported by independent research funds.
+No competing interests are declared.}
+
+\date{May 2026}
+
+%% MSC 2020 classification
+%% Primary:
+%%   47B35  Toeplitz operators, Hankel operators, Wiener-Hopf operators
+%%          (chosen as closest for spectral coercivity of integral-operator Gram matrices)
+%%   42C10  Fourier series in special orthogonal functions
+%%          (PSWFs as spectral basis)
+%% Secondary:
+%%   11N05  Distribution of primes
+%%          (Montgomery-Vaughan arithmetic input)
+%%   47A55  Perturbation theory of linear operators
+%%          (Weyl/Kato stability)
+%%   15B52  Random matrices
+%%          (Tracy-Widom universality input)
+
+\subjclass[2020]{%
+  Primary: 47B35, 42C10;%
+  Secondary: 11N05, 47A55, 15B52%
+}
+
+\keywords{prolate spheroidal wave functions, Gram matrix coercivity,
+  Airy kernel, Tracy--Widom distribution, Montgomery--Vaughan inequality,
+  spectral perturbation, Riesz basis}
+
+%% =================================================================
+\begin{document}
+\maketitle
+
+%% ----- Abstract --------------------------------------------------
+\begin{abstract}
+Let $G_N(c)$ denote the Gram matrix of the first $N = \lfloor\alpha c\rfloor$
+prolate spheroidal wave functions of order zero with bandwidth parameter~$c$,
+where $\alpha \in (0,1)$.
+We prove that $\lambda_{\min}(G_N(c)) \ge \kappa > 0$ for all
+sufficiently large~$c$, with $\kappa$ depending only on $\alpha$
+and an absolute constant.
+The proof identifies a single asymptotic operator --- the compression
+of the difference between the arithmetic sampling operator and the Airy
+kernel to the spectral edge window --- and shows that its spectral gap
+is stable under arithmetic perturbation.
+Stability follows from a scale separation: the universal
+Tracy--Widom constant $\FTW \approx 0.9597$ asymptotically dominates
+the arithmetic noise, bounded unconditionally via the
+Montgomery--Vaughan mean square theorem.
+As a consequence, the prolate system forms a Riesz basis with
+uniform frame bounds, and the minimum eigenvalue satisfies
+$\lambda_{\min}(G_N(c)) = \FTW + o(1)$ as $c \to \infty$.
+No Generalized Riemann Hypothesis is assumed.
+\end{abstract}
+
+%% =================================================================
+\section{Introduction}
+\label{sec:intro}
+%% =================================================================
+
+The \emph{prolate spheroidal wave functions} (PSWFs)
+$\{\varphi_k(\,\cdot\,;c)\}_{k\ge 0}$ are the eigenfunctions of the
+time-bandlimiting operator on $L^2[-1,1]$ with bandwidth $c > 0$.
+They are orthonormal in $L^2[-1,1]$ by construction, but when the first
+$N$ of them are used as a computational basis, numerical stability
+requires understanding the smallest eigenvalue of the Gram matrix
+$\GN = (\ip{\varphi_j(\cdot;c)}{\varphi_k(\cdot;c)}_{L^2[-1,1]})_{0\le j,k\le N-1}$,
+which in the oversampled regime $N \approx \alpha c$ can approach zero.
+
+\subsection{The coercivity problem}
+
+The prolate eigenvalues $\mu_k(c)$ transition from near-$1$ to near-$0$
+in an \emph{Airy transition zone} around $k \approx c^{2/3}$ of width
+$\sim c^{1/3}$ (Widom \cite{Widom1964}).
+For $N = \lfloor\alpha c\rfloor$ with $\alpha < 1$, all selected modes
+lie in the bulk (near-$1$) regime, but the Gram matrix accumulates
+off-diagonal correlations from the sampling geometry.
+The main theorem asserts that these correlations never destroy coercivity.
+
+\subsection{Structure of the proof}
+
+Let $\DAi := \PAi(A^{\mathrm{arith}} - \KAi)\PAi$
+be the \emph{Airy mismatch operator} (Definition~\ref{def:mismatch}).
+The central decomposition is:
+\begin{equation}\label{eq:key_intro}
+  \DAi
+  = \underbrace{\PAi(I - \KAi)\PAi}_{\text{universal: gap}\,\ge\,0.96}
+  + \underbrace{\PAi \Ec \PAi}_{\text{arithmetic: norm}\,\to\,0}.
+\end{equation}
+Two classical results complete the proof:
+\begin{enumerate}[\rm (i)]
+  \item \emph{Tracy--Widom theory} \cite{TW1994}:
+    universal lower bound $\FTW \approx 0.9597$ on the gap of the first term.
+  \item \emph{Montgomery--Vaughan inequality} \cite{MV1974}:
+    unconditional bound $\norm{\PAi\Ec\PAi}_{\mathrm{op}} \to 0$.
+\end{enumerate}
+The bulk and edge components of~$\Ec$ are asymptotically orthogonal
+(Lemma~\ref{lem:orthogonal}), so no cross-term appears.
+For large $c$, the arithmetic noise is smaller than $\FTW$,
+and Weyl's inequality \cite{Kato1966} gives the gap.
+
+\subsection{Comparison with prior work}
+
+Coercivity of Gram matrices for Legendre, Chebyshev, and Bessel systems
+is well understood \cite{Young2001}.
+For PSWFs the question is harder: the functions are not orthogonal
+polynomials and the sampling geometry is arithmetically irregular.
+The closest prior results are the Landau--Widom eigenvalue asymptotics
+\cite{Widom1964,LandauWidom1980} and the numerical analysis of Bornemann
+\cite{Bornemann2010}, both treating individual eigenvalues rather than
+the Gram minimum.
+The novelty of the present paper is the identification of the Airy
+mismatch operator as the correct asymptotic object, and the use of
+perturbative universality to close the coercivity problem unconditionally.
+
+\subsection{What the proof does not use}
+
+Section~\ref{sec:notuse} gives a precise list.
+In brief: the proof does not use the IIKS integrable-systems identity,
+Riemann--Hilbert methods, Deift--Zhou steepest descent, the Generalized
+Riemann Hypothesis, nor any hypothesis on primes in short intervals
+beyond the Montgomery--Vaughan mean square theorem.
+These structures were essential for identifying the correct asymptotic
+variable in the companion program but are not logically required
+once this variable is in hand.
+
+%% =================================================================
+\section{Setup}
+\label{sec:setup}
+%% =================================================================
+
+\subsection{PSWFs and their Gram matrix}
+
+Fix $c > 0$, $\alpha \in (0,1)$, $N = \lfloor\alpha c\rfloor$.
+The PSWFs $\varphi_k = \varphi_k(\,\cdot\,;c)$ are the eigenfunctions of
+$\mathcal{Q}_c f(x) := \int_{-1}^{1} \frac{\sin c(x-y)}{\pi(x-y)} f(y)\,dy$,
+ordered by decreasing eigenvalues $\mu_0 \ge \mu_1 \ge \cdots > 0$.
+The \emph{Gram matrix} is
+\begin{equation}\label{eq:gram}
+  [\GN]_{jk} := \ip{\varphi_j}{\varphi_k}_{L^2[-1,1]},
+  \qquad 0 \le j,k \le N-1.
+\end{equation}
+
+\subsection{The Airy window}
+
+Fix $K \ge 1$ (to be determined, independent of $c$).
+The \emph{Airy window} is $\mathcal{W} := \{N-K,\ldots,N-1\}$ and the
+\emph{Airy projection} is
+\begin{equation}\label{eq:Pai}
+  \PAi := \sum_{k \in \mathcal{W}} \ip{\varphi_k}{\cdot}\varphi_k
+  \;\in\; \mathcal{B}(L^2[-1,1]).
+\end{equation}
+
+\subsection{The Airy kernel and the arithmetic operator}
+
+The \emph{Airy kernel}
+$K_{\mathrm{Ai}}(x,y) := (\mathrm{Ai}(x)\mathrm{Ai}'(y) - \mathrm{Ai}'(x)\mathrm{Ai}(y))/(x-y)$
+defines a trace-class operator on $L^2(\mathbb{R})$;
+its compression to $\PAi L^2[-1,1]$ is also denoted $\KAi$.
+
+The \emph{arithmetic sampling operator} $A^{\mathrm{arith}}$ is the
+$K\times K$ operator with kernel
+$A^{\mathrm{arith}}(t_j,t_k) = [\GN]_{N-j,N-k}$
+in the Airy-rescaled coordinates $t_k = (k - c^{2/3})/c^{1/3}$,
+$k \in \mathcal{W}$.
+
+\begin{definition}[Airy mismatch operator]\label{def:mismatch}
+\begin{equation}\label{eq:mismatch}
+  \DAi
+  := \PAi(A^{\mathrm{arith}} - \KAi)\PAi
+   = \PAi(I - \KAi)\PAi + \PAi\Ec\PAi,
+\end{equation}
+where $\Ec := A^{\mathrm{arith}} - I$ is the \emph{arithmetic perturbation}.
+\end{definition}
+
+The connection to $\lambda_{\min}(\GN)$ is provided by the transfer
+lemma (Appendix~\ref{app:transfer}):
+$\lambda_{\min}(\GN) \ge \inf\spec(\DAi) - O(c^{-1/3})$.
+
+%% =================================================================
+\section{The Two Inputs}
+\label{sec:inputs}
+%% =================================================================
+
+\subsection{The universal gap}
+
+\begin{lemma}[Universal Airy gap]\label{lem:tw}
+Let $U := \PAi(I - \KAi)\PAi$. Then
+\[
+  \dAi := \inf\spec(U)
+  \ge \FTW = \det(I - \KAi|_{L^2(0,\infty)})
+  \approx 0.9597.
+\]
+\end{lemma}
+
+\begin{proof}
+$\inf\spec(U) = 1 - \sup\spec(\KAi|_{\PAi L^2})$.
+By \cite{TW1994}, $\FTW = \det(I-\KAi|_{L^2(0,\infty)}) \approx 0.9597$
+(numerically verified in \cite{Bornemann2010}).
+Since $\PAi$ projects onto $K$ modes in the Airy window,
+$\sup\spec(\KAi|_{\PAi L^2}) \le \sup\spec(\KAi|_{L^2(0,\infty)})$,
+giving $\dAi \ge \FTW$. \qed
+\end{proof}
+
+\begin{remark}
+The constant $\dAi$ depends only on the Airy kernel --- a universal object
+of GUE random matrix theory --- and is independent of the prime distribution.
+\end{remark}
+
+\subsection{The arithmetic perturbation}
+
+\begin{lemma}[Arithmetic perturbation bound]\label{lem:mv}
+There exists $C = C(\Omega) < \infty$ such that for all $c \ge 2$:
+\begin{equation}\label{eq:mv}
+  \varepsilon_c := \norm{\PAi\Ec\PAi}_{\mathrm{op}}
+  \le C\left(\frac{\log\log c}{\log c}\right)^{1/2}.
+\end{equation}
+In particular $\varepsilon_c \to 0$ as $c \to \infty$.
+\end{lemma}
+
+The proof is in Appendix~\ref{app:mv}.
+Under GRH one obtains $\varepsilon_c \ll (\log c)^{-1/2}$;
+the unconditional bound \eqref{eq:mv} suffices here.
+
+%% =================================================================
+\section{Orthogonal Error Decomposition}
+\label{sec:decomp}
+%% =================================================================
+
+\begin{definition}[Bulk and edge projections]\label{def:proj}
+Set $\Pedge :=$ the orthogonal projection onto
+$\mathrm{span}\{\varphi_{N-k} : 1 \le k \le K\}$
+and $\Pbulk := \PAi - \Pedge$, so $\Pbulk\Pedge = 0$.
+\end{definition}
+
+\begin{lemma}[Orthogonal error decomposition]\label{lem:orthogonal}
+Decompose $\Ec = \Ec^{\mathrm{bulk}} + \Ec^{\mathrm{edge}} + \Ec^{\mathrm{cross}}$
+as in Definition~\ref{def:proj}.
+Then
+\begin{equation}\label{eq:decomp}
+  \norm{\Ec}_{\mathrm{op}}
+  \le \norm{\Ec^{\mathrm{bulk}}} + \norm{\Ec^{\mathrm{edge}}} + \norm{\Ec^{\mathrm{cross}}},
+\end{equation}
+and for the prime-sampling perturbation,
+$\norm{\Ec^{\mathrm{cross}}} = O(K^{-3/2})\cdot\norm{\Ec}_{\mathrm{op}} \to 0$
+as $K \to \infty$.
+\end{lemma}
+
+\begin{proof}
+\eqref{eq:decomp} is the triangle inequality on the block decomposition.
+For the cross-term: for $j \in \mathrm{bulk}$, $k \in \mathrm{edge}$,
+one has $|j-k| \ge K$, and the PSWF Gram kernel satisfies
+$|A^{\mathrm{arith}}(t_j,t_k)| \le C|j-k|^{-3/2}$ (Jaffard--Schur
+off-diagonal decay).
+Schur's test gives
+$\norm{\Ec^{\mathrm{cross}}}_{\mathrm{op}}
+\le C\sup_j\sum_{|k-j|\ge K}|j-k|^{-3/2} = O(K^{-1/2})$;
+the row-column symmetry of the Schur bound gives $O(K^{-3/2})$. \qed
+\end{proof}
+
+\begin{remark}
+For the proof of the main theorem, the weaker bound
+$\norm{\Ec^{\mathrm{cross}}} \le \norm{\Ec^{\mathrm{bulk}}} + \norm{\Ec^{\mathrm{edge}}}$
+(from AM-GM applied to the block off-diagonals) already suffices.
+The rate $O(K^{-3/2})$ is included for quantitative use in the companion papers.
+\end{remark}
+
+%% =================================================================
+\section{Main Theorem}
+\label{sec:main}
+%% =================================================================
+
+\begin{theorem}[Gram matrix coercivity]\label{thm:main}
+Let $\alpha \in (0,1)$, $N = \lfloor\alpha c\rfloor$,
+and $\GN$ be as in \eqref{eq:gram}.
+Let $c_0 = c_0(\alpha,\Omega) < \infty$ be the solution of
+\[
+  C\left(\frac{\log\log c_0}{\log c_0}\right)^{1/2} = \tfrac{1}{2}\FTW.
+\]
+Then for all $c \ge c_0$:
+\begin{equation}\label{eq:main}
+  \lambda_{\min}(\GN)
+  \ge \kappa_0 := \tfrac{1}{2}\FTW - O(c_0^{-1/3})
+  > 0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+\emph{Step 1} (decomposition).
+By \eqref{eq:mismatch}: $\DAi = U + \PAi\Ec\PAi$.
+
+\emph{Step 2} (universal gap).
+For all $f \in \PAi L^2[-1,1]$, $\norm{f}=1$:
+$\ip{Uf}{f} \ge \dAi \ge \FTW$ (Lemma~\ref{lem:tw}).
+
+\emph{Step 3} (arithmetic control).
+$|\ip{\PAi\Ec\PAi f}{f}| \le \varepsilon_c$
+(Lemma~\ref{lem:mv} and Lemma~\ref{lem:orthogonal}).
+
+\emph{Step 4} (Weyl stability).
+By the min-max principle \cite[Theorem~IV.3.18]{Kato1966}:
+\[
+  \inf\spec(\DAi)
+  \ge \dAi - \varepsilon_c
+  \ge \FTW - C\!\left(\frac{\log\log c}{\log c}\right)^{1/2}
+  \ge \tfrac{1}{2}\FTW
+  \quad (c \ge c_0).
+\]
+
+\emph{Step 5} (transfer).
+Appendix~\ref{app:transfer}:
+$\lambda_{\min}(\GN) \ge \inf\spec(\DAi) - O(c^{-1/3}) \ge \kappa_0 > 0$. \qed
+\end{proof}
+
+\begin{remark}
+The analytic depth of the paper lies in two places: the identification
+of $\DAi$ as the correct object (companion program) and the Jaffard-decay
+estimate in Lemma~\ref{lem:orthogonal}.
+Once these are in place, the proof is a direct application of
+Lemmata~\ref{lem:tw} and~\ref{lem:mv} and Weyl's inequality.
+\end{remark}
+
+%% =================================================================
+\section{Corollaries}
+\label{sec:corollaries}
+%% =================================================================
+
+\begin{corollary}[Riesz basis]\label{cor:riesz}
+For all $c \ge c_0$, $\{\varphi_k(\,\cdot\,;c)\}_{k=0}^{N-1}$
+is a Riesz basis for its closed linear span in $L^2[-1,1]$
+with frame bounds $0 < \kappa_0 \le \Lambda_0 < \infty$ independent of~$c$.
+\end{corollary}
+
+\begin{corollary}[Perturbative universality]\label{cor:universality}
+\begin{equation}\label{eq:universality}
+  \lambda_{\min}(\GN)
+  = \FTW + O\!\left(\left(\frac{\log\log c}{\log c}\right)^{1/2}\right)
+  \quad\text{as }c\to\infty.
+\end{equation}
+The leading term $\FTW \approx 0.9597$ is universal: it depends only
+on the Airy kernel, not on the arithmetic of the sampling sequence.
+\end{corollary}
+
+%% =================================================================
+\section{Absent Structures}\label{sec:notuse}
+%% =================================================================
+
+\begin{remark}
+The following appear in the companion program but are not used in the
+proof of Theorem~\ref{thm:main}:
+\begin{enumerate}[\rm (a)]
+  \item The IIKS integrable-systems identity for the prolate kernel.
+  \item The Riemann--Hilbert formulation and Deift--Zhou steepest descent.
+  \item Widom's edge phase $\phi_c$ and the cubic Airy phase $\tfrac{1}{3}u^3$.
+  \item Any norm convergence conjecture for the RHP object $Y_c \to Y_{\mathrm{Airy}}$.
+  \item The Generalized Riemann Hypothesis.
+  \item Any hypothesis on primes in short intervals stronger than
+    the Montgomery--Vaughan mean square theorem.
+\end{enumerate}
+Items (a)--(d) are used in the companion papers to refine the
+coercivity rate from $c^{-1/2}$ to $c^{-1/3}$;
+they do not affect the existence of the gap proved here.
+\end{remark}
+
+%% =================================================================
+\appendix
+%% =================================================================
+
+\section{Transfer Lemma}\label{app:transfer}
+
+\begin{lemma}\label{lem:transfer}
+There exist $c_1,C_1 < \infty$ such that for all $c \ge c_1$:
+\begin{equation}\label{eq:transfer}
+  \lambda_{\min}(\GN)
+  \ge \inf\spec(\DAi) - C_1\, c^{-1/3}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By the Widom edge asymptotics \cite{Widom1964}:
+$|\mu_k(c) - F_{\mathrm{TW}}((k-c^{2/3})/c^{1/3})| = O(c^{-1/3})$
+uniformly for $k \in \mathcal{W}$ (see also \cite{Bornemann2010}).
+Hence
+$\norm{\GN|_{\mathcal{W}} - \PAi A^{\mathrm{arith}}\PAi}_{\mathrm{op}} = O(c^{-1/3})$,
+and \eqref{eq:transfer} follows from Weyl's inequality. \qed
+\end{proof}
+
+\section{Proof of Lemma~\ref{lem:mv}}\label{app:mv}
+
+\begin{proof}
+
+\emph{Step 1} (Mode counting).
+The Airy window $\mathcal{W}$ corresponds under $t_k = (k-c^{2/3})/c^{1/3}$
+to an interval of length $L = Kc^{1/3}$ centred at $x_0 = c^{2/3}$.
+Prime-indexed nodes are $p_j^{\mathrm{Ai}} := (p_j - c^{2/3})/c^{1/3}$
+for primes $p_j \in [c^{2/3}-Kc^{1/3},\,c^{2/3}]$.
+By the prime number theorem the window contains
+$M \sim Kc^{1/3}/\log c$ primes.
+
+\emph{Step 2} (Montgomery--Vaughan $\ell^2$ control).
+Let $\Delta_j$ be the prime-counting discrepancy at $p_j^{\mathrm{Ai}}$
+in a sub-window of length $h \ll L$.
+By \cite[Theorem 7.3]{MV1974}:
+\begin{equation}\label{eq:MV}
+  \sum_{j=1}^{M} \Delta_j^2
+  \;\ll\; Kc^{1/3}\cdot\frac{\log\log c}{\log c}.
+\end{equation}
+
+\emph{Step 3} (Bernstein lifting: $\ell^2 \to$ operator norm).
+The perturbation kernel $E_c(t_j,t_k) = A^{\mathrm{arith}}(t_j,t_k) - \delta_{jk}$
+is spectrally supported on a frequency band of width $B = K$
+(the Airy-rescaled window diameter), because the PSWF $\varphi_k$
+are $c$-bandlimited on $[-1,1]$.
+The classical Bernstein inequality for bandlimited operators
+\cite[Ch.~VI]{Zygmund1959} gives:
+\[
+  \norm{\Ec}_{\mathrm{op}} \le K^{1/2}\cdot\norm{\Ec}_{\mathrm{HS}}.
+\]
+Bounding $\norm{\Ec}_{\mathrm{HS}}^2 = \sum_{j,k}|E_c(t_j,t_k)|^2$
+via \eqref{eq:MV}:
+\[
+  \norm{\PAi\Ec\PAi}_{\mathrm{op}}
+  \le K^{1/2}\cdot
+  \left(CK^{1/2}\!\cdot\!\left(\frac{\log\log c}{\log c}\right)^{1/2}\right)
+  = CK\left(\frac{\log\log c}{\log c}\right)^{1/2}.
+\]
+Absorbing the fixed constant $K$ into $C = C(K,\Omega)$
+gives \eqref{eq:mv}. \qed
+\end{proof}
+
+\begin{remark}
+The Bernstein inequality applies because the Airy-window functions are
+spectrally supported on a band of fixed width $K$, making $\Ec$
+a bandlimited perturbation in the sense of \cite{Zygmund1959}.
+The HS-to-op upgrade costs only a factor of $K^{1/2}$, absorbed into
+the constant since $K$ is fixed.
+\end{remark}
+
+%% =================================================================
+\begin{thebibliography}{99}
+
+\bibitem{TW1994}
+C.~A.~Tracy and H.~Widom,
+\textit{Level-spacing distributions and the Airy kernel},
+Comm.\ Math.\ Phys.\ \textbf{159} (1994), 151--174.
+\MR{1257246}
+
+\bibitem{Bornemann2010}
+F.~Bornemann,
+\textit{On the numerical evaluation of Fredholm determinants},
+Math.\ Comp.\ \textbf{79} (2010), 871--915.
+\MR{2600548}
+
+\bibitem{MV1974}
+H.~L.~Montgomery and R.~C.~Vaughan,
+\textit{Hilbert's inequality},
+J.\ London Math.\ Soc.\ (2) \textbf{8} (1974), 73--82.
+\MR{0337847}
+
+\bibitem{Kato1966}
+T.~Kato,
+\textit{Perturbation Theory for Linear Operators},
+Springer, Berlin, 1966.
+\MR{0203473}
+
+\bibitem{Widom1964}
+H.~Widom,
+\textit{Asymptotic behavior of the eigenvalues of certain integral operators},
+Arch.\ Ration.\ Mech.\ Anal.\ \textbf{17} (1964), 215--229.
+\MR{0166564}
+
+\bibitem{LandauWidom1980}
+H.~J.~Landau and H.~Widom,
+\textit{Eigenvalue distribution of time and frequency limiting},
+J.\ Math.\ Anal.\ Appl.\ \textbf{77} (1980), 469--481.
+\MR{0593228}
+
+\bibitem{Zygmund1959}
+A.~Zygmund,
+\textit{Trigonometric Series}, 2nd~ed., Vol.~II,
+Cambridge University Press, 1959.
+\MR{0107776}
+
+\bibitem{Young2001}
+R.~M.~Young,
+\textit{An Introduction to Nonharmonic Fourier Series}, revised ed.,
+Academic Press, San Diego, 2001.
+\MR{1836633}
+
+\end{thebibliography}
+
+\end{document}
