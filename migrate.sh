@@ -2,16 +2,10 @@
 # migrate.sh — Migrationsskript: prolate-gram-coercivity + prolate-primes-paper → pswf-programme
 #
 # Verwendung:
-#   1. Dieses Skript in ein Verzeichnis legen, das BEIDE Quellrepos als Unterordner enthält:
-#      parent/
-#        prolate-gram-coercivity/
-#        prolate-primes-paper/
-#        pswf-programme/      ← Zielrepo (dieses hier)
-#        migrate.sh
-#   2. bash migrate.sh
+#   bash migrate.sh        (aus pswf-workspace/)
 #
-# Sicherheitsregeln (nach dem Lauf):
-#   A) git diff --stat    → prüfen ob kein File verloren kategorisiert
+# Sicherheitsregeln:
+#   A) git -C pswf-programme diff --stat   → prüfen ob kein File verloren
 #   B) Erster Commit = "pure structural equivalence check" (kein Refactoring)
 
 set -e
@@ -26,15 +20,9 @@ echo "=== PSWF Programme Migration ==="
 
 echo "[1/6] Papers migrieren..."
 
-# p01: Zwei Beweislinien
 cp "$SRC1/paper1.tex"               "$DST/core/papers/p01_quadrature.tex"
 cp "$SRC2/paper1_FINAL.tex"         "$DST/core/papers/p01_weil.tex"
-
-# p02: Quadrature (kanonisch)
 cp "$SRC1/paper2_quadrature.tex"    "$DST/core/papers/p02_quadrature.tex"
-# paper2.tex bleibt im Quellrepo (legacy snapshot, kein Beweiswert)
-
-# p03–p21
 cp "$SRC1/paper3.tex"               "$DST/core/papers/p03.tex"
 cp "$SRC1/paper4_semiclassical.tex" "$DST/core/papers/p04_semiclassical.tex"
 cp "$SRC1/paper5.tex"               "$DST/core/papers/p05.tex"
@@ -74,9 +62,13 @@ echo "[3/6] Offene Probleme migrieren..."
 cp "$SRC1/O4_frame_stability_problem.tex"        "$DST/core/open/O4_frame_stability.tex"
 cp "$SRC1/O4_B2_airy_offdiag_decay.tex"          "$DST/core/open/O4_airy_offdiag.tex"
 cp "$SRC1/O4_B2_T2_triple_scaling.tex"           "$DST/core/open/O4_triple_scaling.tex"
+cp "$SRC1/O4_attack_plan.md"                     "$DST/core/open/O4_attack_plan.md"
 cp "$SRC1/O5_airy_gap_problem.tex"               "$DST/core/open/O5_airy_gap.tex"
 cp "$SRC1/O5_B2_airy_sampling_coercivity.tex"    "$DST/core/open/O5_airy_sampling.tex"
 cp "$SRC1/O5_Ec_operator_norm.tex"               "$DST/core/open/O5_operator_norm.tex"
+cp "$SRC1/O5_B_attack_plan.md"                   "$DST/core/open/O5_attack_plan.md"
+cp "$SRC1/O5_B_gap_persistence.md"               "$DST/core/open/O5_gap_persistence.md"
+cp "$SRC1/section5_numerical_evidence.tex"       "$DST/core/open/section5_numerical_evidence.tex"
 
 # ── P22 ────────────────────────────────────────────────────────────────────────
 
@@ -90,18 +82,16 @@ cp "$SRC1/XXII_introduction_draft.tex"   "$DST/p22/introduction_draft.tex"
 cp "$SRC1/XXII_universality_theorem.tex" "$DST/p22/universality_theorem.tex"
 cp "$SRC1/paper22_dag.tex"               "$DST/p22/dag.tex"
 cp "$SRC1/trilogy_dag.tex"               "$DST/p22/trilogy_dag.tex"
+cp "$SRC1/paper22_outline.tex"           "$DST/p22/outline.tex"
+cp "$SRC1/paper22_core_skeleton.md"      "$DST/p22/core_skeleton.md"
 
-# ── SYSTEM/RAW (Quellversionen, kein destillierter Inhalt) ─────────────────────
+# ── SYSTEM/RAW ─────────────────────────────────────────────────────────────────
 
 echo "[5/6] Systemdateien (→ system/raw/) migrieren..."
 
 mkdir -p "$DST/system/raw"
 cp "$SRC1/program_map.md"    "$DST/system/raw/program_map_source.md"
 cp "$SRC1/DEPENDENCIES.md"   "$DST/system/raw/dependencies_source.md"
-
-# Semantischer Cut:
-#   system/raw/ = rohe Quellversionen zum Abgleich (können nach Verifikation gelöscht werden)
-#   system/*.md = destillierte, kanonische Steuerungsebene (NICHT überschreiben)
 
 # ── NICHT MIGRIEREN ────────────────────────────────────────────────────────────
 
@@ -115,8 +105,8 @@ echo ""
 echo "✅ Migration abgeschlossen."
 echo ""
 echo "Nächste Schritte:"
-echo "  1. git -C \"$DST\" diff --stat            (Verifikation: kein File falsch kategorisiert)"
+echo "  1. git -C \"$DST\" diff --stat"
 echo "  2. git -C \"$DST\" add -A"
 echo "  3. git -C \"$DST\" commit -m 'migrate: structural equivalence check'"
-echo "  4. system/raw/ nach Verifikation löschen: rm -rf \"$DST/system/raw/\""
-echo "  5. git -C \"$DST\" commit -m 'system: remove raw sources after verification'"
+echo "  4. Nach Verifikation: rm -rf \"$DST/system/raw/\""
+echo "  5. git -C \"$DST\" commit -am 'system: remove raw sources after verification'"
