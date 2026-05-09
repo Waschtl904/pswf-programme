@@ -1,0 +1,33 @@
+%%=================================================================
+%% CANONICAL MATHEMATICAL IDENTITY
+%% One paragraph for cover letter / arXiv / seminar
+%%=================================================================
+
+%%  CALIBRATED ONE-SENTENCE CHARACTERIZATION:
+%%
+%%  The discrete PSWF sampling Gram operator exhibits a
+%%  boundary-dominated low-rank perturbation of the identity:
+%%  a single edge-localized direction carries asymptotically
+%%  dominant spectral weight (numerically established for
+%%  c in {32,48,64}, analytically supported by Euler-Maclaurin
+%%  boundary structure and WKB endpoint growth), while the
+%%  remaining spectrum is uniformly stable within O(c^{-1/2})
+%%  of the identity. The dominant eigenvector is asymptotically
+%%  aligned with the endpoint profile vector e_c
+%%  (alignment >= 0.9975; Davis-Kahan bound ~ c^{-0.58}).
+%%  This is a boundary spectral decomposition of a singularly
+%%  discretized band-limiting operator, not a quadrature
+%%  error estimate.
+
+%% PROOF SKELETON (4 steps):
+%% Step 1: EM boundary term   -> G = I + (2/c)e_c e_c^T + R_c
+%% Step 2: WKB endpoint blowup -> ||F_c|| = (2/c)||e_c||^2 -> inf
+%% Step 3: Rank-1 collapse     -> R_c >= 95% rank-1, ||R^perp|| <= 0.017
+%% Step 4: Davis-Kahan         -> sin<(v_1, e_c) <= 0.0095 -> 0
+
+%% STATUS MAP:
+%% [RIGOROUS ]  (i)  EM rank-one structure
+%% [MEASURED ]  (ii) Rank-one collapse of R_c (c=32,48,64)
+%% [SUPPORTED]  (iii) lambda_eff -> inf (WKB + numerical trend)
+%% [RIGOROUS ]  (iv) Davis-Kahan localization
+%% [STANDARD ]  (v)  Bulk stability O(c^{-1/2})

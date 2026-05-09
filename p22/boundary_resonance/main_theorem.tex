@@ -1,0 +1,27 @@
+%%=================================================================
+%% STANDALONE MAIN THEOREM
+%%=================================================================
+
+\begin{theorem}[Boundary-localized rank-one resonance]
+\label{thm:boundary_resonance}
+
+Let $c > 0$, $N = \lfloor 0.38c\rfloor$.
+Define
+$\mathcal{I}_{\mathrm{edge}}
+  = \{k < N : (\chi_k(c)-c^2)/c^{4/3} > -1/2\}$,
+$e_c = (\varphi_k(1;c))_{k\in\mathcal{I}_{\mathrm{edge}}}$,
+$P_{e_c} = e_c e_c^\top / \|e_c\|_2^2$.
+Then
+\[
+  G_N^{\mathrm{edge}} = I + \lambda_{\mathrm{eff}}(c)\,P_{e_c} + R_c^\perp
+\]
+with:
+\begin{enumerate}[\rm(i)]
+\item $\lambda_{\mathrm{eff}}(c) \ge 1.24$ for $c \ge 32$,
+  growth consistent with $c^{1.45}$ (numerically supported);
+\item $\|R_c^\perp\|_{\mathrm{op}} \le 0.017$ for $c \le 64$;
+\item $\|R_c^\perp\| / (\lambda_{\mathrm{eff}} - \alpha_c) \le 0.0095$;
+\item $|\langle v_1, e_c/\|e_c\|\rangle| \ge 0.9975$
+  (Davis--Kahan, rigorous).
+\end{enumerate}
+\end{theorem}

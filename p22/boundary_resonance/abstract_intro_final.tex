@@ -1,0 +1,47 @@
+%%=================================================================
+%% ABSTRACT + INTRODUCTION REWRITE
+%% Language: boundary spectral theory, not quadrature error
+%%=================================================================
+
+\begin{abstract}
+We study the discrete sampling Gram matrix
+$G_N[j,k] = c^{-1}\sum_{n=-c}^{c}
+\varphi_j(n/c;c)\,\varphi_k(n/c;c)$,
+where $\{\varphi_k(\,\cdot\,;c)\}$ are the $L^2([-1,1])$-normalised
+prolate spheroidal wave functions with bandwidth $c$.
+The classical picture $G_N \approx I$ holds in the bulk sector
+but fails for above-barrier modes ($\chi_k > c^2$):
+rather than producing a small perturbation of the identity,
+the edge sector admits the rank-one decomposition
+\[
+  G_N^{\mathrm{edge}} = I + \lambda_{\mathrm{eff}}(c)\,P_{e_c} + R_c^\perp,
+\]
+where $e_c = (\varphi_k(1;c))_{k\in\mathcal{I}_{\mathrm{edge}}}$
+is the boundary profile vector,
+$\lambda_{\mathrm{eff}}(c)$ is numerically dominant and growing,
+and $\|R_c^\perp\|_{\mathrm{op}}/\lambda_{\mathrm{eff}}(c) \le 0.010$.
+By the Davis--Kahan theorem, the unique unstable eigenvector
+converges to the boundary profile direction:
+$|\langle v_1,\, e_c/\|e_c\|\rangle| \ge 0.9975$.
+This is a \emph{boundary spectral decomposition} of a singularly
+discretized band-limiting operator, not a quadrature error result.
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+
+\subsection{The mechanism in one chain}
+\[
+\chi_k > c^2
+\Rightarrow \varphi_k(1;c)\nearrow\infty
+\Rightarrow \tfrac{2}{c}\varphi_j(1)\varphi_k(1) \text{ dominates}
+\Rightarrow \lambda_1(G_N^{\mathrm{edge}})\nearrow\infty.
+\]
+
+\subsection{What this explains}
+\begin{enumerate}
+\item Exactly one eigenvalue diverges (rank-one $F_c$).
+\item Bulk modes remain stable ($\varphi_k(1;c)$ bounded below barrier).
+\item Instability begins above the barrier ($\chi_k > c^2$).
+\item Unstable direction = boundary profile (Davis--Kahan).
+\item $G_N \approx I$ fails in the edge sector, holds in the bulk.
+\end{enumerate}

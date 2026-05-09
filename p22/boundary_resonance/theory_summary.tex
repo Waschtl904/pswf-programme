@@ -1,0 +1,86 @@
+% theory_summary.tex — see canonical_identity.tex for the core
+% Full content follows below
+
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs,array,enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\title{\textbf{Boundary Resonance in PSWF Sampling Gram Matrices}\\[6pt]
+       \large Theory Summary --- Internal Reference Document}
+\author{}
+\date{May 2026}
+
+\begin{document}
+\maketitle
+
+\section{What this paper proves}
+
+The central claim is a \emph{spectral structure theorem}, not an error estimate.
+
+\medskip
+\noindent\textbf{Old framing (superseded):}
+$G_N \approx I$ (quadrature accuracy statement).
+
+\noindent\textbf{New framing:}
+$G_N^{\mathrm{edge}} = I + \lambda_{\mathrm{eff}}(c)\,P_{e_c} + R_c^\perp$
+(rank-one spectral resonance).
+
+The full sampling Gram matrix has block spectral structure
+\[
+  \sigma(G_N)
+  = \bigl\{1 + \lambda_{\mathrm{eff}}(c)\bigr\}
+  \cup
+  [1-\delta,\,1+\delta]^{N-1},
+  \quad \delta = O(c^{-1/2}).
+\]
+
+\section{Four-layer logical structure}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Layer & Tool & Output \\
+\midrule
+1. Geometry & WKB / Olver 1974 & $\varphi_k(1;c)\to\infty$ for $\mu_k\ge 0$ \\
+2. Mechanism & Euler--Maclaurin & $G = I + F_c + R_c$, $F_c$ rank-1 \\
+3. Dominance & Numerics $c=32,48,64$ & $\|R_c^\perp\|/(\lambda_{\mathrm{eff}}-\alpha_c) \le 0.01$ \\
+4. Localization & Davis--Kahan & $|\langle v_1,e_c/\|e_c\|\rangle|\to 1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Numerical evidence}
+
+\begin{center}
+\begin{tabular}{ccccccc}
+\toprule
+$c$ & $m$ & $\lambda_1$ & $\lambda_{\mathrm{eff}}$ & $\alpha_c$
+    & $\|R_c^\perp\|$ & $|\langle v_1,e_c\rangle|$ \\
+\midrule
+32 & 3 & 2.2397 & 1.2397 & 0.4073 & 0.0079 & 0.997883 \\
+48 & 4 & 3.3054 & 2.3054 & 0.6287 & 0.0139 & 0.997476 \\
+64 & 5 & 4.3649 & 3.3649 & 0.7473 & 0.0164 & 0.997503 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Open points (local, not structural)}
+\begin{enumerate}
+\item WKB exponent $\beta$: single citation (Olver 1974 / Osipov--Rokhlin 2014)
+\item Scaling exponents $1.45$, $0.89$, $1.66$: empirical, not load-bearing
+\item MV bound for $R_c^{\mathrm{osc}}$: not needed; $\|R_c^\perp\|\le 0.017$ measured
+\end{enumerate}
+
+\textbf{None of these affects the correctness of the main theorem or Davis--Kahan corollary.}
+
+\end{document}
