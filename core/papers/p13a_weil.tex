@@ -1,0 +1,758 @@
+\documentclass[12pt,a4paper]{amsart}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+%%%─── Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{problem}[theorem]{Open Problem}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem*{remark*}{Remark}
+
+%%%─── Macros
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\ip}[2]{\langle #1,\, #2\rangle}
+\newcommand{\Hlim}{\mathcal{H}_{\lim}}
+\newcommand{\Hc}{\mathcal{H}_c}
+\newcommand{\Phiinf}[1]{\Phi_{#1}^{(\infty)}}
+\newcommand{\Phic}[2]{\Phi_{#2}^{(#1)}}
+\newcommand{\lambdainf}[1]{\lambda_{#1}^{(\infty)}}
+\newcommand{\lambdac}[2]{\lambda_{#2}^{(#1)}}
+\newcommand{\PW}{PW}
+\newcommand{\spc}[1]{\sigma(#1)}
+\newcommand{\Kspace}{\mathcal{K}}
+
+\subjclass[2020]{47A10, 47B25, 42C05, 46B15, 46C05}
+\keywords{Prolate spheroidal wave functions, completeness,
+  orthonormal basis, strong operator convergence,
+  Paley--Wiener space, basis stability, structural classification,
+  Hilbert--P\'{o}lya programme}
+
+\begin{document}
+
+\title[Completeness of the Limiting Slepian Eigenbasis]{%
+  Completeness of the Limiting Slepian Eigenbasis in $L^2(\mathbb{R})$:
+  A Classification of Stability Mechanisms}
+
+\author{[Author]}
+\address{[Address]}
+\email{[Email]}
+
+\begin{abstract}
+Let $\Hlim$ denote the bounded self-adjoint SOT-limit operator
+of Paper~X and $\{\Phiinf{n}\}_{n \ge 0}$ the orthonormal
+system of limit eigenfunctions of Paper~XI.
+Define $\Kspace := \overline{\mathrm{span}}\{\Phiinf{n}\}$.
+This paper classifies the mechanisms by which the completeness
+problem $\Kspace = L^2(\mathbb{R})$ (Open Problem~7 of Paper~IX)
+could be resolved.
+
+\medskip
+For finite $c$, the classical PSWFs $\{\Phic{c}{n}\}_{n \ge 0}$
+form a complete orthonormal basis of $\PW_c^2$ (Slepian--Pollak
+\cite{Slepian1961}).
+The central difficulty is that this basis property is not
+automatically stable under the SOT-limit $c \to \infty$:
+SOT-convergence controls neither spanning structure nor
+completeness of the limit system.
+Completeness of $\{\Phiinf{n}\}$ is therefore a
+\emph{stability problem for PSWF spanning structures under
+the SOT-limit}.
+
+\medskip
+\textbf{Main results.}
+\begin{itemize}
+\item \emph{(Theorem~A.)} For any orthonormal system,
+  the Parseval identity is logically equivalent to completeness.
+  Frame identities are not proof tools.
+\item \emph{(Theorem~B.)} Completeness $\Kspace=L^2$ is equivalent
+  to the family of local spanning conditions
+  $\PW_{c_0}^2 \subseteq \Kspace$ for all $c_0>0$.
+  This is a \emph{localisation equivalence}, not a reduction:
+  global completeness is rewritten as an
+  inductive-limit stability question, with all
+  values of $c_0$ playing structurally identical roles.
+\item \emph{(Theorem~C.)} Under a compact-resolvent
+  hypothesis, completeness follows from the spectral theorem;
+  this route is structurally independent of A and B.
+\end{itemize}
+
+\medskip
+\textbf{Honest assessment.}
+This paper does not prove completeness.
+It establishes that no frame-based shortcut exists (Route~A),
+that completeness is equivalent to a scale-uniform
+family of local stability conditions (Route~B),
+and that an independent spectral route is available
+conditionally (Route~C).
+The only currently identified hypothesis strictly weaker than
+completeness and directly grounded in the series
+is H1 (coefficient stability,
+Hypothesis~\ref{hyp:coeff-stability}).
+The single-scale formulation of Route~B
+(Hypothesis~\ref{hyp:local-span}) is a
+\emph{fixed-scale instance} of the full stability problem,
+without intrinsic difficulty ordering in $c_0$;
+proving it for all $c_0$ is equivalent to completeness.
+\end{abstract}
+
+\maketitle
+
+%%═══ 1. INTRODUCTION
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{The stability problem}
+
+\begin{center}
+\fbox{\parbox{0.88\linewidth}{\centering\itshape
+For each finite $c$, the PSWFs $\{\Phic{c}{n}\}$ form a
+complete orthonormal basis of $\PW_c^2$.
+The SOT-limit $c \to \infty$ does not preserve this
+basis property automatically.
+Completeness of $\{\Phiinf{n}\}$ in $L^2(\mathbb{R})$
+is a stability problem:
+does the spanning structure of $\{\Phic{c}{n}\}$
+survive the limit?}}
+\end{center}
+
+\medskip
+\noindent
+The Slepian concentration operator is
+$(\Hc f)(x) = \int_{-\infty}^\infty \frac{\sin c(x-y)}{\pi(x-y)}
+f(y)\,dy$.
+For each finite $c$, $\{\Phic{c}{n}\}$ is a complete
+orthonormal basis of $\PW_c^2$ \cite{Slepian1961}.
+Paper~X establishes $\Hlim := \mathrm{SOT\text{-}lim}\,\Hc$
+as a bounded self-adjoint operator, $\norm{\Hlim} \le 1$,
+$\spc{\Hlim} \subseteq [0,1]$.
+Paper~XI constructs $\{\Phiinf{n}\}$ with
+\begin{equation}\label{eq:eigen}
+  \Hlim\Phiinf{n} = \lambdainf{n}\Phiinf{n},\quad
+  \ip{\Phiinf{m}}{\Phiinf{n}} = \delta_{mn},\quad
+  \lambdainf{n} \in (0,1).
+\end{equation}
+The question is
+\begin{equation}\label{eq:main}
+  \Kspace := \overline{\mathrm{span}}\{\Phiinf{n}\}
+  \stackrel{?}{=} L^2(\mathbb{R}).
+\end{equation}
+
+\subsection{Why SOT-convergence is not enough}
+\label{sub:sot-not-enough}
+
+\begin{itemize}
+\item SOT-convergence does not imply
+  norm-resolvent convergence \cite[Ex.~VIII.7.14]{ReedSimon1975}.
+\item Eigenvalues can dissolve into continuous spectrum
+  under SOT-limits \cite[Ex.~VIII.3.4]{ReedSimon1975}.
+\item A uniformly bounded family of complete orthonormal
+  bases can SOT-converge to a system that is not complete
+  (Remark~\ref{rem:sot-stability-failure}).
+\end{itemize}
+
+\begin{remark}[SOT-limit can destroy completeness]
+\label{rem:sot-stability-failure}
+Let $\{e_n\}$ be the standard ONB of $\ell^2$.
+For $c < \infty$ define the ONS
+$f_n^{(c)} := \cos(c^{-1})e_n + \sin(c^{-1})e_{n+1}$.
+Then $f_n^{(c)} \xrightarrow{c\to\infty} e_n$ strongly,
+but $\{f_n^{(c)}\}$ is not complete in $\ell^2$ for
+any finite $c$ (it misses $e_0 - \tan(c^{-1})e_1$
+up to normalisation).
+Such behaviour is classical in operator perturbation
+theory: a complete ONS can converge SOT to an incomplete
+limit (cf.~\cite[Ex.~VIII.3.4]{ReedSimon1975} and
+perturbations of ONB projections in
+\cite[\S I.4]{Kato1966}).
+In the PSWF setting, the finite-$c$ systems are
+complete in $\PW_c^2$, not in $L^2$;
+the passage $c\to\infty$ changes both the system
+and the ambient space, making the stability question
+non-trivial.
+\end{remark}
+
+\subsection{Honest assessment of this paper}
+\label{sub:honest}
+
+\begin{center}
+\fbox{\parbox{0.88\linewidth}{
+\begin{itemize}
+\item Route~B (Theorem~\ref{thm:H2-equiv}) establishes
+  an \emph{equivalence}, not a reduction.
+  The localisation into $\PW_{c_0}^2$-conditions
+  does not simplify the problem;
+  it changes the language to one where the
+  analytic tools of Papers~VI--XII apply directly.
+\item The parameter $c_0$ in the local spanning
+  condition plays no intrinsic ordering role:
+  proving $\PW_{c_0}^2\subseteq\Kspace$ for one
+  $c_0$ is a fixed-scale instance of the stability
+  problem, not a canonical intermediate step.
+  There is no natural difficulty hierarchy in $c_0$.
+\item The only currently identified hypothesis strictly
+  weaker than completeness and grounded in the series
+  is~H1.
+\item This paper is a barrier and classification paper,
+  not a progress paper.
+\end{itemize}}}
+\end{center}
+
+\subsection{Dependency graph}
+\label{sub:deps}
+\[
+  \underbrace{\text{H1}}_{\text{Hyp.~\ref{hyp:coeff-stability}}}
+  \;\text{strictly weaker than completeness},
+\]
+\[
+  \underbrace{\text{local H2}_{c_0}}_{\text{Hyp.~\ref{hyp:local-span}}}
+  \;\text{strictly weaker (fixed-scale instance, no }c_0\text{-ordering)},
+\]
+\[
+  \underbrace{\text{H2 (all }c_0\text{)}}_{\text{Thm.~\ref{thm:H2-equiv}}}
+  \;\Longleftrightarrow\;
+  \Kspace = L^2
+  \;\Longleftrightarrow\;
+  \text{Route~A (Thm.~\ref{thm:routeA})},
+\]
+\[
+  \underbrace{\text{compact resolvent}}_{\text{Hyp.~\ref{hyp:compact-resolvent}}}
+  \xRightarrow{\text{Prop.~\ref{prop:compact-route}}}
+  \Kspace = L^2
+  \quad\text{(structurally independent)}.
+\]
+
+\subsection{What this paper does not claim}
+\begin{itemize}
+\item We do not prove $\Kspace = L^2(\mathbb{R})$.
+\item We do not prove local H2$_{c_0}$ for any $c_0$.
+\item We do not claim $\spc{\Hlim}$ is discrete.
+\item We do not claim local H2$_{c_0}$ is easier than
+  completeness in any intrinsic sense.
+\end{itemize}
+
+\subsection{Role in the series}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Paper & Content & Status \\
+\midrule
+X  & SOT-limit; Mosco; Friedrichs & Final \\
+XI & ONS $\{\Phiinf{n}\}$; orthonormality & Final \\
+XII & Localisation; obstruction set & Final \\
+\textbf{XIII} & \textbf{Classification of stability mechanisms}
+    & \textbf{This paper} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%%═══ 2. INHERITED DATA
+\section{Inherited Data}
+\label{sec:input}
+
+\begin{lemma}[Classical spanning at finite $c$]
+\label{lem:finite-c-basis}
+For each finite $c > 0$,
+$\{\Phic{c}{n}\}_{n \ge 0}$ is a complete orthonormal
+basis of $\PW_c^2$ \cite{Slepian1961,Osipov2013}.
+In particular,
+$\sum_{n \ge 0}|\ip{g}{\Phic{c}{n}}|^2 = \norm{g}^2$
+for all $g \in \PW_c^2$.
+\end{lemma}
+
+\begin{lemma}[Series results used]
+\label{lem:inherited}
+\begin{enumerate}[\rm(A)]
+\item\label{A:sa}
+  \emph{(Paper~X.)} $\Hlim$ bounded self-adjoint,
+  $\norm{\Hlim}\le 1$, $\spc{\Hlim}\subseteq[0,1]$.
+\item\label{A:ONS}
+  \emph{(Paper~XI.)} $\{\Phiinf{n}\}$ satisfies
+  \eqref{eq:eigen} and is orthonormal.
+\item\label{A:nonvanish}
+  \emph{(Paper~VIII.)} For $n\le\kappa c$:
+  $|\widehat{\Phic{c}{n}}|\ge c_1 c^{-1/2}$ on $E_c$,
+  $|E_c|\ge c_* c^{-1/2}$.
+\item\label{A:precompact}
+  \emph{(Paper~IX, Lem.~3.1.)} $\{\Phic{c}{n}\}_{c>0}$
+  precompact in $L^2$.
+\item\label{A:eval-rate}
+  \emph{(Paper~VIII.)} $|\lambdac{c}{n}-\lambdainf{n}|
+  \le C_\kappa c^{-1/4}$ for $n\le\kappa c$.
+\item\label{A:evec-conv}
+  \emph{(Paper~XII, cond.~Gap-S+SOT-Faster.)}
+  $\norm{\Phic{c}{n}-\Phiinf{n}}\to 0$ for each fixed $n$.
+\end{enumerate}
+\end{lemma}
+
+\begin{remark}[The stability gap]
+\label{rem:stability-gap}
+Lemma~\ref{lem:finite-c-basis} gives the complete
+Parseval identity on each $\PW_c^2$ for finite $c$.
+Lemma~\ref{lem:inherited}\ref{A:evec-conv} gives
+pointwise convergence $\Phic{c}{n}\to\Phiinf{n}$
+(conditionally).
+The gap is:
+\emph{pointwise convergence of basis vectors does
+not imply preservation of the basis property in the
+limit space.}
+This is the stability problem at the heart of Paper~XIII.
+\end{remark}
+
+%%══─ 3. INTERFACE LEMMA
+\section{Interface Lemma}
+\label{sec:interface}
+
+\begin{lemma}[Orthogonality characterisation]
+\label{lem:orth-char}
+$\Kspace = L^2(\mathbb{R})\iff
+[\ip{f}{\Phiinf{n}}=0\;\forall n\Rightarrow f=0]$.
+\end{lemma}
+\begin{proof}\cite[Thm.~3.3]{Conway1990}.\end{proof}
+
+%%═══ 4. ROUTE A
+\section{Route~A: Parseval is Tautologically Equivalent
+  to Completeness}
+\label{sec:routeA}
+
+\begin{definition}[Gram operator]
+\label{def:gram}
+$Gf := \sum_{n\ge 0}\ip{f}{\Phiinf{n}}\Phiinf{n}$.
+Bessel's inequality gives
+$\norm{S_Nf-S_Mf}^2 = \sum_{n=M+1}^N
+|\ip{f}{\Phiinf{n}}|^2\to 0$,
+so the series converges in $L^2$-norm.
+$G$ is self-adjoint ($G^*=G$) and idempotent
+($G^2=G$) by orthonormality alone,
+hence the orthogonal projection onto $\Kspace$.
+(This uses only orthonormality, not completeness.)
+\end{definition}
+
+\begin{theorem}[Route~A]
+\label{thm:routeA}
+For the orthonormal system $\{\Phiinf{n}\}$:
+\[
+  \Kspace = L^2(\mathbb{R})
+  \iff G = \mathrm{id}
+  \iff \textstyle\sum_n|\ip{f}{\Phiinf{n}}|^2 = \norm{f}^2\ \forall f
+  \iff \exists A{>}0:\,
+    \textstyle\sum_n|\ip{f}{\Phiinf{n}}|^2 \ge A\norm{f}^2\ \forall f.
+\]
+\end{theorem}
+\begin{proof}
+(i)$\Rightarrow$(ii): if $\Kspace=L^2$ then $G=\mathrm{id}$.
+(ii)$\Rightarrow$(iii): $\norm{Gf}^2=\norm{f}^2$.
+(iii)$\Rightarrow$(iv): take $A=1$.
+(iv)$\Rightarrow$(i): if $f\perp\Phiinf{n}$ for all $n$
+then $0\ge A\norm{f}^2$, so $f=0$;
+hence $\Kspace=L^2$ by Lemma~\ref{lem:orth-char}.
+\end{proof}
+
+\begin{remark}[Route~A is a closure, not a starting point]
+\label{rem:routeA-consequence}
+Theorem~\ref{thm:routeA} shows that every
+frame-based formulation of completeness is
+tautologically equivalent to completeness itself.
+The correct logical direction is:
+prove $\Kspace=L^2$ (by density or spanning arguments),
+then deduce Parseval as a consequence.
+Attempts to use Parseval or a frame lower bound
+\emph{to prove} completeness must implicitly already
+know completeness.
+This closes off all frame-based proof strategies;
+any approach must work at the level of individual
+$\PW_c^2$-bands before passing to $L^2$ by density.
+\end{remark}
+
+%%═══ 5. ROUTE B
+\section{Route~B: Completeness as a Stability Problem
+  for PSWF Spanning Structures}
+\label{sec:routeB}
+
+\subsection{The localisation equivalence}
+
+\begin{lemma}[Paley--Wiener density]
+\label{lem:pw-dense}
+$\bigcup_{c>0}\PW_c^2$ is dense in $L^2(\mathbb{R})$.
+\end{lemma}
+\begin{proof}
+Schwartz functions with compact Fourier support lie
+in $\bigcup_c\PW_c^2$ and are dense
+\cite[Thm.~7.14]{Rudin1991}.\end{proof}
+
+\begin{theorem}[Route~B: localisation equivalence]
+\label{thm:H2-equiv}
+The following are equivalent:
+\begin{enumerate}[\rm(i)]
+\item $\Kspace = L^2(\mathbb{R})$;
+\item $\PW_{c_0}^2 \subseteq \Kspace$ for every $c_0 > 0$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+(i)$\Rightarrow$(ii): trivial.
+(ii)$\Rightarrow$(i): $\bigcup_{c_0}\PW_{c_0}^2
+\subseteq\Kspace$;
+since $\Kspace$ is closed and
+$\bigcup_{c_0}\PW_{c_0}^2$ is dense
+(Lemma~\ref{lem:pw-dense}),
+we get $L^2=\overline{\bigcup_{c_0}\PW_{c_0}^2}
+\subseteq\Kspace$.
+\end{proof}
+
+\begin{remark}[Route~B: equivalence, not reduction]
+\label{rem:routeB-equiv}
+Theorem~\ref{thm:H2-equiv} is a localisation
+\emph{equivalence}: global completeness is precisely
+the family of local spanning conditions.
+This is not a reduction of difficulty:
+the quantification over all $c_0 > 0$ makes the
+local formulation exactly as strong as global completeness.
+
+The parameter $c_0$ plays no intrinsic ordering role.
+Proving $\PW_{c_0}^2 \subseteq \Kspace$ for one
+fixed $c_0$ is a \emph{fixed-scale instance}
+of the stability problem, with the same structural
+character for every value of $c_0$;
+there is no canonical hierarchy of difficulty in $c_0$.
+
+The \emph{conceptual value} of Route~B is not logical
+simplification but \emph{language change}:
+each individual $\PW_{c_0}^2$ is a concrete
+separable Hilbert space with explicit finite-$c_0$
+PSWF basis (Lemma~\ref{lem:finite-c-basis}),
+and the question becomes a stability question
+about that basis under the SOT-limit.
+This is the language in which the analytic
+tools of Papers~VI--XII (Fourier decay, eigenvector
+convergence, nonvanishing) apply most directly.
+\end{remark}
+
+\subsection{The fixed-scale instance}
+
+\begin{hypothesis}[Local spanning: fixed scale]
+\label{hyp:local-span}
+For a single fixed $c_0 > 0$:
+$\PW_{c_0}^2 \subseteq \Kspace$.
+\end{hypothesis}
+
+\begin{remark}[Status of Hypothesis~\ref{hyp:local-span}]
+\label{rem:local-H2-status}
+Hypothesis~\ref{hyp:local-span} for one fixed $c_0$
+is strictly weaker than completeness
+($\Kspace=L^2$ implies it, but one instance does
+not imply $\Kspace=L^2$).
+However, it is a \emph{fixed-scale instance} of
+the stability problem, not a canonical intermediate
+step:
+all values of $c_0$ have the same structural
+character, and there is no intrinsic ordering
+of difficulty in $c_0$.
+A proof for all $c_0$ would, by
+Theorem~\ref{thm:H2-equiv}, yield completeness;
+but this uniform quantification is the hard step,
+not any individual instance.
+The natural approach to each instance is:
+start from the finite-$c_0$ basis of
+Lemma~\ref{lem:finite-c-basis} and control
+the approximation error under $c \to \infty$
+via Papers~VI--VIII.
+\end{remark}
+
+\subsection{Coefficient stability}
+
+\begin{hypothesis}[H1: coefficient stability]
+\label{hyp:coeff-stability}
+For each $c_0>0$ and $g\in\PW_{c_0}^2$,
+$a_n^{(c)}:=\ip{g}{\Phic{c}{n}}
+\to a_n^{(\infty)}:=\ip{g}{\Phiinf{n}}$
+in $\ell^2(\mathbb{N})$ as $c\to\infty$.
+\end{hypothesis}
+
+\begin{remark}[H1 is the only currently identified strictly
+  weaker grounded hypothesis]
+\label{rem:H1-status}
+H1 concerns $\ell^2$-stability of \emph{coordinates}
+under the SOT-limit.
+It does not assert reconstruction of $g$ in $L^2$
+(that would be H2$_{c_0}$, equivalent to completeness
+if true for all $c_0$).
+H1 is therefore the only currently identified
+hypothesis in this paper that is:
+\begin{itemize}
+\item strictly weaker than completeness;
+\item directly supported by the series:
+  pointwise convergence from Paper~XII
+  (Lemma~\ref{lem:inherited}\ref{A:evec-conv}),
+  non-collapse from Paper~VIII
+  (Lemma~\ref{lem:inherited}\ref{A:nonvanish}),
+  uniform $\ell^2$-bound from Bessel.
+\end{itemize}
+The open step is norm convergence in $\ell^2$:
+\begin{equation}\label{eq:norm-H1}
+  \textstyle\sum_n|a_n^{(c)}|^2
+  \to\sum_n|a_n^{(\infty)}|^2.
+\end{equation}
+This follows from weak $\ell^2$-convergence plus
+norm convergence via the Hilbert-space identity
+$\norm{x-y}^2=\norm{x}^2-2\,\mathrm{Re}\ip{x}{y}+\norm{y}^2$;
+the missing step is \eqref{eq:norm-H1} itself,
+for which Papers~VIII+XII provide the natural
+starting point.
+\end{remark}
+
+\subsection{Conditional completeness}
+
+\begin{theorem}[Conditional completeness via Route~B]
+\label{thm:main-B}
+\textup{(Conditional on H2$_{c_0}$ for all $c_0>0$.)}
+If $\PW_{c_0}^2\subseteq\Kspace$ for all $c_0>0$,
+then $\Kspace = L^2(\mathbb{R})$.
+\end{theorem}
+\begin{proof}
+Immediate from Theorem~\ref{thm:H2-equiv}.
+\end{proof}
+
+\begin{remark}[Role of H1]
+\label{rem:H1-role}
+H1 does not appear in the proof of
+Theorem~\ref{thm:main-B}.
+It is relevant as \emph{necessary condition} for
+H2$_{c_0}$: if $g\in\PW_{c_0}^2$ is reconstructed
+by $\{\Phiinf{n}\}$, then its coordinates must be
+$\ell^2$-stable.
+H1 is thus a verifiable partial step
+\emph{towards} H2$_{c_0}$, not a proof of it.
+\end{remark}
+
+%%═══ 6. ROUTE C
+\section{Route~C: Conditional Compactness}
+\label{sec:routeC}
+
+\begin{remark}[Route~C is structurally independent]
+\label{rem:routeC-indep}
+Routes~A and~B operate within the PSWF geometry
+($\PW_c^2$, finite-$c$ basis, Papers~VI--XII).
+Route~C posits a global compactness hypothesis
+that, if true, gives completeness from the
+spectral theorem alone.
+The two approaches reflect different operator
+regimes and are independent alternatives.
+\end{remark}
+
+\begin{hypothesis}[Compact resolvent]
+\label{hyp:compact-resolvent}
+$(\Hlim + I)^{-1}$ is compact on $L^2(\mathbb{R})$.
+\end{hypothesis}
+
+\begin{proposition}[Route~C]
+\label{prop:compact-route}
+\textup{(Conditional on Hypothesis~\ref{hyp:compact-resolvent}.)}
+If $(\Hlim+I)^{-1}$ is compact, then $\Hlim$ has
+purely discrete spectrum with finite multiplicities
+accumulating only at $0$ or $1$,
+$\{\Phiinf{n}\}$ is an orthonormal basis,
+and $\Kspace = L^2(\mathbb{R})$.
+\end{proposition}
+\begin{proof}
+$T:=(\Hlim+I)^{-1}$ is compact self-adjoint.
+By \cite[Thm.~VI.3.2]{ReedSimon1975},
+$\sigma(T)$ consists of eigenvalues accumulating at $0$.
+Since $\lambdainf{n}>0$, the eigenvalues of $T$ are
+$(\lambdainf{n}+1)^{-1}>0$,
+so $\spc{\Hlim}$ is purely discrete;
+$\spc{\Hlim}\subseteq[0,1]$ forces accumulation
+only at $0$ or $1$.
+The spectral theorem \cite[Thm.~VIII.6]{ReedSimon1975}
+gives the ONB property.
+\end{proof}
+
+\begin{remark}[Incompatibility with $\spc{\Hlim}=[0,1]$]
+\label{rem:op4}
+Compact resolvent and continuous spectrum $[0,1]$
+are mutually exclusive.
+Paper~XIII does not resolve this tension
+(Paper~X, Open Problem~4).
+\end{remark}
+
+%%═══ 7. CLASSIFICATION
+\section{Classification}
+\label{sec:classification}
+
+\begin{theorem}[Classification of completeness mechanisms]
+\label{thm:classification}
+\hfill
+\begin{center}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{lllp{4.5cm}}
+\toprule
+Mechanism & Logical type & Strength & Analytic core \\
+\midrule
+Route~A & Tautological equivalence
+  & $=$ completeness
+  & No proof route via frames exists \\
+Route~B & Localisation equivalence
+  & $=$ completeness
+  & SOT-stability of $\PW_{c_0}^2$-bases
+    (no $c_0$-ordering) \\
+Local H2$_{c_0}$ & Fixed-scale instance
+  & $<$ completeness
+  & Basis stability at fixed scale;
+    no canonical hierarchy in $c_0$ \\
+H1 & Coefficient stability
+  & $<$ completeness
+  & Only currently identified
+    grounded weaker hypothesis \\
+Route~C & Independent structural route
+  & independent
+  & Requires compact resolvent \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{theorem}
+
+%%═══ 8. OPEN PROBLEMS
+\section{Open Problems}
+\label{sec:open}
+
+\begin{problem}[H1: coefficient norm convergence]
+\label{prob:H1}
+\emph{(Strictly weaker than completeness; most accessible.)}
+Prove~\eqref{eq:norm-H1}.
+Natural tools: Paper~VIII nonvanishing,
+Paper~XII eigenvector convergence, Bessel majorant.
+\end{problem}
+
+\begin{problem}[Fixed-scale spanning]
+\label{prob:local-span}
+\emph{(Strictly weaker than completeness;
+fixed-scale instance; no intrinsic $c_0$-ordering.)}
+For a fixed but arbitrary $c_0 > 0$
+(no canonical ordering in $c_0$),
+prove $\PW_{c_0}^2\subseteq\Kspace$.
+By Theorem~\ref{thm:H2-equiv},
+proving this for all $c_0$ yields completeness.
+Natural approach: $\{\Phic{c_0}{n}\}$ spans
+$\PW_{c_0}^2$ for finite $c_0$; control the limit
+via Papers~VI--VIII.
+\end{problem}
+
+\begin{problem}[Spectral type of $\Hlim$]
+\label{prob:spectral-type}
+\emph{(Hardest; independent of Routes~A+B.)}
+Is $\spc{\Hlim}$ purely discrete?
+Is $\spc{\Hlim}=[0,1]$?
+Is $(\Hlim+I)^{-1}$ compact?
+The last two are mutually exclusive.
+\end{problem}
+
+\begin{problem}[Operator identification]
+\label{prob:bridge}
+Prove $\Hlim = \overline{H_{\mathrm{spec}}}$
+(Paper~IX OP~7; Paper~X Bridge Theorem).
+Requires completeness of $\{\Phiinf{n}\}$.
+\end{problem}
+
+%%═══ 9. SUMMARY
+\section{Summary}
+\label{sec:summary}
+
+\medskip
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lllp{3.5cm}}
+\toprule
+Mechanism & Strength & Status & Core \\
+\midrule
+Route~A & $=$ completeness
+  & Closed (tautology)
+  & No frame shortcut \\
+Route~B & $=$ completeness
+  & Open
+  & SOT-stability of $\PW_c^2$-bases \\
+Local H2$_{c_0}$ & $<$ completeness
+  & Open
+  & Fixed-scale instance; no $c_0$-hierarchy \\
+H1 & $<$ completeness
+  & Open
+  & Norm conv.\ \eqref{eq:norm-H1} \\
+Route~C & independent
+  & Open (conditional)
+  & Compact resolvent \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent
+This paper is a \emph{barrier and classification paper}.
+The central conclusion is:
+\emph{completeness of $\{\Phiinf{n}\}$ is a stability
+problem for PSWF spanning structures under the
+SOT-limit, and all tautological and frame-based
+approaches are closed off.}
+The open core of the problem remains the stability
+of individual $\PW_{c_0}^2$-bases under
+$c\to\infty$ (Route~B / local H2),
+with H1 as the only currently identified grounded
+weaker step.
+
+\begin{thebibliography}{99}
+
+\bibitem{PaperXIII-XI}[Author],
+\textit{Spectral structure, Paper~XI}, 2026.
+
+\bibitem{PaperXIII-X}[Author],
+\textit{Mosco convergence and Friedrichs, Paper~X}, 2026.
+
+\bibitem{PaperXIII-IX}[Author],
+\textit{Conditional framework, Paper~IX}, 2026.
+
+\bibitem{PaperXIII-VIII}[Author],
+\textit{Non-cancellation and lower bounds, Paper~VIII}, 2026.
+
+\bibitem{PaperXIII-XII}[Author],
+\textit{Localisation principle, Paper~XII}, 2026.
+
+\bibitem{Slepian1961}
+D.~Slepian, H.~O.~Pollak,
+\textit{Prolate spheroidal wave functions~I},
+Bell Syst.\ Tech.\ J.\ \textbf{40} (1961), 43--63.
+
+\bibitem{Osipov2013}
+A.~Osipov, V.~Rokhlin, H.~Xiao,
+\textit{Prolate Spheroidal Wave Functions of Order Zero},
+Springer, 2013.
+
+\bibitem{Kato1966}
+T.~Kato, \textit{Perturbation Theory for Linear Operators},
+Springer, 1966.
+
+\bibitem{ReedSimon1975}
+M.~Reed, B.~Simon,
+\textit{Methods of Modern Mathematical Physics, Vol.~II},
+Academic Press, 1975.
+
+\bibitem{Conway1990}
+J.~B.~Conway,
+\textit{A Course in Functional Analysis}, 2nd ed.,
+Springer, 1990.
+
+\bibitem{Rudin1991}
+W.~Rudin, \textit{Functional Analysis}, 2nd ed.,
+McGraw-Hill, 1991.
+
+\end{thebibliography}
+
+\end{document}
