@@ -1,0 +1,698 @@
+\documentclass[12pt,a4paper]{amsart}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+%%%─── Theorem environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}[theorem]{Open Problem}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem*{remark*}{Remark}
+
+%%%─── Macros
+\newcommand{\Phihat}{\widehat{\Phi}}
+\newcommand{\Ai}{\mathrm{Ai}}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\ip}[2]{\langle #1,\, #2\rangle}
+\newcommand{\Hc}{\widetilde{\mathcal{H}}_c}
+\newcommand{\Hlim}{\mathcal{H}_{\lim}}
+\newcommand{\Hstrong}{H_{\lim}^{(\mathrm{str})}}
+\newcommand{\Hspectral}{H_{\lim}^{(\mathrm{sp})}}
+\newcommand{\HSOT}{\mathcal{H}^{\mathrm{SOT}}}
+\newcommand{\Dom}{\mathrm{Dom}}
+\newcommand{\qc}{q_c}
+\newcommand{\qlim}{q_{\lim}}
+\newcommand{\Fc}{\mathcal{F}}
+\newcommand{\Bc}{B_c}
+\DeclareMathOperator{\sgn}{sgn}
+
+%%%─── AMS metadata
+\subjclass[2020]{47A07, 47B25, 47A10, 42C05, 11M06}
+\keywords{Quadratic forms, Mosco convergence,
+resolvent convergence,
+prolate spheroidal wave functions,
+Riemann zeta function}
+
+\begin{document}
+
+\title[Mosco Convergence and Resolvent Stability
+  of PSWF Concentration Forms]{%
+  Mosco Convergence, Resolvent Stability,
+  and the Bridge Theorem for
+  PSWF Concentration Operators}
+
+\author{[Author]}
+\address{[Address]}
+\email{[Email]}
+
+\maketitle
+
+\begin{abstract}
+Let $\Hc:=P^*\mathcal{H}_c^{[0,1]}P$
+be the Slepian--Pollak concentration
+operator on $L^2(\mathbb{R})$.
+The identity
+$\ip{\Hc f}{f}=\|\Bc(P^*Pf)\|^2$
+(coordinatisation lemma)
+reduces $\Hc$ to a conjugated Fourier
+projection; all results follow from
+this identity and
+$[-c,c]\subset[-c',c']$.
+Two methodologically independent
+threads --- (A) uniform bound $+$
+Cauchy nets $\Rightarrow$
+$\Hc\xrightarrow{\mathrm{SOT}}\Hstrong$;
+(B) monotonicity $+$ compactness
+$\Rightarrow$
+$\qc\xrightarrow{\mathrm{M}}\qlim$ ---
+are unified by $T_{\qlim}=\Hstrong$,
+yielding strong resolvent convergence.
+For a spectrally constructed
+$\Hspectral$ (Paper~IX),
+the identification
+$\Hstrong=\overline{\Hspectral}$
+(Bridge theorem) is conditional
+on a structural hypothesis
+(Paper~IX, Open Problem~7);
+see Sec.~\ref{sec:bridge}.
+No unconditional connection to
+$\zeta(s)$-zeros is made.
+\end{abstract}
+
+\section*{Guide for the Referee}
+
+\[
+\boxed{\text{FTB}}
+\to
+\begin{cases}
+  \text{Mono.}+\text{HS}
+  \Rightarrow
+  \qc\xrightarrow{\mathrm{M}}\qlim
+  &\text{(Thread B)}\\
+  \text{Bound}+\text{density}
+  \Rightarrow
+  \Hc\xrightarrow{\mathrm{SOT}}\Hstrong
+  &\text{(Thread A)}
+\end{cases}
+\xRightarrow{T_{\qlim}=\Hstrong}
+\text{resolvent}
+\xRightarrow{\text{Hyp.~(IX.b)}}
+\text{Bridge.}
+\]
+Thread~A uses Cauchy nets;
+Thread~B uses compactness;
+both originate from
+Lemma~\ref{lem:ftb}.
+The Bridge theorem is conditional
+on Hyp.~(IX.b) (identification problem);
+all other results are unconditional.
+No eigenfunction analysis;
+$\zeta$-connection speculative only.
+
+\textit{Modules:}
+(I)~Thread~A
+(Secs.~\ref{sec:setup},\ref{sec:strong-limit},\ref{sec:friedrichs});
+(II)~Thread~B (Sec.~\ref{sec:mosco});
+(III)~Rate (Sec.~\ref{sec:rate},
+imports Paper~VIII only);
+(IV)~Bridge (Sec.~\ref{sec:bridge},
+imports Paper~IX only,
+\emph{conditional on Hyp.~(IX.b)});
+(V)~Consequences (Sec.~\ref{sec:consequences}).
+
+\textit{Changes v44\,$\to$\,v45:}
+Fix~1: lem:monotone uses
+$E_{M_\xi}([-c,c])\le E_{M_\xi}([-c',c'])$
+via RS~Thm.~VIII.3.
+Fix~3: Bridge proof restated as
+``same net, unique limit in
+Hausdorff space''.
+lem:wc unchanged.
+
+\textit{Change v45\,$\to$\,v46:}
+Hyp.~(IX.b): identification
+$\HSOT=\overline{\Hspectral}$ demoted
+from Paper~IX import to explicit
+structural hypothesis
+(Paper~IX, Open Problem~7;
+not proved in Paper~IX).
+Bridge theorem now conditional;
+all unconditional results unchanged.
+
+\tableofcontents
+
+%%═══════════════════════════════════════════════════════════════════
+\section{Setup and Foundational Lemmas}
+\label{sec:setup}
+%%═══════════════════════════════════════════════════════════════════
+
+The Fourier transform is
+$(\Fc f)(\xi):=
+\int_{\mathbb{R}}f(x)e^{-i\xi x}dx$
+(Plancherel:
+$\|\Fc f\|=\sqrt{2\pi}\|f\|$;
+\cite{ReedSimon1975}, Ch.~IX).
+Set
+\begin{equation}\label{eq:ops}
+  \Bc:=\Fc^{-1}\chi_{[-c,c]}\Fc,
+  \quad
+  \Hc:=P^*\mathcal{H}_c^{[0,1]}P,
+  \quad
+  K_c(x,y)=\tfrac{\sin c(x-y)}{\pi(x-y)},
+\end{equation}
+where $P:L^2(\mathbb{R})\to L^2([0,1])$
+is restriction and $P^*$ extension
+by zero.
+Then $\Hc$ is self-adjoint,
+$0\le\Hc\le I$, $\|\Hc\|\le 1$
+(\cite{Slepian1961};
+\cite{ReedSimon1975}, Thm.~VI.1).
+\hfill\textbf{(F.1)}\label{F1}
+
+\begin{lemma}[Coordinatisation lemma]
+\label{lem:ftb}
+For all $c>0$, $f\in L^2(\mathbb{R})$:
+\begin{equation}\label{eq:ftb}
+  \ip{\Hc f}{f}=\|\Bc(P^*Pf)\|^2,
+  \qquad
+  \mathcal{H}_c^{[0,1]}=P\Bc P^*.
+\end{equation}
+All subsequent properties of $\Hc$
+follow from \eqref{eq:ftb} and
+$[-c,c]\subset[-c',c']$.
+\end{lemma}
+
+\begin{proof}
+Since $(\Fc K_c)(\xi)=\chi_{[-c,c]}(\xi)$
+(\cite{Slepian1961}, Eq.~(3)),
+the convolution theorem gives
+$K_c*h=\Bc h$
+(\cite{ReedSimon1975}, Thm.~IX.2).
+For $g\in L^2([0,1])$, extending by
+zero and restricting:
+$(K_c*P^*g)(x)
+=\int_0^1 K_c(x-y)g(y)\,dy$,
+so $\mathcal{H}_c^{[0,1]}=P\Bc P^*$.
+Then $\ip{\Hc f}{f}
+=\ip{\Bc P^*Pf}{P^*Pf}
+=\|\Bc(P^*Pf)\|^2$.
+\end{proof}
+
+\begin{lemma}[Monotonicity ---
+  Thread~B]
+\label{lem:monotone}
+$c\le c'\Rightarrow\ip{\Hc f}{f}
+\le\ip{\mathcal{H}_{c'}f}{f}$.
+\end{lemma}
+\begin{proof}
+$\Bc = E_{M_\xi}([-c,c])$
+is the spectral projection of the
+multiplication operator $M_\xi$
+associated to $[-c,c]$.
+Since $[-c,c]\subset[-c',c']$,
+the spectral measures satisfy
+$E_{M_\xi}([-c,c])\le
+E_{M_\xi}([-c',c'])$
+as orthogonal projections
+(\cite{ReedSimon1975}, Thm.~VIII.3),
+i.e.\ $\Bc\le B_{c'}$;
+apply \eqref{eq:ftb}.
+\end{proof}
+
+\begin{lemma}[HS-compactness ---
+  Thread~B]
+\label{lem:hs-compact}
+$\widetilde{\mathcal{H}}_{c_0}$
+is compact for each fixed $c_0>0$.
+\end{lemma}
+\begin{proof}
+$\|\mathcal{H}_{c_0}^{[0,1]}\|_{\mathrm{HS}}^2
+\le c_0/\pi$
+(Fubini $+$ Parseval);
+\cite{ReedSimon1975}, Thm.~VI.22.
+\end{proof}
+
+\begin{lemma}[Dense domain ---
+  Thread~A]
+\label{lem:dense}
+$\mathcal{D}:=\{f:\Hc f\text{ converges}
+\text{ in }L^2\}\supset C_c^\infty$.
+\end{lemma}
+\begin{proof}
+For $f\in C_c^\infty$ and
+$h:=P^*Pf\in L^2(\mathbb{R})$:
+\[
+  \|\Hc f - P^*Pf\|
+  \le \|\Bc h - h\|
+  = \|(\Fc^{-1}\chi_{[-c,c]}\Fc - I)h\|
+  \to 0
+\]
+as $c\to\infty$, by strong convergence
+of the spectral projections
+$\chi_{[-c,c]}(M_\xi)$ to the identity
+as $[-c,c]\nearrow\mathbb{R}$
+(\cite{ReedSimon1975}, Thm.~VIII.5
+and the spectral theorem;
+$\|P^*P\|\le 1$).
+\end{proof}
+
+\begin{remark}
+\label{rem:dense-trivial}
+Once $\Hc\xrightarrow{\mathrm{SOT}}\Hstrong$,
+one has $\mathcal{D}=L^2$;
+Lemma~\ref{lem:dense} is
+Thread~A pre-input only.
+\end{remark}
+
+%%═══════════════════════════════════════════════════════════════════
+\section{Thread~A: Strong Operator Limit}
+\label{sec:strong-limit}
+%%═══════════════════════════════════════════════════════════════════
+
+\begin{lemma}[SOT extension principle]
+\label{lem:sc}
+Let $(A_c)$ be a directed net in
+$\mathcal{B}(\mathcal{H})$ with
+$\sup_c\|A_c\|\le M<\infty$.
+If $\lim_c A_cg$ exists for all $g$
+in a dense $\mathcal{D}$,
+then $\exists!\,A\in\mathcal{B}$
+with $\|A\|\le M$ and
+$A_c\xrightarrow{\mathrm{SOT}}A$.
+\end{lemma}
+\begin{proof}
+For $f$, $g\in\mathcal{D}$ with
+$\|f-g\|<\varepsilon/(3M)$:
+$\|A_cf-A_{c'}f\|
+\le 2M\|f-g\|+\|A_cg-A_{c'}g\|
+<\varepsilon$
+for $c,c'>c_0(g,\varepsilon)$.
+Hence $(A_cf)$ Cauchy;
+$Af:=\lim_cA_cf$ is bounded,
+linear, unique
+(\cite{ReedSimon1975}, Thm.~I.26).
+\end{proof}
+
+\begin{lemma}
+\label{lem:hlim-bounded}
+$\exists!\,\Hstrong\in\mathcal{B}(L^2)$,
+$\|\Hstrong\|\le 1$,
+with $\Hc\xrightarrow{\mathrm{SOT}}\Hstrong$.
+\end{lemma}
+\begin{proof}
+Lem.~\ref{lem:sc}; $M=1$;
+$\mathcal{D}$ from Lem.~\ref{lem:dense}.
+\end{proof}
+
+\begin{corollary}\label{cor:qlim-op}
+$\qlim(f,f)=\ip{\Hstrong f}{f}$;
+$\Hstrong=\Hstrong^*\ge 0$;
+$\sigma(\Hstrong)\subset[0,1]$.
+\end{corollary}
+
+%%═══════════════════════════════════════════════════════════════════
+\section{Thread~B: Mosco Convergence}
+\label{sec:mosco}
+%%═══════════════════════════════════════════════════════════════════
+
+\begin{definition}[Limit form]
+\label{def:qlim}
+The function $c\mapsto\ip{\Hc f}{f}$
+is bounded above (by $\|f\|^2$) and
+monotonically increasing
+on $(0,\infty)$
+(Lem.~\ref{lem:monotone}),
+hence converges in $\mathbb{R}$;
+set $\qlim(f,f):=\lim_{c\to\infty}
+\ip{\Hc f}{f}=\sup_{c>0}\ip{\Hc f}{f}$
+and extend by polarisation.
+\end{definition}
+
+\begin{definition}[Mosco convergence
+  \cite{Mosco1969}]
+\label{def:mosco}
+$(\qc)\xrightarrow{\mathrm{M}}\qlim$
+iff (M1) $f_n\rightharpoonup f$
+$\Rightarrow$
+$\qlim(f,f)\le\liminf_n q_{c_n}(f_n,f_n)$;
+and (M2) $\forall f$,
+$\exists f_n\to f$:
+$q_{c_n}(f_n,f_n)\to\qlim(f,f)$.
+\end{definition}
+
+\begin{lemma}[Form continuity]
+\label{lem:wc}
+Compact $T$, $f_n\rightharpoonup f$
+$\Rightarrow$
+$\ip{Tf_n}{f_n}\to\ip{Tf}{f}$.
+\end{lemma}
+\begin{proof}
+$Tf_n\to Tf$ strongly
+(\cite{ReedSimon1975}, Thm.~VI.1);
+weakly convergent sequences are
+bounded (Thm.~II.12);
+hence strong--weak continuity of
+$\ip{\cdot}{\cdot}$.
+\end{proof}
+
+\begin{theorem}[Mosco convergence]
+\label{thm:mosco}
+$\qc\xrightarrow{\mathrm{M}}\qlim$.
+\end{theorem}
+\begin{proof}
+(M2) is immediate from
+Def.~\ref{def:qlim}.
+For (M1): given $f_n\rightharpoonup f$
+and $c_0>0$, monotonicity gives
+$q_{c_n}(f_n,f_n)\ge q_{c_0}(f_n,f_n)$
+for $c_n\ge c_0$;
+Lems.~\ref{lem:hs-compact}
+and~\ref{lem:wc} give
+$q_{c_0}(f_n,f_n)\to q_{c_0}(f,f)$;
+take $\sup_{c_0}$.
+\end{proof}
+
+%%═══════════════════════════════════════════════════════════════════
+\section{Identification and Closedness}
+\label{sec:friedrichs}
+%%═══════════════════════════════════════════════════════════════════
+
+\begin{theorem}[Closedness and
+  Riesz--Kato identification]
+\label{thm:friedrichs}
+$\qlim$ is closed and
+$T_{\qlim}=\Hstrong$.
+\end{theorem}
+\begin{proof}
+Closedness: bounded symmetric
+forms are closed
+(\cite{ReedSimon1975}, Thm.~VIII.15).
+Identification:
+$\ip{\Hstrong f}{g}=\qlim(f,g)$
+(Cor.~\ref{cor:qlim-op});
+uniqueness of Riesz representative.
+\end{proof}
+
+\begin{remark}
+Thread~A produced $\Hstrong$;
+Thread~B produced $\qlim$;
+Thm.~\ref{thm:friedrichs}
+identifies them.
+\end{remark}
+
+%%═══════════════════════════════════════════════════════════════════
+\section{Quantitative Rate
+  (External, Paper~VIII)}
+\label{sec:rate}
+%%═══════════════════════════════════════════════════════════════════
+
+\begin{theorem}[Quantitative rate]
+\label{thm:rate-ext}
+$0\le\qlim(f,f)-\qc(f,f)
+\le C_\kappa c^{-1/4}\|f\|^2$,
+$c\ge c_0(\kappa)$.
+(External: Paper~VIII, Cor.~4.3;
+no other section depends on this
+theorem.)
+\end{theorem}
+
+\begin{remark}[Obstruction]
+\label{rem:no-indep-proof}
+An internal proof requires uniform
+eigenvector asymptotics;
+mixing fixed-$c$ eigenbasis with
+$c\to\infty$ weights is invalid
+(Problem~\ref{prob:rate}).
+\end{remark}
+
+%%═══════════════════════════════════════════════════════════════════
+\section{The Bridge Theorem}
+\label{sec:bridge}
+%%═══════════════════════════════════════════════════════════════════
+
+Sole import point for Paper~IX.
+Assume (Paper~IX, Thms.~2.5, 3.2,
+Rem.~2.6):
+\begin{enumerate}[(IX.a)]
+\item\label{IXa}
+  $\Hspectral:=
+  \sum_n\lambda_n^{(\infty)}
+  \ip{\cdot}{\Phi_n^{(\infty)}}
+  \Phi_n^{(\infty)}$
+  is densely defined, symmetric,
+  closable, with
+  $\|\Hspectral f\|\le\|f\|$;
+  hence
+  $\overline{\Hspectral}\in
+  \mathcal{B}(L^2)$.
+  \emph{(Unconditional in Paper~IX,
+  Thm.~3.3 and Rem.~1.3.)}
+\item\label{IXb}
+  \emph{(Hypothesis; identification
+  problem from Paper~IX,
+  Open Problem~7;
+  not proved in Paper~IX.)}
+  The net $(\Hc)_{c\in(0,\infty)}$
+  converges in the strong operator
+  topology to a limit $\HSOT$ which
+  coincides with the closure of the
+  spectral operator:
+  \[
+    \Hc\xrightarrow{\mathrm{SOT}}\HSOT
+    \quad\text{and}\quad
+    \HSOT=\overline{\Hspectral}.
+  \]
+  The existence of the SOT-limit is
+  unconditional
+  (Lem.~\ref{lem:hlim-bounded});
+  the identification
+  $\HSOT=\overline{\Hspectral}$
+  is a structural hypothesis
+  not yet established in the series.
+\end{enumerate}
+
+\begin{theorem}[Bridge theorem
+  (conditional on Hyp.~\ref{IXb})]
+\label{thm:bridge}
+\emph{Conditional on
+Hyp.~\hyperref[IXb]{(IX.b)}.}
+$\Hstrong=\overline{\Hspectral}$.
+\end{theorem}
+\begin{proof}
+The net $(\Hc)_{c\in(0,\infty)}$
+ordered by $c\le c'$ converges
+in the SOT topology on
+$\mathcal{B}(L^2)$ to both
+$\Hstrong$ (Lem.~\ref{lem:hlim-bounded})
+and $\HSOT=\overline{\Hspectral}$
+(Hyp.~\hyperref[IXb]{(IX.b)}).
+Limits of a convergent net in a
+Hausdorff topological space are
+unique; hence
+$\Hstrong=\overline{\Hspectral}$.
+\end{proof}
+
+\begin{remark}[Separation of existence
+  and identification]
+\label{rem:bridge-sep}
+The SOT-limit $\Hstrong$ exists
+unconditionally
+(Lem.~\ref{lem:hlim-bounded})
+and satisfies $T_{\qlim}=\Hstrong$
+(Thm.~\ref{thm:friedrichs}).
+The identification
+$\Hstrong=\overline{\Hspectral}$
+requires Hyp.~\hyperref[IXb]{(IX.b)}
+and is the content of
+Thm.~\ref{thm:bridge}.
+The two questions ---
+\emph{existence} of the SOT-limit vs.
+\emph{identification} with the
+spectral closure --- are logically
+independent; conflating them was
+the source of the earlier circularity.
+\end{remark}
+
+\begin{remark}
+No eigenfunction analysis:
+under Hyp.~\hyperref[IXb]{(IX.b)},
+equality follows from uniqueness of
+the SOT-limit in the Hausdorff
+topology on $\mathcal{B}(L^2)$.
+$\Hlim:=\Hstrong=\overline{\Hspectral}$
+(conditional).
+\end{remark}
+
+%%═══════════════════════════════════════════════════════════════════
+\section{Spectral Consequences}
+\label{sec:consequences}
+%%═══════════════════════════════════════════════════════════════════
+
+\begin{corollary}[Resolvent convergence]
+\label{cor:resolvent}
+For $z\notin[0,1]$:
+$(\Hc-z)^{-1}
+\xrightarrow{\mathrm{SOT}}
+(\Hlim-z)^{-1}$.
+\end{corollary}
+\begin{proof}
+Thm.~\ref{thm:mosco};
+$\sigma(\Hlim)\subset[0,1]$;
+\cite{KuwaeShioya2003}, Thm.~2.4.
+\end{proof}
+
+\begin{remark}[Unconditional summary]
+$\Hlim^*=\Hlim\ge 0$;
+$T_{\qlim}=\Hlim$;
+$\qc\xrightarrow{\mathrm{M}}\qlim$;
+$(\Hc-z)^{-1}\xrightarrow{\mathrm{SOT}}
+(\Hlim-z)^{-1}$;
+rate $O(c^{-1/4})$ (Paper~VIII).
+The identification
+$\Hstrong=\overline{\Hspectral}$
+is conditional on
+Hyp.~\hyperref[IXb]{(IX.b)}.
+\end{remark}
+
+\begin{remark}[Speculative:
+  Riemann zeros]
+\label{rem:rh}
+\emph{No unconditional claim.}
+Under (H1) $\{\Phi_n^{(\infty)}\}$
+complete, $\Hlim$ ess.\ self-adjoint
+(Paper~IX, Hyp.~4.1);
+and (H2) zeros $\rho$ in
+$\sigma_{\mathrm{app}}(\Hlim)$
+(\cite{CCM2025}, Thm.~1.3):
+$\rho\in\sigma(\Hlim)\subset\mathbb{R}$,
+hence $\mathrm{Re}(\rho)=1/2$.
+(H2) has no proved operator
+identification.
+\end{remark}
+
+%%═══════════════════════════════════════════════════════════════════
+\section{Open Problems}
+\label{sec:problems}
+%%═══════════════════════════════════════════════════════════════════
+
+\begin{problem}[Completeness]
+\label{prob:completeness}
+Prove $\{\Phi_n^{(\infty)}\}$
+complete in $L^2(\mathbb{R})$.
+\end{problem}
+
+\begin{problem}[Identification]
+\label{prob:identification}
+Prove Hyp.~\hyperref[IXb]{(IX.b)}:
+$\HSOT=\overline{\Hspectral}$.
+This is Paper~IX, Open Problem~7,
+and the central open problem
+for the Bridge theorem.
+\end{problem}
+
+\begin{problem}[Independent rate]
+\label{prob:rate}
+Prove rate $O(c^{-1/4})$ without
+Paper~VIII.
+\end{problem}
+
+\begin{problem}[Quantitative
+  resolvent]
+\label{prob:resolvent}
+Find $F(c,z)\to 0$ with
+$\|(\Hc-z)^{-1}-(\Hlim-z)^{-1}\|
+\le F(c,z)$.
+\end{problem}
+
+\begin{problem}[Spectrum]
+\label{prob:spectrum}
+Is $\sigma(\Hlim)=[0,1]$?
+\end{problem}
+
+%%%─── Bibliography
+\begin{thebibliography}{99}
+
+\bibitem{PaperV}
+[Author],
+\textit{Effective bandwidth and
+$L^2$-concentration of PSWFs},
+Paper~V, preprint 2025.
+
+\bibitem{PaperVIII}
+[Author],
+\textit{Non-cancellation, sharp
+$c^{-1/2}$ lower bound,
+and operator-norm asymptotics},
+Paper~VIII, preprint 2026.
+
+\bibitem{PaperIX}
+[Author],
+\textit{Domain, deficiency indices,
+self-adjointness},
+Paper~IX, preprint 2026.
+
+\bibitem{Kato1966}
+T.~Kato,
+\textit{Perturbation Theory for
+Linear Operators},
+Springer, 1966.
+
+\bibitem{ReedSimon1975}
+M.~Reed and B.~Simon,
+\textit{Methods of Modern
+Mathematical Physics, Vols.~I--II},
+Academic Press, 1972--1975.
+
+\bibitem{Mosco1969}
+U.~Mosco,
+\textit{Convergence of convex sets
+and of solutions of variational
+inequalities},
+Adv.\ Math.\ \textbf{3} (1969),
+510--585.
+
+\bibitem{KuwaeShioya2003}
+K.~Kuwae and T.~Shioya,
+\textit{Convergence of spectral
+structures},
+Comm.\ Anal.\ Geom.\ \textbf{11}
+(2003), 599--673.
+
+\bibitem{Slepian1961}
+D.~Slepian and H.~O.~Pollak,
+\textit{Prolate spheroidal wave
+functions, Fourier analysis
+and uncertainty---I},
+Bell Syst.\ Tech.\ J.\
+\textbf{40} (1961), 43--63.
+
+\bibitem{CCM2025}
+A.~Connes, C.~Consani,
+and H.~Moscovici,
+\textit{Zeta Spectral Triples},
+arXiv:2511.22755, 2025.
+
+\bibitem{Rudin1991}
+W.~Rudin,
+\textit{Functional Analysis},
+2nd ed., McGraw-Hill, 1991.
+
+\bibitem{Conway1990}
+J.~B.~Conway,
+\textit{A Course in Functional
+Analysis},
+2nd ed., Springer, 1990.
+
+\end{thebibliography}
+
+\end{document}
